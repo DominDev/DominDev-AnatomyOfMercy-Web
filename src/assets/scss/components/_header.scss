@@ -18,28 +18,29 @@
     gap: 0.8rem;
     align-items: center;
     margin-right: auto;
+    padding-block: 0.9rem;
     text-decoration: none;
-    color: #e1d5b5;
-    font: 600 0.82rem / 1.3 var(--font-label);
-    letter-spacing: 0.09em;
+    color: #ece0c3;
+    font: 600 0.95rem / 1.3 var(--font-label);
+    letter-spacing: 0.08em;
     white-space: nowrap;
   }
-  &__sigil { width: 2rem; height: 2rem; fill: none; stroke: currentColor; stroke-width: 0.9; flex-shrink: 0; }
-  &__navigation { display: flex; align-items: center; gap: clamp(1.25rem, 2.3vw, 3rem); }
+  &__sigil { width: 2.25rem; height: 2.25rem; fill: none; stroke: currentColor; stroke-width: 0.9; flex-shrink: 0; }
+  &__navigation { display: flex; align-items: center; gap: clamp(0.5rem, 1.4vw, 1.5rem); }
   &__navigation a {
     position: relative;
-    padding-block: 0.9rem;
-    color: #d8c9a8;
-    font: 500 0.73rem / 1.5 var(--font-label);
-    letter-spacing: 0.12em;
+    padding: 0.9rem 0.7rem;
+    color: #e0d2b2;
+    font: 500 0.82rem / 1.5 var(--font-label);
+    letter-spacing: 0.1em;
     text-decoration: none;
     white-space: nowrap;
     &::after {
       position: absolute; bottom: 0.4rem; left: 50%; width: 0; height: 1px;
       background: var(--color-gold); transform: translateX(-50%); transition: width 200ms; content: "";
     }
-    &:hover::after, &[aria-current="location"]::after { width: 100%; }
-    &:hover { color: #f2e4c5; }
+    &:hover::after, &[aria-current="location"]::after { width: calc(100% - 1.4rem); }
+    &:hover { color: #f7ecd2; }
   }
   &__menu-button { display: none; }
 }
@@ -49,12 +50,18 @@
   box-shadow: 0 1px 0 rgba(177, 148, 89, 0.3), 0 10px 24px rgba(0,0,0,0.2);
 }
 .language-switcher {
-  display: flex; gap: 0.4rem; align-items: center;
-  font: 500 0.75rem / 1 var(--font-label);
-  padding-left: 1.25rem; border-left: 1px solid var(--frame-color);
-  a { padding-block: 0.9rem; text-decoration: none; color: #a89d86; }
-  a[aria-current="page"], a:hover { color: #f2e4c5; }
-  span { color: #7d6e4f; }
+  display: flex; gap: 0.15rem; align-items: center;
+  font: 500 0.82rem / 1 var(--font-label);
+  margin-left: 0.75rem; padding-left: 1.25rem; border-left: 1px solid var(--frame-color);
+  // Kazdy jezyk jest osobnym celem dotyku o wysokosci co najmniej 44 px.
+  a {
+    padding: 1rem 0.55rem; text-decoration: none; color: #9b917c;
+    border-bottom: 1px solid transparent;
+  }
+  // Aktywny jezyk ma jasniejszy kolor i podkreslenie, nie sam kolor.
+  a[aria-current="page"] { color: #f7ecd2; border-bottom-color: var(--color-gold); }
+  a:hover { color: #f7ecd2; }
+  span { color: #6f6244; }
 }
 @media (max-width: 63.99rem) {
   .site-header {

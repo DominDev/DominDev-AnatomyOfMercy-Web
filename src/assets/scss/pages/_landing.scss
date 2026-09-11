@@ -3,11 +3,13 @@
   display: grid; align-items: center; overflow: hidden;
   &__artwork, &__atmosphere { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
   &__scene { width: 100%; height: 100%; object-fit: cover; object-position: 65% center; }
+  // Pierwszy gradient pelni role przycienienia pod naglowkiem: nawigacja lezy
+  // nad szczegolowa ilustracja i bez niego traci kontrast wzgledem tla.
   &__atmosphere {
     z-index: -1;
     background:
-      linear-gradient(180deg, rgba(5,5,4,.45), transparent 23%, transparent 76%, #090807),
-      linear-gradient(90deg, rgba(7,7,6,.92), rgba(7,7,6,.62) 33%, rgba(7,7,6,.12) 61%, transparent 80%);
+      linear-gradient(180deg, rgba(5,5,4,.82), rgba(5,5,4,.34) 11%, transparent 27%, transparent 76%, #090807),
+      linear-gradient(90deg, rgba(7,7,6,.94), rgba(7,7,6,.68) 33%, rgba(7,7,6,.14) 61%, transparent 80%);
   }
   &__inner { padding-block: 10rem 8rem; }
   &__copy { width: 48%; max-width: 35rem; }
@@ -23,7 +25,7 @@
     background-clip: text; -webkit-background-clip: text; color: transparent;
     em { font-family: var(--font-display); font-size: .57em; font-weight: 500; letter-spacing: -0.055em; }
   }
-  &__tagline { margin-top: 1.6rem; color: #d5bf91; font: 500 0.8rem / 1.8 var(--font-label); letter-spacing: 0.22em; text-transform: uppercase; }
+  &__tagline { margin-top: 1.6rem; color: #e0cb9e; font: 500 0.85rem / 1.8 var(--font-label); letter-spacing: 0.2em; text-transform: uppercase; }
   &__rule {
     position: relative; height: 1px; width: min(100%, 26rem); margin-block: 1.8rem;
     background: linear-gradient(90deg, transparent, #a88b51 15%, #a88b51 85%, transparent);
@@ -31,28 +33,34 @@
     &::before, &::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: #c4a66d; }
     &::before { left: calc(50% - 9px); } &::after { left: calc(50% + 18px); }
   }
-  &__lead { max-width: 39ch; color: #d0c6b3; font-size: clamp(1.15rem, 1.45vw, 1.35rem); text-shadow: 0 2px 10px #000; }
+  &__lead { max-width: 39ch; color: #ddd5c6; font-size: clamp(1.25rem, 1.55vw, 1.45rem); text-shadow: 0 2px 10px #000; }
   &__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
-  &__actions .button { padding-inline: 1.2rem; font-size: 0.7rem; }
+  &__actions .button { padding-inline: 1.35rem; font-size: 0.78rem; }
   &__scroll {
-    position: absolute; bottom: 2.7rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem;
-    color: #baa881; text-decoration: none; font: 0.6rem / 1.5 var(--font-label); letter-spacing: 0.16em; white-space: nowrap;
+    position: absolute; bottom: 2.7rem; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem;
+    color: #cbb894; text-decoration: none; font: 0.7rem / 1.5 var(--font-label); letter-spacing: 0.14em; white-space: nowrap;
     span { height: 1.9rem; width: 1px; background: linear-gradient(transparent, #c1a166); }
   }
   &__side-note {
     position: absolute; right: calc(var(--frame-inset) + 1.25rem); top: 46%;
-    writing-mode: vertical-rl; color: #bea77b; font: 0.6rem / 1.5 var(--font-label); letter-spacing: 0.3em;
+    writing-mode: vertical-rl; color: #c9b088; font: 0.68rem / 1.5 var(--font-label); letter-spacing: 0.28em;
   }
 }
 .section--experience { padding-top: 0.5rem; background: linear-gradient(#090807, #0e0b08 70%, #090807); }
-.experience__statement { margin-top: clamp(4rem, 7vw, 7rem); margin-bottom: 0; }
+// Odstep miedzy winietami a zdaniem programowym byl na tyle duzy, ze czytelnik
+// tracil pewnosc, czy ponizej jest jeszcze tresc.
+.experience__statement { margin-top: clamp(3rem, 5vw, 5rem); margin-bottom: 0; }
 .world {
   isolation: isolate; overflow: hidden; min-height: 43rem; display: flex; align-items: center;
   &__panorama { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
   &::before { content: ""; z-index: -1; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(9,8,7,.96), rgba(9,8,7,.65) 40%, rgba(9,8,7,.12)), linear-gradient(#090807, transparent 18%, transparent 68%, #090807); }
   &__inner { padding-block: 2rem; }
-  .section-heading { margin: 0; max-width: 33rem; }
-  .section-heading p:not(.eyebrow) { max-width: 37ch; color: #d1c4ab; }
+  // Szerszy kontener i wyzsza granica znakow lamia naglowek na trzy linie
+  // zamiast pieciu. Przy pieciu przestaje byc zdaniem, a staje sie ornamentem.
+  .section-heading { margin: 0; max-width: 42rem; }
+  .section-heading h2 { max-width: 30ch; }
+  .section-heading p:not(.eyebrow) { max-width: 42ch; color: #ddd2bd; }
   .button { margin-top: 2rem; }
 }
 .section--stories {
@@ -76,12 +84,12 @@
   &__email { display: block; margin-top: 1.2rem; color: #cbb68e; font-size: 1.15rem; text-underline-offset: 4px; overflow-wrap: anywhere; }
 }
 .site-footer {
-  position: relative; padding: 2.5rem 0 4rem; border-top: 1px solid rgba(177,148,89,.2);
-  color: #afa28b; font-size: 1rem;
+  position: relative; padding: 2.75rem 0 4rem; border-top: 1px solid rgba(177,148,89,.2);
+  color: #c3b69d; font-size: 1.05rem;
   &__inner { display: flex; align-items: center; gap: 2rem; justify-content: space-between; }
-  &__name { color: #d6c09a; font: 500 0.8rem / 1.8 var(--font-label); letter-spacing: .05em; }
-  &__copyright { font: .65rem / 1.7 var(--font-body); max-width: 26ch; }
-  &__replay { display: none; color: #c6af80; background: none; border: 0; padding: .6rem; font: .65rem / 1.6 var(--font-label); text-decoration: underline; text-underline-offset: 5px; cursor: pointer; }
+  &__name { color: #e0cba4; font: 500 0.9rem / 1.8 var(--font-label); letter-spacing: .05em; }
+  &__copyright { font: .78rem / 1.7 var(--font-body); color: #a2957f; max-width: 30ch; }
+  &__replay { display: none; color: #d2bc8c; background: none; border: 0; padding: .75rem .6rem; font: .75rem / 1.6 var(--font-label); text-decoration: underline; text-underline-offset: 5px; cursor: pointer; }
 }
 .js .site-footer__replay { display: block; }
 @media (min-width: 1600px) {

@@ -68,7 +68,7 @@
       "eyebrow": "Stories from the quarantine",
       "title": "Four witnesses. One wound seen from different sides.",
       "intro": "The first cycle of stories introduces the people, choices and silences that shaped Julian before the game begins.",
-      "status": "Text in preparation",
+      "note": "All four stories are finished and written in Polish. English versions do not exist yet, and none of the texts are published for reading.",
       "items": [
         {
           "order": "I",
@@ -80,13 +80,13 @@
           "order": "II",
           "title": "The Volunteer",
           "original": "Dobrowolny",
-          "body": "A man enters the Holy Office believing consent will protect the meaning of his sacrifice."
+          "body": "A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him."
         },
         {
           "order": "III",
           "title": "The List of the Saved",
           "original": "Lista ocalonych",
-          "body": "A healer keeps a record of every life spared and every person quietly moved out of the way."
+          "body": "A sister running the ward records who leaves on the two carts, and who is written down as left behind."
         },
         {
           "order": "IV",
@@ -173,7 +173,7 @@
       "eyebrow": "Opowieści z kwarantanny",
       "title": "Czterech świadków. Jedna rana widziana z różnych stron.",
       "intro": "Pierwszy cykl opowiadań przedstawia ludzi, decyzje i przemilczenia, które ukształtowały Juliana przed rozpoczęciem gry.",
-      "status": "Tekst w przygotowaniu",
+      "note": "Wszystkie cztery opowiadania są ukończone i napisane po polsku. Nie udostępniamy ich jeszcze do czytania.",
       "items": [
         {
           "order": "I",
@@ -183,12 +183,12 @@
         {
           "order": "II",
           "title": "Dobrowolny",
-          "body": "Mężczyzna wchodzi do Świętego Oficjum, wierząc, że zgoda ochroni znaczenie jego ofiary."
+          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo wbrew niemu."
         },
         {
           "order": "III",
           "title": "Lista ocalonych",
-          "body": "Uzdrowicielka zapisuje każde ocalone życie i każdego człowieka po cichu odsuniętego na bok."
+          "body": "Siostra prowadząca lazaret zapisuje, kto odjedzie dwoma wozami, a kto zostaje w kaplicy."
         },
         {
           "order": "IV",

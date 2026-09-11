@@ -59,6 +59,24 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
   assertions.push([html.includes("data-intro-skip"), name + " entrance must have a skip control."]);
 }
 
+// Kolejnosc naglowkow: zaden h3 nie moze poprzedzac pierwszego h2, poniewaz
+// czytnik ekranu odczytywalby podpunkty przed ich naglowkiem nadrzednym.
+for (const [name, html] of [["English", english], ["Polish", polish]]) {
+  const levels = [...html.matchAll(/<h([1-6])[\s>]/g)].map(match => Number(match[1]));
+  let previous = 0;
+  let skipped = null;
+  for (const level of levels) {
+    if (previous && level > previous + 1) {
+      skipped = `h${previous} followed by h${level}`;
+      break;
+    }
+    previous = level;
+  }
+  assertions.push([skipped === null, `${name} heading order skips a level: ${skipped}.`]);
+  assertions.push([html.includes('class="stories__note"'), `${name} stories section is missing the single status note.`]);
+  assertions.push([!html.includes("story-card__status"), `${name} still repeats the per card status label.`]);
+}
+
 const failures = assertions.filter(([condition]) => !condition).map(([, message]) => message);
 
 if (failures.length > 0) {

@@ -2,6 +2,12 @@
   list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
   gap: clamp(1.25rem, 3vw, 3rem);
 }
+// Jedna nota o stanie tekstow zamiast tej samej etykiety powtorzonej na czterech
+// kartach. Powtorzenie mialo wage tresci, a niosla tylko informacje techniczna.
+.stories__note {
+  margin: 2.5rem auto 0; max-width: 46ch; text-align: center;
+  font: 0.82rem / 1.7 var(--font-label); letter-spacing: 0.06em; color: #b4a68b;
+}
 .story-card {
   display: flex; flex-direction: column; min-width: 0;
   &__cover {
@@ -17,13 +23,9 @@
   }
   &__content {
     padding-block: 2rem 1.25rem; flex: 1;
-    h3 { font-size: 1rem; color: #dccaab; line-height: 1.5; }
-    p { font-size: 1.1rem; color: var(--color-text-muted); margin-top: 0.8rem; }
-    .story-card__original { color: var(--color-gold); font-size: 1rem; font-style: italic; }
-  }
-  &__status {
-    border-top: 1px solid rgba(177,148,89,0.2); padding-block: 0.8rem;
-    font: 0.65rem / 1.6 var(--font-label); letter-spacing: 0.08em; color: #aaa18e;
+    h3 { font-size: 1.1rem; color: #e8d6b4; line-height: 1.45; }
+    p { font-size: 1.15rem; color: #c6bba5; margin-top: 0.8rem; }
+    .story-card__original { color: #d6c08d; font-size: 1.05rem; font-style: italic; }
   }
 }
 @media (max-width: 63.99rem) { .stories { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2.5rem 1.5rem; } }

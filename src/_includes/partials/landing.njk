@@ -27,10 +27,16 @@
 
 <section class="section section--experience" id="experience" aria-labelledby="experience-title">
   <div class="shell">
+    <div class="section-heading section-heading--center experience__statement">
+      <p class="eyebrow">{{ t.experience.eyebrow }}</p>
+      <h2 id="experience-title">{{ t.experience.title }}</h2>
+      <p>{{ t.experience.body }}</p>
+    </div>
     <ol class="vignettes" role="list">
       {% for item in t.experience.items %}
+        {% set art = moodAssets[loop.index0] %}
         <li class="vignettes__item">
-          <img class="vignettes__image" src="/assets/images/mood/scene-{{ loop.index }}.webp" width="620" height="800" alt="" loading="lazy" decoding="async">
+          <img class="vignettes__image" src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="" loading="lazy" decoding="async">
           <div class="vignettes__caption">
             <h3>{{ item.title }}</h3>
             <p>{{ item.body }}</p>
@@ -38,16 +44,11 @@
         </li>
       {% endfor %}
     </ol>
-    <div class="section-heading section-heading--center experience__statement">
-      <p class="eyebrow">{{ t.experience.eyebrow }}</p>
-      <h2 id="experience-title">{{ t.experience.title }}</h2>
-      <p>{{ t.experience.body }}</p>
-    </div>
   </div>
 </section>
 
 <section class="section world" id="world" aria-labelledby="world-title">
-  <img class="world__panorama" src="/assets/images/world/vespera.webp" width="1600" height="900" alt="" loading="lazy" decoding="async">
+  <img class="world__panorama" src="/assets/images/world/vespera.webp" width="950" height="1044" alt="" loading="lazy" decoding="async">
   <div class="shell world__inner">
     <div class="section-heading section-heading--narrow">
       <p class="eyebrow">{{ t.world.eyebrow }}</p>
@@ -78,10 +79,10 @@
             {% if story.original %}<p class="story-card__original" lang="pl">{{ story.original }}</p>{% endif %}
             <p>{{ story.body }}</p>
           </div>
-          <span class="story-card__status">{{ t.stories.status }}</span>
         </li>
       {% endfor %}
     </ol>
+    <p class="stories__note">{{ t.stories.note }}</p>
   </div>
 </section>
 
