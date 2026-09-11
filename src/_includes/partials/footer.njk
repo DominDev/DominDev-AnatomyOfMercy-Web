@@ -1,10 +1,35 @@
 <footer class="site-footer">
-  <div class="shell site-footer__inner">
-    <div>
-      <p class="site-footer__name">{{ site.name }}</p>
-      <p>{{ t.footer }}</p>
+  <div class="shell">
+    <div class="site-footer__main">
+      <div class="site-footer__identity">
+        <img class="site-footer__mark" src="/assets/images/brand/mark-176.png" width="176" height="176" alt="" loading="lazy" decoding="async">
+        <p class="site-footer__name">{{ site.name }}</p>
+        <p class="site-footer__tagline">{{ site.tagline }}</p>
+      </div>
+      <nav class="site-footer__column" aria-label="{{ t.footer.navLabel }}">
+        <p class="site-footer__heading">{{ t.footer.explore }}</p>
+        <a href="{{ homePath }}#experience">{{ t.nav.experience }}</a>
+        <a href="{{ homePath }}#world">{{ t.nav.world }}</a>
+        <a href="{{ homePath }}#stories">{{ t.nav.stories }}</a>
+        <a href="{{ homePath }}#contact">{{ t.nav.contact }}</a>
+      </nav>
+      <div class="site-footer__column">
+        <p class="site-footer__heading">{{ t.footer.contact }}</p>
+        <a class="site-footer__email" href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <p class="site-footer__status">{{ t.footer.status }}</p>
+      </div>
     </div>
-    <button class="site-footer__replay" type="button" data-intro-replay>{{ t.loader.replay }}</button>
-    <p class="site-footer__copyright">Copyright {{ site.year }} DominDev. All rights reserved.</p>
+    <div class="site-footer__bottom">
+      <p class="site-footer__copyright">
+        Copyright {{ site.year }}
+        <a href="{{ site.studioUrl }}" target="_blank" rel="noopener noreferrer">DominDev</a>.
+        {{ t.footer.rights }}
+      </p>
+      <nav class="language-switcher language-switcher--footer" aria-label="{{ t.languageLabel }}">
+        <a href="/" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>
+        <span aria-hidden="true">/</span>
+        <a href="/pl/" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
+      </nav>
+    </div>
   </div>
 </footer>

@@ -2,7 +2,8 @@
   "en": {
     "meta": {
       "title": "Anatomy of Mercy | Every cure leaves a scar",
-      "description": "A dark first-person game about plague medicine, faith and the price of saving a life."
+      "description": "A dark first-person game about plague medicine, faith and the price of saving a life.",
+      "imageAlt": "A masked physician with a lantern stands above the quarantined city of Vespera."
     },
     "skip": "Skip to main content",
     "brandLabel": "Anatomy of Mercy home page",
@@ -18,19 +19,18 @@
     "languageLabel": "Language",
     "loader": {
       "statuses": [
-        "Lighting the lantern",
-        "Preparing the instruments",
-        "Opening the gates of Vespera"
+        "A few windows are still lit behind the gate.",
+        "Ash settles on the doors that were sealed first.",
+        "Vespera lets you in. It rarely lets anyone leave unchanged."
       ],
       "label": "Entering Vespera",
       "invitation": "Beyond these gates",
-      "skip": "Enter now",
-      "replay": "Experience the entrance again"
+      "skip": "Enter now"
     },
+    "backToTop": "Back to the top of the page",
     "hero": {
       "eyebrow": "A dark fantasy game · In development",
-      "figure": "Julian | Plague doctor",
-      "lead": "Become an outcast plague doctor. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
+      "lead": "Become an outcast physician in a city sealed by quarantine. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
       "primary": "Enter the world",
       "secondary": "Discover the stories",
       "scroll": "Beyond the cure",
@@ -68,7 +68,7 @@
       "eyebrow": "Stories from the quarantine",
       "title": "Four witnesses. One wound seen from different sides.",
       "intro": "The first cycle of stories introduces the people, choices and silences that shaped Julian before the game begins.",
-      "status": "Text in preparation",
+      "note": "All four stories are finished and written in Polish. English versions do not exist yet, and none of the texts are published for reading.",
       "items": [
         {
           "order": "I",
@@ -80,13 +80,13 @@
           "order": "II",
           "title": "The Volunteer",
           "original": "Dobrowolny",
-          "body": "A man enters the Holy Office believing consent will protect the meaning of his sacrifice."
+          "body": "A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him."
         },
         {
           "order": "III",
           "title": "The List of the Saved",
           "original": "Lista ocalonych",
-          "body": "A healer keeps a record of every life spared and every person quietly moved out of the way."
+          "body": "A sister running the ward records who leaves on the two carts, and who is written down as left behind."
         },
         {
           "order": "IV",
@@ -102,12 +102,19 @@
       "body": "There is no release date yet. For publishing, press and project enquiries, write to us directly.",
       "action": "Contact the project"
     },
-    "footer": "A game about what remains after the right decision fails."
+    "footer": {
+      "navLabel": "Footer navigation",
+      "explore": "The site",
+      "contact": "Contact",
+      "status": "In development. No release date announced.",
+      "rights": "All rights reserved."
+    }
   },
   "pl": {
     "meta": {
       "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
-      "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia."
+      "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia.",
+      "imageAlt": "Zamaskowany lekarz z latarnią stoi nad objętym kwarantanną miastem Vespera."
     },
     "skip": "Przejdź do głównej treści",
     "brandLabel": "Anatomy of Mercy, strona główna",
@@ -123,19 +130,18 @@
     "languageLabel": "Język",
     "loader": {
       "statuses": [
-        "Zapalamy latarnię",
-        "Przygotowujemy instrumenty",
-        "Otwieramy bramy Vespery"
+        "Za bramą pali się jeszcze kilka okien.",
+        "Popiół osiada na drzwiach zamkniętych najwcześniej.",
+        "Vespera wpuszcza cię do środka. Rzadko wypuszcza kogoś takim samym."
       ],
       "label": "Wejście do Vespery",
       "invitation": "Za tymi bramami",
-      "skip": "Wejdź teraz",
-      "replay": "Przeżyj wejście ponownie"
+      "skip": "Wejdź teraz"
     },
+    "backToTop": "Powrót na górę strony",
     "hero": {
-      "eyebrow": "Mroczne dark fantasy · Gra w produkcji",
-      "figure": "Julian | Doktor plagi",
-      "lead": "Wciel się w wyklętego doktora plagi. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
+      "eyebrow": "Dark fantasy · Gra w produkcji",
+      "lead": "Wciel się w wyklętego lekarza w mieście zamkniętym kwarantanną. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
       "primary": "Wejdź do świata",
       "secondary": "Poznaj opowiadania",
       "scroll": "Po drugiej stronie ratunku",
@@ -173,7 +179,7 @@
       "eyebrow": "Opowieści z kwarantanny",
       "title": "Czterech świadków. Jedna rana widziana z różnych stron.",
       "intro": "Pierwszy cykl opowiadań przedstawia ludzi, decyzje i przemilczenia, które ukształtowały Juliana przed rozpoczęciem gry.",
-      "status": "Tekst w przygotowaniu",
+      "note": "Wszystkie cztery opowiadania są ukończone i napisane po polsku. Nie udostępniamy ich jeszcze do czytania.",
       "items": [
         {
           "order": "I",
@@ -183,12 +189,12 @@
         {
           "order": "II",
           "title": "Dobrowolny",
-          "body": "Mężczyzna wchodzi do Świętego Oficjum, wierząc, że zgoda ochroni znaczenie jego ofiary."
+          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo wbrew niemu."
         },
         {
           "order": "III",
           "title": "Lista ocalonych",
-          "body": "Uzdrowicielka zapisuje każde ocalone życie i każdego człowieka po cichu odsuniętego na bok."
+          "body": "Siostra prowadząca lazaret zapisuje, kto odjedzie dwoma wozami, a kto zostaje w kaplicy."
         },
         {
           "order": "IV",
@@ -203,6 +209,12 @@
       "body": "Nie ogłaszamy jeszcze daty premiery. W sprawach wydawniczych, medialnych i dotyczących projektu napisz do nas bezpośrednio.",
       "action": "Skontaktuj się z projektem"
     },
-    "footer": "Gra o tym, co zostaje, kiedy słuszna decyzja zawodzi."
+    "footer": {
+      "navLabel": "Nawigacja w stopce",
+      "explore": "Strona",
+      "contact": "Kontakt",
+      "status": "Gra w produkcji. Bez ogłoszonej daty premiery.",
+      "rights": "Wszelkie prawa zastrzeżone."
+    }
   }
 }

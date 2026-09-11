@@ -1,0 +1,48 @@
+// Strona bledu jest samodzielna: nie korzysta z layoutu, zeby dzialac nawet
+// wtedy, gdy zawiedzie cokolwiek innego. Dlatego ma wlasne, kompletne style.
+.error-page {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  margin: 0;
+  padding: var(--frame-inset);
+  background: radial-gradient(ellipse at 50% 40%, #15110c 0%, #0b0907 45%, #070605 100%);
+  color: var(--color-text);
+
+  &::before {
+    position: fixed;
+    inset: var(--frame-inset);
+    border: 1px solid var(--frame-color);
+    pointer-events: none;
+    content: "";
+  }
+
+  &__content {
+    max-width: 34rem;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    text-align: center;
+
+    h1 {
+      margin-bottom: 0.75rem;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      color: #e6d7b6;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+      color: var(--color-text-muted);
+      font-size: 1.15rem;
+    }
+
+    .button {
+      margin-top: 2.25rem;
+    }
+  }
+
+  &__divider {
+    width: 7rem;
+    height: 1px;
+    margin: 1.75rem auto;
+    background: linear-gradient(90deg, transparent, var(--frame-color), transparent);
+  }
+}

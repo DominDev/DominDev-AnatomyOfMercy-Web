@@ -1,17 +1,25 @@
 <header class="site-header" data-site-header>
   <div class="site-header__inner">
     <a class="site-header__brand" href="{{ homePath }}" aria-label="{{ t.brandLabel }}">
-      <svg class="site-header__sigil" viewBox="0 0 40 40" aria-hidden="true">
-        <circle cx="20" cy="20" r="12"/><circle cx="20" cy="20" r="9"/>
-        <path d="M20 1v38M1 20h38M20 7l3 13-3 13-3-13z"/>
-      </svg>
+      <img class="site-header__mark" src="/assets/images/brand/mark-176.png" width="176" height="176" alt="" decoding="async">
       <span>Anatomy of Mercy</span>
     </a>
     <nav class="site-header__navigation" id="primary-navigation" aria-label="{{ t.navLabel }}" data-navigation>
-      <a href="#experience">{{ t.nav.experience }}</a>
-      <a href="#world">{{ t.nav.world }}</a>
-      <a href="#stories">{{ t.nav.stories }}</a>
-      <a href="#contact">{{ t.nav.contact }}</a>
+      <div class="site-header__links">
+        <a href="#experience">{{ t.nav.experience }}</a>
+        <a href="#world">{{ t.nav.world }}</a>
+        <a href="#stories">{{ t.nav.stories }}</a>
+        <a href="#contact">{{ t.nav.contact }}</a>
+      </div>
+      <div class="site-header__panel-foot">
+        <p class="site-header__panel-tagline">{{ site.tagline }}</p>
+        <a class="site-header__panel-email" href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <nav class="language-switcher site-header__panel-language" aria-label="{{ t.languageLabel }}">
+          <a href="/" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>
+          <span aria-hidden="true">/</span>
+          <a href="/pl/" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
+        </nav>
+      </div>
     </nav>
     <nav class="language-switcher" aria-label="{{ t.languageLabel }}">
       <a href="/" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>

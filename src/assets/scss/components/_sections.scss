@@ -1,9 +1,11 @@
-.section { position: relative; padding-block: clamp(4.5rem, 8vw, 8rem); }
+// Odstepy miedzy sekcjami skrocono, bo przy poprzednich wartosciach powstawaly
+// pasy pustej czerni na wysokosc polowy ekranu.
+.section { position: relative; padding-block: clamp(4rem, 6.5vw, 6.5rem); }
 .section-heading {
   max-width: var(--text-width);
   margin-bottom: var(--space-6);
-  h2 { color: #dccba7; }
-  p:not(.eyebrow) { margin-top: 1.5rem; color: var(--color-text-muted); max-width: 48ch; }
+  h2 { color: #e6d7b6; }
+  p:not(.eyebrow) { margin-top: 1.5rem; color: var(--color-text-muted); max-width: 48ch; font-size: 1.1rem; }
   &--center {
     text-align: center; margin-inline: auto;
     h2, p { margin-inline: auto; }
@@ -11,9 +13,9 @@
   &--narrow { max-width: 34rem; }
 }
 .eyebrow {
-  color: var(--color-gold);
-  font: 500 0.7rem / 1.7 var(--font-label);
-  letter-spacing: 0.18em;
+  color: #d6c08d;
+  font: 500 0.78rem / 1.7 var(--font-label);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   margin-bottom: 1.25rem;
 }
@@ -22,8 +24,10 @@
   &__item {
     position: relative; isolation: isolate; min-height: 21rem;
     border: 1px solid rgba(174,143,84,0.55); background: #15120e;
+    // Wewnetrzna ramka zostaje, ale slabnie: przy poprzedniej sile kazda sekcja
+    // czytala sie jako kolejny prostokat, a ornament zaczynal udawac layout.
     &::before {
-      z-index: 2; position: absolute; inset: 5px; border: 1px solid rgba(188,161,103,0.26);
+      z-index: 2; position: absolute; inset: 5px; border: 1px solid rgba(188,161,103,0.14);
       pointer-events: none; content: "";
     }
     &::after {
@@ -35,8 +39,8 @@
   &__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
   &__caption {
     position: relative; z-index: 1; height: 100%; padding: 13rem 1.25rem 1.75rem; text-align: center;
-    h3 { font-size: clamp(0.9rem, 1.2vw, 1.1rem); color: #e1cfaa; letter-spacing: 0.05em; }
-    p { margin: 0.85rem auto 0; max-width: 23ch; font-size: 1rem; line-height: 1.45; color: #c1b297; }
+    h3 { font-size: clamp(1rem, 1.25vw, 1.15rem); color: #ecdcb7; letter-spacing: 0.04em; }
+    p { margin: 0.85rem auto 0; max-width: 23ch; font-size: 1.08rem; line-height: 1.45; color: #cfc2a6; }
   }
 }
 @media (max-width: 63.99rem) {

@@ -11,7 +11,18 @@
     <meta property="og:description" content="{{ t.meta.description }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ locale }}">
+    <meta property="og:site_name" content="{{ site.name }}">
     <meta property="og:url" content="{{ site.url }}{{ canonicalPath }}">
+    <meta property="og:image" content="{{ site.url }}/assets/images/social/og-1200x630.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ t.meta.imageAlt }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ t.meta.title }}">
+    <meta name="twitter:description" content="{{ t.meta.description }}">
+    <meta name="twitter:image" content="{{ site.url }}/assets/images/social/og-1200x630.jpg">
+    <meta name="twitter:image:alt" content="{{ t.meta.imageAlt }}">
     <link rel="canonical" href="{{ site.url }}{{ canonicalPath }}">
     <link rel="alternate" hreflang="en" href="{{ site.url }}/">
     <link rel="alternate" hreflang="pl" href="{{ site.url }}/pl/">
@@ -24,9 +35,9 @@
       (() => {
         const root = document.documentElement;
         root.classList.add("js");
-        let seen = false;
-        try { seen = sessionStorage.getItem("aom-intro-v2-seen") === "true"; } catch {}
-        if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // The entrance plays on every load. It is part of the experience, not a
+        // loading screen, so it is not remembered per session.
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
           root.classList.add("intro-pending");
           // Release the page even if the deferred script fails to load.
           window.aomIntroFailsafe = setTimeout(() => {
@@ -52,5 +63,11 @@
       {{ content | safe }}
     </main>
     {% include "partials/footer.njk" %}
+    <button class="to-top" type="button" data-to-top aria-label="{{ t.backToTop }}" title="{{ t.backToTop }}">
+      <svg viewBox="0 0 24 28" aria-hidden="true" focusable="false">
+        <path d="M12 3l4 5.6-4 5.6-4-5.6z M12 21.4l1.5 2.2-1.5 2.2-1.5-2.2z"/>
+        <path d="M12 11v13.4"/>
+      </svg>
+    </button>
   </body>
 </html>

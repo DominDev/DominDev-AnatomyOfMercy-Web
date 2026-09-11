@@ -1,0 +1,22 @@
+[
+  {
+    "src": "/assets/images/mood/scene-1.webp",
+    "width": 800,
+    "height": 1000
+  },
+  {
+    "src": "/assets/images/mood/scene-2.webp",
+    "width": 800,
+    "height": 1000
+  },
+  {
+    "src": "/assets/images/mood/scene-3.webp",
+    "width": 800,
+    "height": 1000
+  },
+  {
+    "src": "/assets/images/mood/scene-4.webp",
+    "width": 800,
+    "height": 1000
+  }
+]
