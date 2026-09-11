@@ -125,6 +125,26 @@ for (const [language, tree] of [["English", translations.en], ["Polish", transla
   assertions.push([empty.length === 0, `${language} has empty strings: ${empty.join(", ")}`]);
 }
 
+// Nakladka menu mobilnego jest potomkiem naglowka i ma pozycje fixed. Kazda z
+// ponizszych wlasciwosci ustawiona na samym naglowku czyni go blokiem
+// zawierajacym dla takich potomkow, przez co nakladka przestaje wymiarowac sie
+// do okna i zwija sie do rozmiaru paska. Tlo i rozmycie naleza do pseudoelementu.
+const styles = fs.readFileSync(path.resolve("dist/assets/css/main.css"), "utf8");
+const containingBlockProperties = ["backdrop-filter", "filter", "transform", "perspective", "will-change", "contain"];
+const headerRules = [...styles.matchAll(/([^{}]+)\{([^}]*)\}/g)].filter(([, selectors]) =>
+  selectors.split(",").some(selector => /(^|\s)\.site-header$/.test(selector.trim()))
+);
+
+for (const [, selectors, declarations] of headerRules) {
+  for (const property of containingBlockProperties) {
+    const offending = new RegExp(`(^|;)\\s*${property}\\s*:`).test(declarations);
+    assertions.push([
+      !offending,
+      `"${selectors.trim()}" sets ${property}, which would make the header a containing block for the fixed mobile menu overlay. Move it to .site-header::before.`
+    ]);
+  }
+}
+
 const failures = assertions.filter(([condition]) => !condition).map(([, message]) => message);
 
 if (failures.length > 0) {

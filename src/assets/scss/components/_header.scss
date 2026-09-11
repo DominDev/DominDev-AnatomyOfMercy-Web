@@ -5,11 +5,22 @@
   left: calc(var(--frame-inset) + 6px);
   right: calc(var(--frame-inset) + 6px);
   color: var(--color-gold);
-  // W pozycji podstawowej pasek ma wlasne, delikatne tlo. Skok z pelnej
-  // przezroczystosci wprost w czern byl przy przewijaniu zbyt gwaltowny.
-  background: linear-gradient(180deg, rgba(9, 8, 7, .6), rgba(9, 8, 7, .32) 62%, rgba(9, 8, 7, .1));
-  backdrop-filter: blur(3px);
-  transition: background 320ms ease, box-shadow 320ms ease, backdrop-filter 320ms ease;
+  transition: box-shadow 320ms ease;
+
+  // Tlo i rozmycie siedza na pseudoelemencie, nie na samym pasku. Wlasciwosc
+  // backdrop-filter czyni z elementu blok zawierajacy dla potomkow o pozycji
+  // fixed, a nakladka menu jest wlasnie takim potomkiem i przestalaby sie
+  // wymiarowac do okna.
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(9, 8, 7, .6), rgba(9, 8, 7, .32) 62%, rgba(9, 8, 7, .1));
+    backdrop-filter: blur(3px);
+    transition: background 320ms ease, backdrop-filter 320ms ease;
+    pointer-events: none;
+    content: "";
+  }
   &__inner {
     min-height: 4.75rem;
     padding-inline: clamp(0.75rem, 2vw, 2.5rem);
@@ -64,9 +75,11 @@
 }
 .js .site-header { position: fixed; }
 .site-header--scrolled, .site-header--menu-open {
+  box-shadow: 0 1px 0 rgba(177, 148, 89, 0.3), 0 10px 24px rgba(0,0,0,0.2);
+}
+.site-header--scrolled::before, .site-header--menu-open::before {
   background: rgba(9, 8, 7, 0.93);
   backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 rgba(177, 148, 89, 0.3), 0 10px 24px rgba(0,0,0,0.2);
 }
 .language-switcher {
   display: flex; gap: 0.15rem; align-items: center;
