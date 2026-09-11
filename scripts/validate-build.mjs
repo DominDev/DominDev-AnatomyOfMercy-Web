@@ -40,13 +40,57 @@ const assertions = [
 // Wydanie podgladowe wskazuje samo siebie jako adres kanoniczny, wiec nie moze
 // byc indeksowane. Inaczej w wynikach wyszukiwania stanelyby dwie strony o tej
 // samej tresci, a ta pod adresem roboczym przetrwalaby publikacje domeny.
-const robots = fs.readFileSync(path.resolve("dist/robots.txt"), "utf8");
-assertions.push([
-  site.isProduction ? robots.includes("Allow: /") : robots.includes("Disallow: /"),
-  site.isProduction
-    ? "Production robots.txt must allow indexing."
-    : `Non production build at ${site.url} must disallow indexing in robots.txt.`
-]);
+// Sprawdzamy grupe, a nie samo wystapienie slowa w pliku. Wydanie podgladowe
+// zawiera i "Allow: /", i "Disallow: /", wiec wyszukiwanie tekstu przepuscilo by
+// odwrocona regule.
+function parseRobots(text) {
+  const groups = [];
+  let current = null;
+  for (const raw of text.split("\n")) {
+    const line = raw.replace(/#.*$/, "").trim();
+    if (line === "") continue;
+    const [field, ...rest] = line.split(":");
+    const key = field.trim().toLowerCase();
+    const value = rest.join(":").trim();
+    if (key === "user-agent") {
+      if (!current || current.rules.length > 0) {
+        current = { agents: [], rules: [] };
+        groups.push(current);
+      }
+      current.agents.push(value.toLowerCase());
+    } else if (current) {
+      current.rules.push(`${key}: ${value}`);
+    }
+  }
+  return groups;
+}
+
+const robotGroups = parseRobots(fs.readFileSync(path.resolve("dist/robots.txt"), "utf8"));
+const everyone = robotGroups.find(group => group.agents.includes("*"));
+
+assertions.push([Boolean(everyone), "robots.txt is missing a group for every user agent."]);
+
+if (everyone) {
+  if (site.isProduction) {
+    assertions.push([
+      everyone.rules.includes("allow: /") && !everyone.rules.includes("disallow: /"),
+      "Production robots.txt must allow indexing for every user agent."
+    ]);
+  } else {
+    assertions.push([
+      everyone.rules.includes("disallow: /") && !everyone.rules.includes("allow: /"),
+      `Non production build at ${site.url} must disallow indexing for every user agent.`
+    ]);
+    // Roboty kafelka linku musza przejsc, inaczej nie da sie sprawdzic podgladu
+    // w komunikatorach. Messenger korzysta z facebookexternalhit, ktory ten plik
+    // respektuje, wiec bez wyjatku karta linku nie powstaje.
+    const preview = robotGroups.find(group => group.agents.includes("facebookexternalhit"));
+    assertions.push([
+      Boolean(preview) && preview.rules.includes("allow: /"),
+      "Non production robots.txt must let facebookexternalhit through, or the link preview cannot be checked."
+    ]);
+  }
+}
 
 const contentAssertions = [
   [!/<h[1-3][^>]*>\s*<\/h[1-3]>/.test(english), "English page contains an empty heading."],

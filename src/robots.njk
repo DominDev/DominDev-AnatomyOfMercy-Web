@@ -2,5 +2,27 @@
 permalink: /robots.txt
 eleventyExcludeFromCollections: true
 ---
+{%- if site.isProduction -%}
 User-agent: *
-{% if site.isProduction %}Allow: /{% else %}Disallow: /{% endif %}
+Allow: /
+{%- else -%}
+# Wydanie podgladowe. Wskazuje samo siebie jako adres kanoniczny, wiec nie moze
+# trafic do wyszukiwarek obok wlasciwej strony.
+#
+# Wyjatkiem sa roboty budujace kafelek linku w komunikatorach. Niczego nie
+# indeksuja, tylko pobieraja strone, zeby odczytac Open Graph. Bez tego wyjatku
+# nie da sie sprawdzic podgladu linku, a to jest kryterium ukonczenia MVP.
+# Messenger i WhatsApp korzystaja z facebookexternalhit, ktory respektuje ten
+# plik. Discord swojego robota tu nie sprawdza i dziala niezaleznie od regul.
+#
+# Robot dopasowuje sie do najbardziej szczegolowej grupy, wiec ponizsze cztery
+# nazwy pomijaja calkowicie grupe z gwiazdka.
+User-agent: facebookexternalhit
+User-agent: Twitterbot
+User-agent: LinkedInBot
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: *
+Disallow: /
+{%- endif %}
