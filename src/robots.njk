@@ -1,0 +1,6 @@
+---
+permalink: /robots.txt
+eleventyExcludeFromCollections: true
+---
+User-agent: *
+{% if site.isProduction %}Allow: /{% else %}Disallow: /{% endif %}

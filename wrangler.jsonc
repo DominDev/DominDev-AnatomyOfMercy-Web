@@ -1,0 +1,17 @@
+{
+  // Worker bez kodu, serwujacy wylacznie statyczne zasoby. Pole "main" jest w
+  // takim ukladzie opcjonalne, zgodnie z dokumentacja Wranglera.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "anatomyofmercy-web",
+  "compatibility_date": "2026-09-11",
+  "assets": {
+    // Katalog budowany przez `npm run build`. Nie jest w repozytorium.
+    "directory": "./dist",
+    // Adresy stron sa katalogowe: / oraz /pl/. Ta wartosc utrzymuje koncowy
+    // ukosnik i zapobiega rozjazdowi z adresem kanonicznym.
+    "html_handling": "auto-trailing-slash",
+    // Brak dopasowania oddaje wlasna, ostylowana i dwujezyczna strone 404
+    // wraz z kodem 404, zamiast pustej odpowiedzi krawedzi.
+    "not_found_handling": "404-page"
+  }
+}

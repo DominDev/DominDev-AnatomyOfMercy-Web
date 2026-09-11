@@ -145,6 +145,12 @@ npm run check
 
 Production output is written to `dist/`. That directory is generated and must never be edited or committed.
 
+**Deployment**
+
+The site is served by a Cloudflare Worker with Static Assets and no Worker code, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push.
+
+The canonical address comes from the `SITE_URL` environment variable and falls back to the production domain when the variable is absent. A build with `SITE_URL` set describes itself in its canonical, Open Graph and hreflang tags, and its `robots.txt` switches to `Disallow: /` so a preview deployment can never be indexed alongside the real site. Build validation enforces both halves of that rule.
+
 **Contributing and content rules**
 
 This is not an open source project and pull requests are not expected. If you found a genuine problem with the site, the email above is the right way to reach us.

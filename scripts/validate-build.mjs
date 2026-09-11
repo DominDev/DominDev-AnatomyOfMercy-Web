@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// Ten sam modul, z ktorego korzysta budowanie, wiec kontrola sprawdza adres
+// faktycznie uzyty w wydaniu, a nie zaszyta na sztywno domene produkcyjna.
+import site from "../src/_data/site.js";
+
 const requiredFiles = [
   "dist/index.html",
   "dist/pl/index.html",
@@ -28,9 +32,21 @@ const assertions = [
   [polish.includes('<html lang="pl">'), "Polish page is missing lang=pl."],
   [english.includes('hreflang="pl"'), "English page is missing the Polish alternate."],
   [polish.includes('hreflang="en"'), "Polish page is missing the English alternate."],
-  [english.includes('https://anatomyofmercy.com/'), "English canonical URL is missing."],
-  [polish.includes('https://anatomyofmercy.com/pl/'), "Polish canonical URL is missing."]
+  [english.includes(`<link rel="canonical" href="${site.url}/">`), `English canonical URL is missing or is not ${site.url}/.`],
+  [polish.includes(`<link rel="canonical" href="${site.url}/pl/">`), `Polish canonical URL is missing or is not ${site.url}/pl/.`],
+  [!/^https?:\/\/[^/]+\/$/.test(site.url) && !site.url.endsWith("/"), `Site URL must not end with a slash: ${site.url}`]
 ];
+
+// Wydanie podgladowe wskazuje samo siebie jako adres kanoniczny, wiec nie moze
+// byc indeksowane. Inaczej w wynikach wyszukiwania stanelyby dwie strony o tej
+// samej tresci, a ta pod adresem roboczym przetrwalaby publikacje domeny.
+const robots = fs.readFileSync(path.resolve("dist/robots.txt"), "utf8");
+assertions.push([
+  site.isProduction ? robots.includes("Allow: /") : robots.includes("Disallow: /"),
+  site.isProduction
+    ? "Production robots.txt must allow indexing."
+    : `Non production build at ${site.url} must disallow indexing in robots.txt.`
+]);
 
 const contentAssertions = [
   [!/<h[1-3][^>]*>\s*<\/h[1-3]>/.test(english), "English page contains an empty heading."],
@@ -61,7 +77,7 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
   const image = html.match(/property="og:image" content="([^"]+)"/);
   assertions.push([Boolean(image), name + " page is missing og:image."]);
   if (image) {
-    const local = image[1].replace("https://anatomyofmercy.com", "");
+    const local = image[1].replace(site.url, "");
     assertions.push([fs.existsSync(path.join("dist", local)), name + " og:image file is missing: " + local]);
   }
   assertions.push([html.includes('name="twitter:card"'), name + " page is missing the Twitter card type."]);
