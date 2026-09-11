@@ -1,0 +1,56 @@
+{% set t = i18n[lang] %}
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090807">
+    <meta name="color-scheme" content="dark">
+    <meta name="description" content="{{ t.meta.description }}">
+    <meta property="og:title" content="{{ t.meta.title }}">
+    <meta property="og:description" content="{{ t.meta.description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="{{ locale }}">
+    <meta property="og:url" content="{{ site.url }}{{ canonicalPath }}">
+    <link rel="canonical" href="{{ site.url }}{{ canonicalPath }}">
+    <link rel="alternate" hreflang="en" href="{{ site.url }}/">
+    <link rel="alternate" hreflang="pl" href="{{ site.url }}/pl/">
+    <link rel="alternate" hreflang="x-default" href="{{ site.url }}/">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add("js");
+        let seen = false;
+        try { seen = sessionStorage.getItem("aom-intro-v2-seen") === "true"; } catch {}
+        if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          root.classList.add("intro-pending");
+          // Release the page even if the deferred script fails to load.
+          window.aomIntroFailsafe = setTimeout(() => {
+            root.classList.remove("intro-pending");
+            document.querySelectorAll("[data-intro-inert]").forEach(node => {
+              node.inert = false;
+              node.removeAttribute("data-intro-inert");
+            });
+          }, 8500);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script src="/assets/js/main.js" defer></script>
+    <title>{{ t.meta.title }}</title>
+  </head>
+  <body class="page">
+    {% include "partials/preloader.njk" %}
+    {% include "partials/frame.njk" %}
+    <a class="skip-link" href="#main-content">{{ t.skip }}</a>
+    {% include "partials/header.njk" %}
+    <main id="main-content" tabindex="-1">
+      {{ content | safe }}
+    </main>
+    {% include "partials/footer.njk" %}
+  </body>
+</html>

@@ -1,0 +1,101 @@
+{% set t = i18n[lang] %}
+<section class="hero" aria-labelledby="hero-title">
+  <picture class="hero__artwork" aria-hidden="true">
+    <source media="(max-width: 48rem)" srcset="/assets/images/hero/vespera-doctor-1100.webp">
+    <img class="hero__scene" src="/assets/images/hero/vespera-doctor.webp" width="1672" height="941" alt="" fetchpriority="high">
+  </picture>
+  <div class="hero__atmosphere" aria-hidden="true"></div>
+  <div class="shell hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow">{{ t.hero.eyebrow }}</p>
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__title-line">Anatomy</span>
+        <span class="hero__title-line"><em>of</em> Mercy</span>
+      </h1>
+      <p class="hero__tagline">{{ site.tagline }}</p>
+      <div class="hero__rule" aria-hidden="true"><span></span></div>
+      <p class="hero__lead">{{ t.hero.lead }}</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="#world">{{ t.hero.primary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--secondary" href="#stories">{{ t.hero.secondary }}</a>
+      </div>
+    </div>
+  </div>
+  <a class="hero__scroll" href="#experience"><span></span>{{ t.hero.scroll }}</a>
+  <p class="hero__side-note" aria-hidden="true">Vespera · {{ t.hero.sideNote }}</p>
+</section>
+
+<section class="section section--experience" id="experience" aria-labelledby="experience-title">
+  <div class="shell">
+    <ol class="vignettes" role="list">
+      {% for item in t.experience.items %}
+        <li class="vignettes__item">
+          <img class="vignettes__image" src="/assets/images/mood/scene-{{ loop.index }}.webp" width="620" height="800" alt="" loading="lazy" decoding="async">
+          <div class="vignettes__caption">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.body }}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+    <div class="section-heading section-heading--center experience__statement">
+      <p class="eyebrow">{{ t.experience.eyebrow }}</p>
+      <h2 id="experience-title">{{ t.experience.title }}</h2>
+      <p>{{ t.experience.body }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="section world" id="world" aria-labelledby="world-title">
+  <img class="world__panorama" src="/assets/images/world/vespera.webp" width="1600" height="900" alt="" loading="lazy" decoding="async">
+  <div class="shell world__inner">
+    <div class="section-heading section-heading--narrow">
+      <p class="eyebrow">{{ t.world.eyebrow }}</p>
+      <h2 id="world-title">{{ t.world.title }}</h2>
+      <p>{{ t.world.body }}</p>
+      <a class="button button--secondary" href="#stories">{{ t.hero.secondary }} <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--stories" id="stories" aria-labelledby="stories-title">
+  <div class="shell">
+    <div class="section-heading section-heading--center">
+      <p class="eyebrow">{{ t.stories.eyebrow }}</p>
+      <h2 id="stories-title">{{ t.stories.title }}</h2>
+      <p>{{ t.stories.intro }}</p>
+    </div>
+    <ol class="stories" role="list">
+      {% for story in t.stories.items %}
+        {% set art = storyAssets[loop.index0] %}
+        <li class="story-card">
+          <div class="story-card__cover">
+            <img src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="" loading="lazy" decoding="async">
+            <span class="story-card__index" aria-hidden="true">{{ story.order }}</span>
+          </div>
+          <div class="story-card__content">
+            <h3>{{ story.title }}</h3>
+            {% if story.original %}<p class="story-card__original" lang="pl">{{ story.original }}</p>{% endif %}
+            <p>{{ story.body }}</p>
+          </div>
+          <span class="story-card__status">{{ t.stories.status }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="shell contact__inner">
+    <div class="contact__portrait" aria-hidden="true"><img src="/assets/images/brand/doctor.webp" width="900" height="900" alt="" loading="lazy" decoding="async"></div>
+    <div class="contact__copy">
+    <div class="section-heading section-heading--narrow">
+      <p class="eyebrow">{{ t.contact.eyebrow }}</p>
+      <h2 id="contact-title">{{ t.contact.title }}</h2>
+      <p>{{ t.contact.body }}</p>
+    </div>
+    <a class="button button--primary" href="mailto:{{ site.email }}">{{ t.contact.action }}</a>
+    <a class="contact__email" href="mailto:{{ site.email }}">{{ site.email }}</a>
+    </div>
+  </div>
+</section>

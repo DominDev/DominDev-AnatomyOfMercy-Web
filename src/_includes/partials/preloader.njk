@@ -1,0 +1,24 @@
+<div class="preloader" data-preloader role="dialog" aria-modal="true" aria-label="{{ t.loader.label }}" aria-hidden="true">
+  <div class="preloader__inner">
+    <svg class="preloader__sigil" viewBox="0 0 200 200" aria-hidden="true">
+      <circle class="preloader__ring preloader__ring--outer" pathLength="1" cx="100" cy="100" r="86"/>
+      <circle class="preloader__ring preloader__ring--inner" pathLength="1" cx="100" cy="100" r="72"/>
+      <path class="preloader__cardinals" d="M100 8l4 12-4 12-4-12z M100 192l4-12-4-12-4 12z M8 100l12 4 12-4-12-4z M192 100l-12 4-12-4 12-4z"/>
+      <line class="preloader__cross" pathLength="1" x1="100" y1="34" x2="100" y2="166"/>
+      <line class="preloader__cross" pathLength="1" x1="34" y1="100" x2="166" y2="100"/>
+      <circle class="preloader__cross" pathLength="1" cx="100" cy="100" r="18"/>
+      <path class="preloader__gem" d="M100 70l7 12-7 12-7-12z"/>
+    </svg>
+    <p class="preloader__invitation">{{ t.loader.invitation }}</p>
+    <p class="preloader__name">Anatomy <em>of</em> Mercy</p>
+    <div class="preloader__track" aria-hidden="true"><span></span></div>
+    <p
+      class="preloader__status"
+      data-preloader-status
+      data-status-one="{{ t.loader.statuses[0] }}"
+      data-status-two="{{ t.loader.statuses[1] }}"
+      data-status-three="{{ t.loader.statuses[2] }}"
+    >{{ t.loader.statuses[0] }}</p>
+  </div>
+  <button class="preloader__skip" type="button" data-intro-skip>{{ t.loader.skip }} <span aria-hidden="true">↗</span></button>
+</div>

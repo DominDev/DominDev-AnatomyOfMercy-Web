@@ -1,0 +1,27 @@
+html {
+  background: var(--color-ink);
+  font-size: 100%;
+  scrollbar-gutter: stable;
+}
+body {
+  min-width: 20rem;
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3 {
+  font-family: var(--font-label);
+  font-weight: 500;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+h2 { max-width: 22ch; font-size: clamp(1.85rem, 3.2vw, 3.25rem); }
+h3 { font-size: 1.15rem; }
+p { text-wrap: pretty; }
+:target { scroll-margin-top: 8rem; }
+:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 6px; }
+#main-content:focus { outline: none; }
+::selection { background: var(--color-crimson); color: #fff; }

@@ -1,0 +1,37 @@
+.page-frame {
+  position: fixed;
+  z-index: 40;
+  inset: var(--frame-inset);
+  border: 1px solid var(--frame-color);
+  pointer-events: none;
+  &::before {
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(177, 148, 89, 0.14);
+    content: "";
+  }
+  &__ornament {
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    background: var(--color-ink);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1l1.5 8L23 12l-9.5 1.5L12 23l-1.5-9.5L1 12l9.5-3z' fill='%23b49b64'/%3E%3Cpath d='M12 6v12M6 12h12' stroke='%23e0cca0' stroke-width='.6'/%3E%3C/svg%3E");
+  }
+  &__ornament--top-left { top: -12px; left: -12px; }
+  &__ornament--top-right { top: -12px; right: -12px; }
+  &__ornament--bottom-left { bottom: -12px; left: -12px; }
+  &__ornament--bottom-right { bottom: -12px; right: -12px; }
+  &__ornament--top-center, &__ornament--bottom-center {
+    left: 50%; width: 15px; height: 15px; transform: translateX(-50%);
+  }
+  &__ornament--top-center { top: -8px; }
+  &__ornament--bottom-center { bottom: -8px; }
+}
+@media (max-width: 47.99rem) {
+  .page-frame__ornament { width: 15px; height: 15px; }
+  .page-frame__ornament--top-left { top: -8px; left: -8px; }
+  .page-frame__ornament--top-right { top: -8px; right: -8px; }
+  .page-frame__ornament--bottom-left { bottom: -8px; left: -8px; }
+  .page-frame__ornament--bottom-right { bottom: -8px; right: -8px; }
+  .page-frame__ornament--top-center, .page-frame__ornament--bottom-center { display: none; }
+}

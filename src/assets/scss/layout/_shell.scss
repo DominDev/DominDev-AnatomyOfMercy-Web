@@ -1,0 +1,7 @@
+.shell {
+  width: min(calc(100% - 4rem), var(--content-width));
+  margin-inline: auto;
+}
+@media (min-width: 48rem) {
+  .shell { width: min(calc(100% - 8rem), var(--content-width)); }
+}

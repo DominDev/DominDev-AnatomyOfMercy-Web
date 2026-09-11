@@ -1,0 +1,51 @@
+.preloader {
+  display: none;
+  position: fixed; z-index: 100; inset: 0;
+  place-items: center; padding: 2rem;
+  background: radial-gradient(ellipse at 50% 45%, #1b150e 0%, #0c0a07 28%, #060605 68%);
+  color: var(--color-gold);
+  opacity: 1; transition: opacity 1000ms ease, visibility 1000ms;
+  &::before {
+    content: ""; position: absolute; inset: var(--frame-inset);
+    border: 1px solid rgba(177,148,89,.3); box-shadow: inset 0 0 0 4px #080706, inset 0 0 0 5px rgba(177,148,89,.1);
+    pointer-events: none;
+  }
+  &__inner { text-align: center; width: min(100%, 32rem); }
+  &__sigil { width: clamp(9rem, 18vw, 14rem); height: auto; margin: 0 auto 2rem; overflow: visible; }
+  &__ring, &__cross { fill: none; stroke: #b59a61; stroke-width: .75; }
+  &__ring--inner { stroke: #6d5d3d; stroke-width: .5; }
+  &__cardinals { fill: #baa274; }
+  &__gem { fill: #731e27; stroke: #d8bc83; stroke-width: .6; }
+  &__invitation { font: .62rem / 1.5 var(--font-label); letter-spacing: .26em; color: #9b8c70; margin-bottom: 1rem; }
+  &__name { font: 500 clamp(1.65rem, 4.5vw, 2.6rem) / 1.2 var(--font-label); color: #e0cda4; }
+  &__name em { font-family: var(--font-display); font-size: .75em; }
+  &__track { width: 9rem; height: 1px; margin: 2rem auto 1.4rem; background: rgba(177,148,89,.15); }
+  &__track span { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #584429, #ceb584); transform-origin: left; }
+  &__status { min-height: 2.5em; font-size: 1.05rem; font-style: italic; color: #ac9b7c; }
+  &__skip {
+    position: absolute; bottom: calc(var(--frame-inset) + 2rem); left: 50%; transform: translateX(-50%);
+    padding: .8rem 1.2rem; border: 0; background: none; color: #bbaa87;
+    font: .65rem / 1.5 var(--font-label); letter-spacing: .12em; white-space: nowrap; cursor: pointer;
+    span { margin-left: .7rem; }
+    &:hover { color: #ecd7ad; }
+  }
+  &--leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+.intro-pending { overflow: hidden; }
+.intro-pending .preloader { display: grid; }
+.preloader[hidden] { display: none; }
+.intro-pending {
+  .preloader__ring, .preloader__cross { stroke-dasharray: 1; stroke-dashoffset: 1; animation: sigil-draw 3s ease forwards; }
+  .preloader__ring--inner { animation-delay: .55s; }
+  .preloader__cross { animation-delay: 1s; animation-duration: 2.2s; }
+  .preloader__cardinals { animation: sigil-appear 2s ease both; }
+  .preloader__gem { animation: sigil-appear 1.3s 2.2s ease both; }
+  .preloader__invitation, .preloader__name { animation: sigil-appear 1.8s .5s ease both; }
+  .preloader__track span { animation: lantern-light 4.2s ease both; }
+}
+@keyframes sigil-draw { to { stroke-dashoffset: 0; } }
+@keyframes sigil-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lantern-light { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .preloader { transition: none; }
+}

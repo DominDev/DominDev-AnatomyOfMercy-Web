@@ -1,0 +1,208 @@
+{
+  "en": {
+    "meta": {
+      "title": "Anatomy of Mercy | Every cure leaves a scar",
+      "description": "A dark first-person game about plague medicine, faith and the price of saving a life."
+    },
+    "skip": "Skip to main content",
+    "brandLabel": "Anatomy of Mercy home page",
+    "navLabel": "Main navigation",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "nav": {
+      "experience": "The game",
+      "world": "The world",
+      "stories": "Stories",
+      "contact": "Contact"
+    },
+    "languageLabel": "Language",
+    "loader": {
+      "statuses": [
+        "Lighting the lantern",
+        "Preparing the instruments",
+        "Opening the gates of Vespera"
+      ],
+      "label": "Entering Vespera",
+      "invitation": "Beyond these gates",
+      "skip": "Enter now",
+      "replay": "Experience the entrance again"
+    },
+    "hero": {
+      "eyebrow": "A dark fantasy game · In development",
+      "figure": "Julian | Plague doctor",
+      "lead": "Become an outcast plague doctor. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
+      "primary": "Enter the world",
+      "secondary": "Discover the stories",
+      "scroll": "Beyond the cure",
+      "sideNote": "Faith. Flesh. Consequence."
+    },
+    "experience": {
+      "eyebrow": "The anatomy of a choice",
+      "title": "Saving a life does not make the cost disappear.",
+      "body": "Every patient is a person, every remedy consumes something, and every decision changes who Julian becomes. There are no clean victories, only consequences you are willing to carry.",
+      "items": [
+        {
+          "title": "Difficult choices",
+          "body": "Save a life. Carry the cost."
+        },
+        {
+          "title": "People, not cases",
+          "body": "Every patient has something left to lose."
+        },
+        {
+          "title": "Faith and medicine",
+          "body": "The same faith can shelter and condemn."
+        },
+        {
+          "title": "A city in quarantine",
+          "body": "Order has a price. So does defiance."
+        }
+      ]
+    },
+    "world": {
+      "eyebrow": "Vespera",
+      "title": "The city still breathes. Something beneath it breathes back.",
+      "body": "The Crimson Plague moves through flesh, memory and belief. Quarantine divides the streets. The Church keeps order. Doctors count what remains. Somewhere between duty and desperation, mercy acquires an anatomy of its own."
+    },
+    "stories": {
+      "eyebrow": "Stories from the quarantine",
+      "title": "Four witnesses. One wound seen from different sides.",
+      "intro": "The first cycle of stories introduces the people, choices and silences that shaped Julian before the game begins.",
+      "status": "Text in preparation",
+      "items": [
+        {
+          "order": "I",
+          "title": "Light Beneath the Ash",
+          "original": "Światło pod popiołem",
+          "body": "A father remembers the night a cure demanded something he has spent twenty years refusing to name."
+        },
+        {
+          "order": "II",
+          "title": "The Volunteer",
+          "original": "Dobrowolny",
+          "body": "A man enters the Holy Office believing consent will protect the meaning of his sacrifice."
+        },
+        {
+          "order": "III",
+          "title": "The List of the Saved",
+          "original": "Lista ocalonych",
+          "body": "A healer keeps a record of every life spared and every person quietly moved out of the way."
+        },
+        {
+          "order": "IV",
+          "title": "I Will Fix the Rest Later",
+          "original": "Resztę naprawię później",
+          "body": "A doctor leaves behind notes that explain his methods more clearly than they explain his mercy."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "The work continues",
+      "title": "Anatomy of Mercy is in development.",
+      "body": "There is no release date yet. For publishing, press and project enquiries, write to us directly.",
+      "action": "Contact the project"
+    },
+    "footer": "A game about what remains after the right decision fails."
+  },
+  "pl": {
+    "meta": {
+      "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
+      "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia."
+    },
+    "skip": "Przejdź do głównej treści",
+    "brandLabel": "Anatomy of Mercy, strona główna",
+    "navLabel": "Główna nawigacja",
+    "menuOpen": "Otwórz menu",
+    "menuClose": "Zamknij menu",
+    "nav": {
+      "experience": "Gra",
+      "world": "Świat",
+      "stories": "Opowiadania",
+      "contact": "Kontakt"
+    },
+    "languageLabel": "Język",
+    "loader": {
+      "statuses": [
+        "Zapalamy latarnię",
+        "Przygotowujemy instrumenty",
+        "Otwieramy bramy Vespery"
+      ],
+      "label": "Wejście do Vespery",
+      "invitation": "Za tymi bramami",
+      "skip": "Wejdź teraz",
+      "replay": "Przeżyj wejście ponownie"
+    },
+    "hero": {
+      "eyebrow": "Mroczne dark fantasy · Gra w produkcji",
+      "figure": "Julian | Doktor plagi",
+      "lead": "Wciel się w wyklętego doktora plagi. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
+      "primary": "Wejdź do świata",
+      "secondary": "Poznaj opowiadania",
+      "scroll": "Po drugiej stronie ratunku",
+      "sideNote": "Wiara. Ciało. Konsekwencje."
+    },
+    "experience": {
+      "eyebrow": "Anatomia wyboru",
+      "title": "Uratowane życie nie unieważnia ceny.",
+      "body": "Każdy pacjent jest człowiekiem, każde lekarstwo coś zużywa, a każda decyzja zmienia Juliana. Nie ma czystych zwycięstw. Są tylko konsekwencje, które zgodzisz się ponieść.",
+      "items": [
+        {
+          "title": "Trudne wybory",
+          "body": "Ratuj życie. Ponieś cenę."
+        },
+        {
+          "title": "Ludzie, nie przypadki",
+          "body": "Każdy pacjent wciąż ma coś do stracenia."
+        },
+        {
+          "title": "Wiara i medycyna",
+          "body": "Ta sama wiara chroni i skazuje."
+        },
+        {
+          "title": "Miasto pod kwarantanną",
+          "body": "Porządek ma cenę. Sprzeciw również."
+        }
+      ]
+    },
+    "world": {
+      "eyebrow": "Vespera",
+      "title": "Miasto wciąż oddycha. Coś pod nim odpowiada.",
+      "body": "Karmazynowy Pomór przenika ciało, pamięć i wiarę. Kwarantanna dzieli ulice. Kościół utrzymuje porządek. Lekarze liczą to, co zostało. Gdzieś między obowiązkiem a desperacją miłosierdzie zyskuje własną anatomię."
+    },
+    "stories": {
+      "eyebrow": "Opowieści z kwarantanny",
+      "title": "Czterech świadków. Jedna rana widziana z różnych stron.",
+      "intro": "Pierwszy cykl opowiadań przedstawia ludzi, decyzje i przemilczenia, które ukształtowały Juliana przed rozpoczęciem gry.",
+      "status": "Tekst w przygotowaniu",
+      "items": [
+        {
+          "order": "I",
+          "title": "Światło pod popiołem",
+          "body": "Ojciec wspomina noc, podczas której lekarstwo zażądało czegoś, czego przez dwadzieścia lat nie potrafił nazwać."
+        },
+        {
+          "order": "II",
+          "title": "Dobrowolny",
+          "body": "Mężczyzna wchodzi do Świętego Oficjum, wierząc, że zgoda ochroni znaczenie jego ofiary."
+        },
+        {
+          "order": "III",
+          "title": "Lista ocalonych",
+          "body": "Uzdrowicielka zapisuje każde ocalone życie i każdego człowieka po cichu odsuniętego na bok."
+        },
+        {
+          "order": "IV",
+          "title": "Resztę naprawię później",
+          "body": "Doktor pozostawia notatki, które wyjaśniają jego metody lepiej niż jego miłosierdzie."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Praca trwa",
+      "title": "Anatomy of Mercy jest w produkcji.",
+      "body": "Nie ogłaszamy jeszcze daty premiery. W sprawach wydawniczych, medialnych i dotyczących projektu napisz do nas bezpośrednio.",
+      "action": "Skontaktuj się z projektem"
+    },
+    "footer": "Gra o tym, co zostaje, kiedy słuszna decyzja zawodzi."
+  }
+}
