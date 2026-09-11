@@ -15,11 +15,20 @@ Allow: /
 # Messenger i WhatsApp korzystaja z facebookexternalhit, ktory respektuje ten
 # plik. Discord swojego robota tu nie sprawdza i dziala niezaleznie od regul.
 #
-# Robot dopasowuje sie do najbardziej szczegolowej grupy, wiec ponizsze cztery
-# nazwy pomijaja calkowicie grupe z gwiazdka.
+# Robot dopasowuje sie do najbardziej szczegolowej grupy, wiec ponizsze nazwy
+# pomijaja calkowicie grupe z gwiazdka. Kazda ma wlasna grupe zamiast wspolnej,
+# bo laczenie kilku nazw pod jedna regula, choc zgodne ze standardem, nie jest
+# potwierdzone dla parsera Mety, a przyklad w ich dokumentacji pokazuje jedna
+# nazwe na grupe.
 User-agent: facebookexternalhit
+Allow: /
+
 User-agent: Twitterbot
+Allow: /
+
 User-agent: LinkedInBot
+Allow: /
+
 User-agent: Slackbot-LinkExpanding
 Allow: /
 
