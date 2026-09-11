@@ -83,13 +83,6 @@
   h2 { font-size: clamp(1.6rem, 2.8vw, 2.5rem); }
   &__email { display: block; margin-top: 1.2rem; color: #cbb68e; font-size: 1.15rem; text-underline-offset: 4px; overflow-wrap: anywhere; }
 }
-.site-footer {
-  position: relative; padding: 2.75rem 0 4rem; border-top: 1px solid rgba(177,148,89,.2);
-  color: #c3b69d; font-size: 1.05rem;
-  &__inner { display: flex; align-items: center; gap: 2rem; justify-content: space-between; }
-  &__name { color: #e0cba4; font: 500 0.9rem / 1.8 var(--font-label); letter-spacing: .05em; }
-  &__copyright { font: .78rem / 1.7 var(--font-body); color: #a2957f; max-width: 30ch; }
-}
 @media (min-width: 1600px) {
   .hero__inner { width: min(calc(100% - 16rem), 88rem); }
 }
@@ -121,7 +114,6 @@
   .contact__portrait { border-right: 0; border-bottom: 1px solid rgba(177,148,89,.22); padding: 1.5rem; }
   .contact__portrait img { width: min(70%, 15rem); margin-inline: auto; }
   .contact__copy { padding: 2rem 1.5rem; }
-  .site-footer__inner { flex-direction: column; text-align: center; gap: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

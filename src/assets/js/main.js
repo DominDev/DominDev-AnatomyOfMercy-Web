@@ -173,12 +173,17 @@ const toTop = document.querySelector("[data-to-top]");
 const footer = document.querySelector(".site-footer");
 
 if (toTop) {
+  // Odstep przycisku od gornej krawedzi stopki ma byc taki sam jak jego odstep
+  // od linii ramy. Ramka jest odsunieta od okna o wlasny margines, wiec o tyle
+  // samo skracamy przesuniecie.
+  const pageFrame = document.querySelector(".page-frame");
+  const frameInset = () => (pageFrame ? Math.round(pageFrame.getBoundingClientRect().left) : 0);
   let queued = false;
   const update = () => {
     queued = false;
     toTop.classList.toggle("to-top--visible", window.scrollY > window.innerHeight * 0.9);
     if (!footer) return;
-    const overlap = window.innerHeight - footer.getBoundingClientRect().top;
+    const overlap = window.innerHeight - footer.getBoundingClientRect().top - frameInset();
     toTop.style.transform = overlap > 0 ? `translateY(${-Math.round(overlap)}px)` : "";
   };
   const schedule = () => {

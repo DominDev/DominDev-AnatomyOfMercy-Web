@@ -1,0 +1,103 @@
+.site-footer {
+  position: relative;
+  padding: clamp(3rem, 5vw, 4.5rem) 0 3rem;
+  border-top: 1px solid rgba(177, 148, 89, 0.28);
+  background: linear-gradient(#0b0907, #070605);
+  color: #c3b69d;
+  font-size: 1.05rem;
+
+  // Delikatny ornament na gornej krawedzi, ten sam romb co w naroznikach ramy.
+  &::before {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    background: var(--color-ink);
+    border: 1px solid rgba(177, 148, 89, 0.5);
+    transform: translateX(-50%) rotate(45deg);
+    content: "";
+  }
+
+  &__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-bottom: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  &__identity { display: flex; flex-direction: column; align-items: flex-start; }
+  &__mark { width: 3.4rem; height: auto; margin-bottom: 1.1rem; opacity: 0.92; }
+  &__name {
+    color: #e8d8b2;
+    font: 600 1.05rem / 1.4 var(--font-label);
+    letter-spacing: 0.1em;
+  }
+  &__tagline {
+    margin-top: 0.55rem;
+    color: #bda880;
+    font: 500 0.8rem / 1.8 var(--font-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  &__column { display: flex; flex-direction: column; align-items: flex-start; }
+  &__heading {
+    margin-bottom: 1rem;
+    color: #d6c08d;
+    font: 500 0.72rem / 1.7 var(--font-label);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  &__column a {
+    padding-block: 0.42rem;
+    color: #c3b69d;
+    font-size: 1.08rem;
+    text-decoration: none;
+    transition: color var(--transition);
+    &:hover { color: #f2e4c5; text-decoration: underline; text-underline-offset: 5px; }
+  }
+  &__email { overflow-wrap: anywhere; }
+  &__status {
+    margin-top: 0.9rem;
+    max-width: 26ch;
+    color: #9d927e;
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  &__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(177, 148, 89, 0.16);
+  }
+  &__copyright, &__origin {
+    color: #938976;
+    font: 0.78rem / 1.7 var(--font-body);
+  }
+  &__copyright a {
+    color: #bda880;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    &:hover { color: #f2e4c5; }
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .site-footer__main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .site-footer__identity { grid-column: 1 / -1; }
+}
+
+@media (max-width: 35rem) {
+  .site-footer {
+    text-align: center;
+    &__main { grid-template-columns: 1fr; gap: 2.25rem; }
+    &__identity, &__column { align-items: center; }
+    &__status { margin-inline: auto; }
+    &__bottom { justify-content: center; text-align: center; }
+  }
+}

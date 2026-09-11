@@ -102,7 +102,14 @@
       "body": "There is no release date yet. For publishing, press and project enquiries, write to us directly.",
       "action": "Contact the project"
     },
-    "footer": "Every cure has a donor."
+    "footer": {
+      "navLabel": "Footer navigation",
+      "explore": "The site",
+      "contact": "Contact",
+      "status": "In development. No release date announced.",
+      "rights": "All rights reserved.",
+      "origin": "Anatomy of Mercy is made by two people, after hours."
+    }
   },
   "pl": {
     "meta": {
@@ -203,6 +210,13 @@
       "body": "Nie ogłaszamy jeszcze daty premiery. W sprawach wydawniczych, medialnych i dotyczących projektu napisz do nas bezpośrednio.",
       "action": "Skontaktuj się z projektem"
     },
-    "footer": "Każde lekarstwo ma swojego dawcę."
+    "footer": {
+      "navLabel": "Nawigacja w stopce",
+      "explore": "Strona",
+      "contact": "Kontakt",
+      "status": "Gra w produkcji. Bez ogłoszonej daty premiery.",
+      "rights": "Wszelkie prawa zastrzeżone.",
+      "origin": "Anatomy of Mercy tworzą dwie osoby, po godzinach."
+    }
   }
 }
