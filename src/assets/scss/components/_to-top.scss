@@ -10,7 +10,10 @@
   width: 3.35rem;
   height: 3.7rem;
   padding: 0;
-  border: 1px solid rgba(177, 148, 89, 0.5);
+  // Ta sama wartosc co gorna linia stopki. Przycisk wisi nad trescia przez caly
+  // czas przewijania, wiec jasniejsza ramka sciagala uwage na siebie zamiast
+  // czekac, az bedzie potrzebna. Przy najechaniu nadal wyraznie odpowiada.
+  border: 1px solid rgba(177, 148, 89, 0.28);
   background: rgba(9, 8, 7, 0.88);
   color: #e0c896;
   cursor: pointer;

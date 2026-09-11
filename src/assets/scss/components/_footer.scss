@@ -27,7 +27,9 @@
   }
 
   &__identity { display: flex; flex-direction: column; align-items: flex-start; }
-  &__mark { width: 3.4rem; height: auto; margin-bottom: 1.1rem; opacity: 0.92; }
+  // Proporcja jak przy portrecie w sekcji kontaktu: wysokosc ma wynikac ze
+  // stylu, nie z atrybutow znacznika.
+  &__mark { width: 3.4rem; height: auto; aspect-ratio: 1; margin-bottom: 1.1rem; opacity: 0.92; }
   &__name {
     color: #e8d8b2;
     font: 600 1.05rem / 1.4 var(--font-label);

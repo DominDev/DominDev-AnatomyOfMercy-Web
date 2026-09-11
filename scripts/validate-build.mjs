@@ -272,6 +272,44 @@ for (const page of pages) {
   ]);
 }
 
+// Obraz ladowany leniwie bez podanych wymiarow dostaje na starcie pudelko 0x0,
+// a po pobraniu rozpycha strone i przesuwa sasiadow. Zabezpieczamy to z dwoch
+// stron, bo kazda z osobna da sie ominac: atrybuty w znaczniku i proporcja w
+// stylach. Sama para atrybutow wystarcza przegladarce, ale znika przy podmianie
+// grafiki, a sama proporcja nie pomaga, gdy ktos doda obraz bez klasy.
+const lazyImages = [...english.matchAll(/<img[^>]*loading="lazy"[^>]*>/g)].map(match => match[0]);
+assertions.push([lazyImages.length > 0, "No lazy loaded images found, which means this check stopped looking at anything."]);
+
+for (const tag of lazyImages) {
+  const source = tag.match(/src="([^"]+)"/)?.[1] ?? tag.slice(0, 60);
+  assertions.push([
+    /\swidth="\d+"/.test(tag) && /\sheight="\d+"/.test(tag),
+    `Lazy loaded image is missing width or height: ${source}`
+  ]);
+}
+
+// Klasy uzyte na obrazach ladowanych leniwie oraz reguly pisane jako "cos img".
+// Jesli taka regula zeruje wysokosc przez height: auto, musi podac proporcje.
+const lazyClasses = new Set(
+  lazyImages.flatMap(tag => (tag.match(/class="([^"]+)"/)?.[1] ?? "").split(/\s+/)).filter(Boolean)
+);
+
+for (const [, selectors, declarations] of styles.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+  if (!/(^|;)\s*height\s*:\s*auto\s*(;|$)/.test(declarations)) continue;
+  if (/aspect-ratio\s*:/.test(declarations)) continue;
+
+  const touchesLazyImage = selectors.split(",").some(raw => {
+    const selector = raw.trim();
+    if (/\simg$/.test(selector)) return true;
+    return [...lazyClasses].some(name => selector.endsWith(`.${name}`));
+  });
+
+  assertions.push([
+    !touchesLazyImage,
+    `"${selectors.trim()}" sets height: auto on a lazy loaded image without an aspect ratio, so the browser cannot reserve its space.`
+  ]);
+}
+
 const fontReferences = [...styles.matchAll(/url\(["']?(\/assets\/fonts\/[^"')]+)["']?\)/g)];
 assertions.push([
   fontReferences.length > 0,

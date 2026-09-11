@@ -96,7 +96,11 @@
     &::before { top: -4px; } &::after { bottom: -4px; }
   }
   &__portrait { display: flex; align-items: center; padding: 2rem; border-right: 1px solid rgba(177,148,89,.22); }
-  &__portrait img { width: 100%; height: auto; }
+  // Proporcja podana wprost, tak samo jak przy okladkach opowiadan. Sama para
+  // width i height w znaczniku wystarcza przegladarce do wyliczenia miejsca,
+  // ale wtedy wysokosc zalezy od atrybutow, ktore latwo usunac przy zmianie
+  // grafiki. Zapisana tutaj trzyma sie stylu, a nie znacznika.
+  &__portrait img { width: 100%; height: auto; aspect-ratio: 1; }
   &__copy { padding: clamp(2rem, 4vw, 4rem); }
   .section-heading { margin-bottom: 2rem; }
   h2 { font-size: clamp(1.6rem, 2.8vw, 2.5rem); }
