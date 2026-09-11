@@ -18,16 +18,20 @@
   visibility: hidden;
   transition: opacity 260ms ease, visibility 260ms, border-color 200ms ease, background 200ms ease;
 
-  // Strzalka w gore czytelna od razu, z poprzeczka u podstawy w jezyku
-  // ornamentu ramy. Poprzedni znak byl za maly i czytal sie jak sztylet.
+  // Romb na trzonku z poprzeczka, w jezyku ornamentu ramy. Ksztalt zostaje
+  // bez zmian, rosnie tylko skala: wczesniej byl za maly, zeby go odczytac.
   svg {
-    width: 1.6rem;
+    width: 1.7rem;
     height: auto;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.5;
+    stroke-width: 1.3;
     stroke-linecap: round;
-    stroke-linejoin: round;
+  }
+
+  svg path:first-child {
+    fill: currentColor;
+    stroke: none;
   }
 
   &--visible {
@@ -48,6 +52,6 @@
     bottom: calc(var(--frame-inset) + 0.6rem);
     width: 3rem;
     height: 3.25rem;
-    svg { width: 1.45rem; }
+    svg { width: 1.5rem; }
   }
 }

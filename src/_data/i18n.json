@@ -19,9 +19,9 @@
     "languageLabel": "Language",
     "loader": {
       "statuses": [
-        "Lighting the lantern",
-        "Preparing the instruments",
-        "Opening the gates of Vespera"
+        "A few windows are still lit behind the gate.",
+        "Ash settles on the doors that were sealed first.",
+        "Vespera lets you in. It rarely lets anyone leave unchanged."
       ],
       "label": "Entering Vespera",
       "invitation": "Beyond these gates",
@@ -130,9 +130,9 @@
     "languageLabel": "Język",
     "loader": {
       "statuses": [
-        "Zapalamy latarnię",
-        "Przygotowujemy instrumenty",
-        "Otwieramy bramy Vespery"
+        "Za bramą pali się jeszcze kilka okien.",
+        "Popiół osiada na drzwiach zamkniętych najwcześniej.",
+        "Vespera wpuszcza cię do środka. Rzadko wypuszcza kogoś takim samym."
       ],
       "label": "Wejście do Vespery",
       "invitation": "Za tymi bramami",
