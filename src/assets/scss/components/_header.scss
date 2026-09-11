@@ -32,7 +32,10 @@
     flex-shrink: 0;
   }
   &__links { display: contents; }
+  // Stopka panelu, razem z zawartym w niej przelacznikiem jezyka, istnieje
+  // wylacznie w menu mobilnym.
   &__panel-foot { display: none; }
+  &__panel-language { display: none; }
   &__navigation { display: flex; align-items: center; gap: clamp(0.25rem, 1vw, 1.25rem); }
   // Regula obejmuje tylko linki sekcji. Stopka panelu mobilnego ma wlasna
   // typografie i nie moze dziedziczyc wersalikow ani rozstrzelenia.
@@ -130,6 +133,18 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
+    &__panel-language {
+      display: flex;
+      justify-content: center;
+      // Bazowa regula przelacznika ma pionowa kreske i wciecie z lewej,
+      // potrzebne tylko w pasku. W panelu trzeba je wyzerowac.
+      margin: 1.75rem 0 0;
+      padding: 1.5rem 0 0;
+      border-left: 0;
+      border-top: 1px solid rgba(177, 148, 89, 0.16);
+      font-size: 0.95rem;
+      a { padding: 0.9rem 0.7rem; }
+    }
     &__panel-email {
       display: inline-block;
       max-width: 100%;
@@ -167,11 +182,11 @@
     visibility: visible;
     transform: none;
   }
-  // Przelacznik jezyka zostaje nad nakladka, zeby dalo sie zmienic jezyk
-  // bez zamykania menu.
-  .language-switcher { position: relative; z-index: 70; margin-left: 0; padding-left: 0; border-left: 0; }
-  .site-header--menu-open .language-switcher a { color: #cbbc9c; }
-  .site-header--menu-open .language-switcher a[aria-current="page"] { color: #f7ecd2; }
+  // Na telefonie wybor jezyka nalezy do menu, nie do paska. Pasek zyskuje
+  // miejsce, a przelacznik dostaje w panelu wlasny wiersz zamiast scisku obok
+  // przycisku zamkniecia. Regula dotyczy wylacznie przelacznika w naglowku,
+  // poniewaz ten w stopce ma wlasne miejsce na stronie.
+  .site-header > .site-header__inner > .language-switcher { display: none; }
   // Bez JavaScriptu nakladka nie ma czym sterowac, wiec menu jest zwykla lista.
   html:not(.js) .site-header {
     position: relative; top: auto; margin: 1.5rem 0 2rem;

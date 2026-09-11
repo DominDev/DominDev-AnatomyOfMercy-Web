@@ -7,29 +7,27 @@
   bottom: calc(var(--frame-inset) + 1.1rem);
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3.4rem;
+  width: 3.35rem;
+  height: 3.7rem;
   padding: 0;
-  border: 1px solid rgba(177, 148, 89, 0.45);
-  background: rgba(9, 8, 7, 0.86);
-  color: #cbb389;
+  border: 1px solid rgba(177, 148, 89, 0.5);
+  background: rgba(9, 8, 7, 0.88);
+  color: #e0c896;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transition: opacity 260ms ease, visibility 260ms, border-color 200ms ease, background 200ms ease;
 
+  // Strzalka w gore czytelna od razu, z poprzeczka u podstawy w jezyku
+  // ornamentu ramy. Poprzedni znak byl za maly i czytal sie jak sztylet.
   svg {
-    width: 1.1rem;
+    width: 1.6rem;
     height: auto;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.1;
+    stroke-width: 1.5;
     stroke-linecap: round;
-  }
-
-  svg path:first-child {
-    fill: currentColor;
-    stroke: none;
+    stroke-linejoin: round;
   }
 
   &--visible {
@@ -48,7 +46,8 @@
   .to-top {
     right: calc(var(--frame-inset) + 0.6rem);
     bottom: calc(var(--frame-inset) + 0.6rem);
-    width: 2.75rem;
-    height: 3rem;
+    width: 3rem;
+    height: 3.25rem;
+    svg { width: 1.45rem; }
   }
 }

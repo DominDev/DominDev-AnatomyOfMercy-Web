@@ -178,11 +178,18 @@ if (toTop) {
   // samo skracamy przesuniecie.
   const pageFrame = document.querySelector(".page-frame");
   const frameInset = () => (pageFrame ? Math.round(pageFrame.getBoundingClientRect().left) : 0);
+  // Na telefonie stopka zajmuje niemal cale okno, wiec podjezdzanie nad nia
+  // zostawialo przycisk w pustym polu nad trescia. Tam zostaje zwyczajnie
+  // przypiety do rogu.
+  const anchorsToFooter = window.matchMedia("(min-width: 48rem)");
   let queued = false;
   const update = () => {
     queued = false;
     toTop.classList.toggle("to-top--visible", window.scrollY > window.innerHeight * 0.9);
-    if (!footer) return;
+    if (!footer || !anchorsToFooter.matches) {
+      toTop.style.transform = "";
+      return;
+    }
     const overlap = window.innerHeight - footer.getBoundingClientRect().top - frameInset();
     toTop.style.transform = overlap > 0 ? `translateY(${-Math.round(overlap)}px)` : "";
   };
@@ -193,6 +200,7 @@ if (toTop) {
   };
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", schedule);
+  anchorsToFooter.addEventListener("change", schedule);
   toTop.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: motionPreference.matches ? "auto" : "smooth" });
   });
