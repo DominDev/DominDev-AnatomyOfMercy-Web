@@ -93,7 +93,7 @@ Anatomy of Mercy is in active development and has **no release date**. Nothing i
 
 What exists today:
 
-| | |
+| Part of the project | Where it stands |
 |---|---|
 | Design documentation | Complete enough to build from, maintained as a living document |
 | Story cycle | Four stories finished in Polish, unpublished |
