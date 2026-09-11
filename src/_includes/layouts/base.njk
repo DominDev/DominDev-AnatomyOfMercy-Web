@@ -31,25 +31,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-    <script>
-      (() => {
-        const root = document.documentElement;
-        root.classList.add("js");
-        // The entrance plays on every load. It is part of the experience, not a
-        // loading screen, so it is not remembered per session.
-        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          root.classList.add("intro-pending");
-          // Release the page even if the deferred script fails to load.
-          window.aomIntroFailsafe = setTimeout(() => {
-            root.classList.remove("intro-pending");
-            document.querySelectorAll("[data-intro-inert]").forEach(node => {
-              node.inert = false;
-              node.removeAttribute("data-intro-inert");
-            });
-          }, 8500);
-        }
-      })();
-    </script>
+    {# Skrypt siedzi w osobnym pliku, poniewaz ten sam plik jest zrodlem skrotu
+       w polityce bezpieczenstwa tresci. Trzymanie go w dwoch miejscach
+       skonczyloby sie tym, ze po zmianie jednego z nich przegladarka po cichu
+       przestalaby wykonywac wejscie. #}
+    <script>{% include "partials/intro-bootstrap.js" %}</script>
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/main.js" defer></script>
     <title>{{ t.meta.title }}</title>

@@ -225,13 +225,31 @@
   html:not(.js) .site-header__inner { flex-wrap: wrap; }
   html:not(.js) .site-header__navigation {
     position: static; opacity: 1; visibility: visible; transform: none;
-    width: 100%; order: 4; padding: 0.75rem 0 1.25rem; background: none;
+    width: 100%; order: 4; padding: 0.75rem 0 0.9rem; background: none;
     border-top: 1px solid var(--frame-color);
     &::before { display: none; }
-    a { font-size: 1rem; border: 0; }
-    a:first-child { border-top: 0; }
   }
+  // Pionowa lista zajmowala caly ekran i spychala hero ponizej zagiecia.
+  // Bez nakladki nie ma powodu, zeby linki byly wielkie: to jest zwykla
+  // nawigacja zapasowa, ktora ma zajac jeden lub dwa wiersze.
+  html:not(.js) .site-header__links {
+    flex-direction: row; flex-wrap: wrap; justify-content: center;
+    gap: 0 1.1rem; width: 100%; margin-inline: 0;
+  }
+  html:not(.js) .site-header__navigation .site-header__links a {
+    padding: 0.75rem 0.35rem; font-size: 0.95rem; letter-spacing: 0.1em; border: 0;
+  }
+  // Przycisk hamburgera bez skryptu nie ma czym sterowac. Nie tylko go nie
+  // pokazujemy, ale mowimy to wprost, zeby nie zalezalo to od reguly bazowej.
+  html:not(.js) .site-header__menu-button { display: none; }
   html:not(.js) .site-header__panel-foot { display: none; }
+  // Stopka panelu, w ktorej na telefonie mieszka przelacznik jezyka, jest bez
+  // skryptu ukryta, a ten w pasku chowamy na waskich ekranach. Bez tej reguly
+  // strona bez JavaScriptu nie ma na telefonie zadnego sposobu zmiany jezyka,
+  // co lamie kryterium ukonczenia MVP.
+  html:not(.js) .site-header > .site-header__inner > .language-switcher {
+    display: flex; margin-left: auto; padding-left: 0.75rem;
+  }
 }
 
 // Blokada przewijania strony, gdy nakladka menu jest otwarta.

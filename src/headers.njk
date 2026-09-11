@@ -1,0 +1,14 @@
+---
+permalink: /_headers
+eleventyExcludeFromCollections: true
+---
+# Naglowki odpowiedzi dla Cloudflare Workers ze Static Assets.
+# Plik jest generowany, poniewaz skrot skryptu w polityce bezpieczenstwa musi
+# pochodzic z tego samego zrodla co skrypt wstawiony do strony.
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()

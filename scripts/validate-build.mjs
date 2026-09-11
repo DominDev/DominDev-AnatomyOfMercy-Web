@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -204,6 +205,52 @@ for (const [, selectors, declarations] of headerRules) {
     ]);
   }
 }
+
+// Naglowki odpowiedzi. Najwazniejsza jest tu zgodnosc skrotu: polityka
+// bezpieczenstwa dopuszcza dokladnie jeden skrypt osadzony w stronie i podaje
+// jego skrot. Gdyby skrypt sie zmienil, a skrot nie, przegladarka przestalaby
+// go wykonywac i nikt by tego nie zauwazyl, bo strona wyglada tak samo.
+const headersPath = path.resolve("dist/_headers");
+assertions.push([fs.existsSync(headersPath), "dist/_headers is missing, so the site would ship with no security headers."]);
+
+if (fs.existsSync(headersPath)) {
+  const headers = fs.readFileSync(headersPath, "utf8");
+  const required = [
+    "Content-Security-Policy",
+    "Strict-Transport-Security",
+    "X-Content-Type-Options",
+    "Referrer-Policy",
+    "Permissions-Policy"
+  ];
+  for (const header of required) {
+    assertions.push([headers.includes(header), `dist/_headers is missing ${header}.`]);
+  }
+
+  const inline = english.match(/<script>([\s\S]*?)<\/script>/);
+  assertions.push([Boolean(inline), "The inline bootstrap script is missing from the English page."]);
+  if (inline) {
+    const digest = crypto.createHash("sha256").update(inline[1], "utf8").digest("base64");
+    assertions.push([
+      headers.includes(`sha256-${digest}`),
+      `The content security policy hash does not match the inline script. Expected sha256-${digest}.`
+    ]);
+  }
+
+  // Polityka nie moze dopuszczac dowolnych skryptow, bo wtedy nie chroni przed
+  // niczym, a jednoczesnie sprawia wrazenie ochrony.
+  assertions.push([
+    !/script-src[^;]*'unsafe-inline'/.test(headers),
+    "The content security policy allows arbitrary inline scripts."
+  ]);
+}
+
+// Bez skryptu przelacznik jezyka w panelu menu jest ukryty, a ten w pasku
+// chowamy na waskich ekranach. Bez tej reguly strona bez JavaScriptu nie ma na
+// telefonie zadnego sposobu zmiany jezyka, co lamie kryterium ukonczenia MVP.
+assertions.push([
+  /html:not\(\.js\)[^{]*\.language-switcher\s*\{[^}]*display:\s*flex/.test(styles),
+  "Without JavaScript the narrow layout would have no language switcher at all."
+]);
 
 const failures = assertions.filter(([condition]) => !condition).map(([, message]) => message);
 
