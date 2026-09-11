@@ -4,6 +4,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "anatomyofmercy-web",
   "compatibility_date": "2026-09-11",
+  // Adres roboczy `workers.dev` jest dzis jedynym adresem strony i sluzy do
+  // kontroli jakosci. Po podpieciu domeny trzeba go wylaczyc, inaczej ta sama
+  // tresc bedzie dostepna pod dwoma adresami. Wpisane jawnie, zeby ta decyzja
+  // byla widoczna w repozytorium, a nie zalezala od domyslnej wartosci.
+  "workers_dev": true,
+  // Adresy wersji dla galezi innych niz produkcyjna. Kazda galaz robocza
+  // dostaje wlasny adres, na ktorym mozna obejrzec zmiany przed scaleniem.
+  "preview_urls": true,
   "assets": {
     // Katalog budowany przez `npm run build`. Nie jest w repozytorium.
     "directory": "./dist",
