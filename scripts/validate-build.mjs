@@ -57,6 +57,14 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
     assertions.push([fs.existsSync(path.join("dist", image)), name + " image missing: " + image]);
   }
   assertions.push([html.includes("data-intro-skip"), name + " entrance must have a skip control."]);
+  // Podglad linku w komunikatorach jest kryterium ukonczenia MVP.
+  const image = html.match(/property="og:image" content="([^"]+)"/);
+  assertions.push([Boolean(image), name + " page is missing og:image."]);
+  if (image) {
+    const local = image[1].replace("https://anatomyofmercy.com", "");
+    assertions.push([fs.existsSync(path.join("dist", local)), name + " og:image file is missing: " + local]);
+  }
+  assertions.push([html.includes('name="twitter:card"'), name + " page is missing the Twitter card type."]);
 }
 
 // Kolejnosc naglowkow: zaden h3 nie moze poprzedzac pierwszego h2, poniewaz

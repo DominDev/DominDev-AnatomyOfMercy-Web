@@ -2,7 +2,8 @@
   "en": {
     "meta": {
       "title": "Anatomy of Mercy | Every cure leaves a scar",
-      "description": "A dark first-person game about plague medicine, faith and the price of saving a life."
+      "description": "A dark first-person game about plague medicine, faith and the price of saving a life.",
+      "imageAlt": "A plague doctor with a lantern stands above the quarantined city of Vespera."
     },
     "skip": "Skip to main content",
     "brandLabel": "Anatomy of Mercy home page",
@@ -107,7 +108,8 @@
   "pl": {
     "meta": {
       "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
-      "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia."
+      "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia.",
+      "imageAlt": "Doktor plagi z latarnią stoi nad objętym kwarantanną miastem Vespera."
     },
     "skip": "Przejdź do głównej treści",
     "brandLabel": "Anatomy of Mercy, strona główna",
