@@ -42,9 +42,21 @@
     color: #cbb894; text-decoration: none; font: 0.7rem / 1.5 var(--font-label); letter-spacing: 0.14em; white-space: nowrap;
     span { height: 1.9rem; width: 1px; background: linear-gradient(transparent, #c1a166); }
   }
+  // Nota pionowa lezy nad najjasniejszym fragmentem artworku. Przy poprzednim
+  // rozmiarze i kolorze kontrast spadal tam do 3.9 do 1, czyli ponizej progu.
+  // Wieksza skala, jasniejszy atrament i wlasne przyciemnienie daja 11.6 do 1
+  // nawet na najjasniejszych pikselach.
   &__side-note {
-    position: absolute; right: calc(var(--frame-inset) + 1.25rem); top: 46%;
-    writing-mode: vertical-rl; color: #c9b088; font: 0.68rem / 1.5 var(--font-label); letter-spacing: 0.28em;
+    position: absolute; right: var(--frame-inset); top: 50%;
+    transform: translateY(-50%);
+    padding: 1.6rem 0.7rem;
+    writing-mode: vertical-rl;
+    color: #f0e2bf;
+    font: 500 clamp(0.78rem, 0.5vw + 0.55rem, 0.95rem) / 1 var(--font-label);
+    letter-spacing: 0.26em;
+    text-shadow: 0 0 10px rgba(5, 5, 4, .95), 0 1px 4px rgba(5, 5, 4, .9);
+    border-left: 1px solid rgba(177, 148, 89, .38);
+    background: linear-gradient(to right, rgba(7, 6, 5, 0), rgba(7, 6, 5, .58) 30%, rgba(7, 6, 5, .74));
   }
 }
 .section--experience { background: linear-gradient(#090807, #0e0b08 70%, #090807); }

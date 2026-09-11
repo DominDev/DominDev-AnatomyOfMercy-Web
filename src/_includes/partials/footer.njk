@@ -25,7 +25,11 @@
         <a href="{{ site.studioUrl }}" target="_blank" rel="noopener noreferrer">DominDev</a>.
         {{ t.footer.rights }}
       </p>
-      <p class="site-footer__origin">{{ t.footer.origin }}</p>
+      <nav class="language-switcher language-switcher--footer" aria-label="{{ t.languageLabel }}">
+        <a href="/" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>
+        <span aria-hidden="true">/</span>
+        <a href="/pl/" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
+      </nav>
     </div>
   </div>
 </footer>

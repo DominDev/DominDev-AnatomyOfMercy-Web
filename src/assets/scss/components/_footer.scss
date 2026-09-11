@@ -71,13 +71,25 @@
     flex-wrap: wrap;
     gap: 0.75rem 2rem;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     padding-top: 1.6rem;
     border-top: 1px solid rgba(177, 148, 89, 0.16);
   }
-  &__copyright, &__origin {
+  &__copyright {
     color: #938976;
     font: 0.78rem / 1.7 var(--font-body);
+  }
+
+  // Wybor jezyka powtorzony w stopce. Jest uzyteczny po przeczytaniu strony do
+  // konca i wypelnia prawa strone dolnego paska trescia, a nie deklaracja.
+  .language-switcher--footer {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+    margin-block: -0.6rem;
+    font-size: 0.82rem;
+    // Ten sam prog celu dotyku co w naglowku: co najmniej 44 piksele.
+    a { padding: 0.95rem 0.55rem; }
   }
   &__copyright a {
     color: #bda880;
