@@ -3,7 +3,7 @@
     "meta": {
       "title": "Anatomy of Mercy | Every cure leaves a scar",
       "description": "A dark first-person game about plague medicine, faith and the price of saving a life.",
-      "imageAlt": "A plague doctor with a lantern stands above the quarantined city of Vespera."
+      "imageAlt": "A masked physician with a lantern stands above the quarantined city of Vespera."
     },
     "skip": "Skip to main content",
     "brandLabel": "Anatomy of Mercy home page",
@@ -25,13 +25,12 @@
       ],
       "label": "Entering Vespera",
       "invitation": "Beyond these gates",
-      "skip": "Enter now",
-      "replay": "Experience the entrance again"
+      "skip": "Enter now"
     },
+    "backToTop": "Back to the top of the page",
     "hero": {
       "eyebrow": "A dark fantasy game · In development",
-      "figure": "Julian | Plague doctor",
-      "lead": "Become an outcast plague doctor. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
+      "lead": "Become an outcast physician in a city sealed by quarantine. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
       "primary": "Enter the world",
       "secondary": "Discover the stories",
       "scroll": "Beyond the cure",
@@ -103,13 +102,13 @@
       "body": "There is no release date yet. For publishing, press and project enquiries, write to us directly.",
       "action": "Contact the project"
     },
-    "footer": "A game about what remains after the right decision fails."
+    "footer": "Every cure has a donor."
   },
   "pl": {
     "meta": {
       "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
       "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia.",
-      "imageAlt": "Doktor plagi z latarnią stoi nad objętym kwarantanną miastem Vespera."
+      "imageAlt": "Zamaskowany lekarz z latarnią stoi nad objętym kwarantanną miastem Vespera."
     },
     "skip": "Przejdź do głównej treści",
     "brandLabel": "Anatomy of Mercy, strona główna",
@@ -131,13 +130,12 @@
       ],
       "label": "Wejście do Vespery",
       "invitation": "Za tymi bramami",
-      "skip": "Wejdź teraz",
-      "replay": "Przeżyj wejście ponownie"
+      "skip": "Wejdź teraz"
     },
+    "backToTop": "Powrót na górę strony",
     "hero": {
-      "eyebrow": "Mroczne dark fantasy · Gra w produkcji",
-      "figure": "Julian | Doktor plagi",
-      "lead": "Wciel się w wyklętego doktora plagi. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
+      "eyebrow": "Dark fantasy · Gra w produkcji",
+      "lead": "Wciel się w wyklętego lekarza w mieście zamkniętym kwarantanną. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
       "primary": "Wejdź do świata",
       "secondary": "Poznaj opowiadania",
       "scroll": "Po drugiej stronie ratunku",
@@ -205,6 +203,6 @@
       "body": "Nie ogłaszamy jeszcze daty premiery. W sprawach wydawniczych, medialnych i dotyczących projektu napisz do nas bezpośrednio.",
       "action": "Skontaktuj się z projektem"
     },
-    "footer": "Gra o tym, co zostaje, kiedy słuszna decyzja zawodzi."
+    "footer": "Każde lekarstwo ma swojego dawcę."
   }
 }

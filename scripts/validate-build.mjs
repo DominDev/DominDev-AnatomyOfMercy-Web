@@ -85,6 +85,46 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
   assertions.push([!html.includes("story-card__status"), `${name} still repeats the per card status label.`]);
 }
 
+// Obie wersje jezykowe musza miec dokladnie te same klucze i te same liczby
+// elementow w listach. Zmiana tylko po jednej stronie jest bledem budowania,
+// nie drobiazgiem do zauwazenia pozniej.
+const translations = JSON.parse(fs.readFileSync(path.resolve("src/_data/i18n.json"), "utf8"));
+
+function describe(value, prefix = "") {
+  if (Array.isArray(value)) {
+    return [`${prefix}[]=${value.length}`, ...value.flatMap((item, index) => describe(item, `${prefix}[${index}]`))];
+  }
+  if (value && typeof value === "object") {
+    return Object.keys(value).sort().flatMap(key => describe(value[key], prefix ? `${prefix}.${key}` : key));
+  }
+  return [prefix];
+}
+
+// Jedyny zamierzony wyjatek: angielska karta opowiadania podaje pod tytulem
+// oryginalny tytul polski. Na polskiej stronie tytul juz nim jest.
+const intentionalEnglishOnly = [
+  "stories.items[0].original",
+  "stories.items[1].original",
+  "stories.items[2].original",
+  "stories.items[3].original"
+];
+
+const englishKeys = describe(translations.en);
+const polishKeys = describe(translations.pl);
+const onlyEnglish = englishKeys.filter(key => !polishKeys.includes(key) && !intentionalEnglishOnly.includes(key));
+const onlyPolish = polishKeys.filter(key => !englishKeys.includes(key));
+
+assertions.push([onlyEnglish.length === 0, "Keys present only in English: " + onlyEnglish.join(", ")]);
+assertions.push([onlyPolish.length === 0, "Keys present only in Polish: " + onlyPolish.join(", ")]);
+
+for (const [language, tree] of [["English", translations.en], ["Polish", translations.pl]]) {
+  const empty = describe(tree).filter(key => {
+    const value = key.split(/\.|\[|\]/).filter(Boolean).reduce((node, part) => node?.[part], tree);
+    return typeof value === "string" && value.trim() === "";
+  });
+  assertions.push([empty.length === 0, `${language} has empty strings: ${empty.join(", ")}`]);
+}
+
 const failures = assertions.filter(([condition]) => !condition).map(([, message]) => message);
 
 if (failures.length > 0) {

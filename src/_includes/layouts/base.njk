@@ -35,9 +35,9 @@
       (() => {
         const root = document.documentElement;
         root.classList.add("js");
-        let seen = false;
-        try { seen = sessionStorage.getItem("aom-intro-v2-seen") === "true"; } catch {}
-        if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // The entrance plays on every load. It is part of the experience, not a
+        // loading screen, so it is not remembered per session.
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
           root.classList.add("intro-pending");
           // Release the page even if the deferred script fails to load.
           window.aomIntroFailsafe = setTimeout(() => {
@@ -63,5 +63,11 @@
       {{ content | safe }}
     </main>
     {% include "partials/footer.njk" %}
+    <button class="to-top" type="button" data-to-top aria-label="{{ t.backToTop }}" title="{{ t.backToTop }}">
+      <svg viewBox="0 0 24 28" aria-hidden="true" focusable="false">
+        <path d="M12 3l3.2 4.4L12 11.8 8.8 7.4z"/>
+        <path d="M12 12.6v11.2M8.4 16.2h7.2"/>
+      </svg>
+    </button>
   </body>
 </html>
