@@ -15,8 +15,12 @@
     position: absolute;
     z-index: -1;
     inset: 0;
-    background: linear-gradient(180deg, rgba(9, 8, 7, .6), rgba(9, 8, 7, .32) 62%, rgba(9, 8, 7, .1));
+    background: linear-gradient(180deg, rgba(9, 8, 7, .62), rgba(9, 8, 7, .28) 58%, rgba(9, 8, 7, 0));
     backdrop-filter: blur(3px);
+    // Maska wygasza takze samo rozmycie. Bez niej backdrop-filter konczyl sie
+    // na dolnej krawedzi ostrym szwem, widocznym na tle ilustracji.
+    mask-image: linear-gradient(180deg, #000 48%, rgba(0, 0, 0, .45) 76%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, #000 48%, rgba(0, 0, 0, .45) 76%, transparent);
     transition: background 320ms ease, backdrop-filter 320ms ease;
     pointer-events: none;
     content: "";
@@ -77,9 +81,13 @@
 .site-header--scrolled, .site-header--menu-open {
   box-shadow: 0 1px 0 rgba(177, 148, 89, 0.3), 0 10px 24px rgba(0,0,0,0.2);
 }
+// Po przewinieciu pasek jest pelna belka z wlasna zlota linia u dolu, wiec
+// wygaszanie krawedzi przestaje byc potrzebne.
 .site-header--scrolled::before, .site-header--menu-open::before {
   background: rgba(9, 8, 7, 0.93);
   backdrop-filter: blur(10px);
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 .language-switcher {
   display: flex; gap: 0.15rem; align-items: center;
