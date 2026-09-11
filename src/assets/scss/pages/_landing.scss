@@ -46,17 +46,24 @@
   // rozmiarze i kolorze kontrast spadal tam do 3.9 do 1, czyli ponizej progu.
   // Wieksza skala, jasniejszy atrament i wlasne przyciemnienie daja 11.6 do 1
   // nawet na najjasniejszych pikselach.
+  // Element jest pozycjonowany bezwzglednie, wiec przy samym `top` dostepna
+  // dlugosc wiersza konczy sie na dole kontenera. Tekst lamal sie wtedy na dwie
+  // kolumny. Rozciagniecie na pelna wysokosc hero i zakaz lamania trzymaja go
+  // w jednej linii, a wysrodkowanie przejmuje flex.
   &__side-note {
-    position: absolute; right: var(--frame-inset); top: 50%;
-    transform: translateY(-50%);
+    position: absolute; right: var(--frame-inset); top: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
     padding: 1.6rem 0.7rem;
     writing-mode: vertical-rl;
+    white-space: nowrap;
     color: #f0e2bf;
     font: 500 clamp(0.78rem, 0.5vw + 0.55rem, 0.95rem) / 1 var(--font-label);
     letter-spacing: 0.26em;
     text-shadow: 0 0 10px rgba(5, 5, 4, .95), 0 1px 4px rgba(5, 5, 4, .9);
     border-left: 1px solid rgba(177, 148, 89, .38);
     background: linear-gradient(to right, rgba(7, 6, 5, 0), rgba(7, 6, 5, .58) 30%, rgba(7, 6, 5, .74));
+    // Na bardzo niskim oknie napis nie zmiescilby sie w jednej linii.
+    @media (max-height: 34rem) { display: none; }
   }
 }
 .section--experience { background: linear-gradient(#090807, #0e0b08 70%, #090807); }
