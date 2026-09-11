@@ -55,8 +55,11 @@ and too small for dense displays.
 
 | Asset | Size | Needed for |
 |---|---|---|
-| Mobile hero variant | 4:5 portrait | Narrow viewport hero, replacing the cropped landscape artwork |
-| Dedicated social image | 1200 x 630 | Replacing the interim hero crop, with dark space on the left for a logotype |
+| Dedicated social image | 1200 x 630 | Replacing the interim hero crop, with dark space on the left for the wordmark |
+
+A separate 4:5 hero for narrow viewports was considered and dropped. The
+landscape artwork was reviewed on a phone and the crop holds, so the extra
+asset would add weight and a second thing to keep in sync for no visible gain.
 
 ## Rules
 
