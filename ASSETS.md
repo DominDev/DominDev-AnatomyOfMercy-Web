@@ -49,13 +49,17 @@ and too small for dense displays.
 
 | Website asset | Source filename | Size | Purpose |
 |---|---|---|---|
-| `assets/images/social/og-1200x630.jpg` | `AoM-hero.png` | 1200 x 630 | Link preview. Interim crop of the hero artwork. |
+| `assets/images/social/og-1200x630.jpg` | `AoM-web-og.png` + `AoM-title.png` | 1200 x 630 | Link preview. Artwork cropped to 1.9:1 with the wordmark composited onto it. |
+
+The link preview is a composite, not a plain resize, so the recipe lives with
+the source material in `Images\Narzędzia\zloz-og.py`. It crops the 16:9 artwork,
+lifts the wordmark brightness and lays a soft halo under the letters. The
+wordmark's own ink measures 123 of 255, which on this artwork gave a contrast of
+4.13 to 1 and effectively disappeared; the composite measures 7.04 to 1.
 
 ## Missing assets
 
-| Asset | Size | Needed for |
-|---|---|---|
-| Dedicated social image | 1200 x 630 | Replacing the interim hero crop, with dark space on the left for the wordmark |
+Nothing outstanding.
 
 A separate 4:5 hero for narrow viewports was considered and dropped. The
 landscape artwork was reviewed on a phone and the crop holds, so the extra
