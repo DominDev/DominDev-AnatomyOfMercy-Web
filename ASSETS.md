@@ -39,7 +39,7 @@ no third party claim on them.
 
 | Website asset | Source filename | Purpose | Note |
 |---|---|---|---|
-| `assets/images/mood/scene-1.webp` | `anatomy-of-mercy-landing-v3/assets/card-doctor.webp` | Vignette, difficult choices | Character design does not match the canonical Julian used in the hero and on the covers. Scheduled for replacement. |
+| `assets/images/mood/scene-1.webp` | `anatomy-of-mercy-landing-v3/assets/card-doctor.webp` | Vignette, difficult choices | Depicts Veyr, an inquisitor. The white mask is canonical for that role, so the image is consistent with the world. Scheduled for replacement only because it is a crop of an image used elsewhere and is too small. |
 | `assets/images/mood/scene-2.webp` | `anatomy-of-mercy-landing-v3/assets/card-marek.webp` | Vignette, people not cases | |
 | `assets/images/mood/scene-3.webp` | `anatomy-of-mercy-landing-v3/assets/card-sister.webp` | Vignette, faith and medicine | |
 | `assets/images/mood/scene-4.webp` | Crop of the part four story cover | Vignette, a city in quarantine | Caption and image do not match. Scheduled for replacement. |
