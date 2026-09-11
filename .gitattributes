@@ -1,0 +1,53 @@
+# Line endings are normalised to LF in the repository and in the working
+# tree on every platform. This matches .editorconfig and keeps Windows
+# development consistent with the Linux build environment used by
+# Cloudflare Workers Builds, regardless of each machine's core.autocrlf.
+
+* text=auto eol=lf
+
+# Text formats used by this project.
+*.css       text eol=lf
+*.html      text eol=lf
+*.js        text eol=lf
+*.json      text eol=lf
+*.jsonc     text eol=lf
+*.md        text eol=lf
+*.mjs       text eol=lf
+*.njk       text eol=lf
+*.scss      text eol=lf
+*.svg       text eol=lf
+*.toml      text eol=lf
+*.txt       text eol=lf
+*.xml       text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+
+# Dotfiles without an extension.
+.editorconfig   text eol=lf
+.gitattributes  text eol=lf
+.gitignore      text eol=lf
+.nvmrc          text eol=lf
+
+# Binary assets. Never converted, never diffed as text.
+*.avif      binary
+*.gif       binary
+*.ico       binary
+*.jpeg      binary
+*.jpg       binary
+*.mp3       binary
+*.mp4       binary
+*.otf       binary
+*.pdf       binary
+*.png       binary
+*.ttf       binary
+*.webm      binary
+*.webp      binary
+*.woff      binary
+*.woff2     binary
+*.zip       binary
+
+# Generated files. Collapsed in pull request diffs and excluded from the
+# repository language statistics.
+package-lock.json   linguist-generated=true
+*.min.css           linguist-generated=true
+*.min.js            linguist-generated=true
