@@ -28,9 +28,10 @@
     <link rel="alternate" hreflang="pl" href="{{ site.url }}/pl/">
     <link rel="alternate" hreflang="x-default" href="{{ site.url }}/">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    {# Fonty leza na naszym serwerze, a deklaracje @font-face sa w main.css.
+       Wczesniej arkusz z Google blokowal renderowanie: przegladarka musiala
+       nawiazac polaczenie z obcym serwerem i pobrac arkusz, zanim w ogole
+       dowiedziala sie, gdzie leza pliki fontow. #}
     {# Skrypt siedzi w osobnym pliku, poniewaz ten sam plik jest zrodlem skrotu
        w polityce bezpieczenstwa tresci. Trzymanie go w dwoch miejscach
        skonczyloby sie tym, ze po zmianie jednego z nich przegladarka po cichu

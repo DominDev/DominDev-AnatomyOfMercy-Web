@@ -1,3 +1,6 @@
+// Fonty ida na sam poczatek arkusza, zeby przegladarka dowiedziala sie o nich
+// z pierwszych bajtow pliku, a nie po przeczytaniu calej reszty stylow.
+@use "base/fonts";
 @use "abstracts/tokens";
 @use "base/reset";
 @use "base/base";

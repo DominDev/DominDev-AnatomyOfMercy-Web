@@ -242,6 +242,47 @@ if (fs.existsSync(headersPath)) {
     !/script-src[^;]*'unsafe-inline'/.test(headers),
     "The content security policy allows arbitrary inline scripts."
   ]);
+
+  // Fonty wrocily na wlasny serwer, wiec polityka nie ma juz powodu wpuszczac
+  // obcych zrodel. Gdyby ktos je tu przywrocil, znikaloby i zaciesnienie
+  // polityki, i zysk na szybkosci.
+  for (const directive of ["style-src", "font-src"]) {
+    const value = headers.match(new RegExp(`[; ]${directive}([^;]*)`))?.[1] ?? "";
+    assertions.push([
+      !/https?:\/\//.test(value),
+      `The content security policy lets ${directive} reach a third party origin:${value}`
+    ]);
+  }
+}
+
+// Fonty serwujemy sami. Dwie rzeczy moga to po cichu zepsuc: ktos przywroci
+// odwolanie do Google, albo zmieni nazwe pliku i zostawi martwy adres w stylach.
+// W obu przypadkach strona nadal sie wyswietla, tylko krojem zastepczym, wiec
+// bez tego sprawdzenia nikt by nie zauwazyl.
+const pages = fs
+  .readdirSync(path.resolve("dist"), { recursive: true })
+  .map(String)
+  .filter(name => name.endsWith(".html"));
+
+for (const page of pages) {
+  const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
+  assertions.push([
+    !/fonts\.(googleapis|gstatic)\.com/.test(markup),
+    `${page} still pulls fonts from Google instead of our own server.`
+  ]);
+}
+
+const fontReferences = [...styles.matchAll(/url\(["']?(\/assets\/fonts\/[^"')]+)["']?\)/g)];
+assertions.push([
+  fontReferences.length > 0,
+  "The compiled stylesheet declares no self hosted fonts, so every page would fall back to Georgia."
+]);
+
+for (const [, reference] of fontReferences) {
+  assertions.push([
+    fs.existsSync(path.resolve("dist", reference.replace(/^\//, ""))),
+    `The stylesheet points at ${reference}, which is not in the build.`
+  ]);
 }
 
 // Bez skryptu przelacznik jezyka w panelu menu jest ukryty, a ten w pasku

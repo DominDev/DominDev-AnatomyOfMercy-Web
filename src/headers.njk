@@ -9,8 +9,11 @@ eleventyExcludeFromCollections: true
 # img-src dopuszcza data: wylacznie dlatego, ze ornament naroznikow ramy jest
 # osadzonym w stylach obrazem SVG. Bez tego rama traci gwiazdki, co pierwsza
 # wersja polityki faktycznie zrobila.
+#
+# Odkad fonty leza na naszym serwerze, polityka nie wpuszcza zadnego obcego
+# serwera. Wczesniej byly tu wyjatki na fonts.googleapis.com i fonts.gstatic.com.
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
