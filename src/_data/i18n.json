@@ -47,19 +47,23 @@
       "items": [
         {
           "title": "Difficult choices",
-          "body": "Save a life. Carry the cost."
+          "body": "Save a life. Carry the cost.",
+          "imageAlt": "A physician in a cracked pale mask rests both hands on his cane and bows his head, a lantern burning beside him."
         },
         {
           "title": "People, not cases",
-          "body": "Every patient has something left to lose."
+          "body": "Every patient has something left to lose.",
+          "imageAlt": "A bare hand rests on the forehead of a sleeping child holding a rag doll, in a chapel lined with sickbeds."
         },
         {
           "title": "Faith and medicine",
-          "body": "The same faith can shelter and condemn."
+          "body": "The same faith can shelter and condemn.",
+          "imageAlt": "A nursing sister in a blood-stained apron reads a sheet of paper by lantern light, rows of sickbeds behind her."
         },
         {
           "title": "A city in quarantine",
-          "body": "Order has a price. So does defiance."
+          "body": "Order has a price. So does defiance.",
+          "imageAlt": "Two guards stand at a timber barricade hung with a red banner, a wet street behind them and a cathedral against the moon."
         }
       ]
     },
@@ -78,25 +82,29 @@
           "order": "I",
           "title": "Light Beneath the Ash",
           "original": "Światło pod popiołem",
-          "body": "A father remembers the night a cure demanded something he has spent twenty years refusing to name."
+          "body": "A father remembers the night a cure demanded something he has spent twenty years refusing to name.",
+          "imageAlt": "Story cover: a hooded physician in a beaked mask carries a lantern through falling ash, and below him a child sleeps in a lit window."
         },
         {
           "order": "II",
           "title": "The Volunteer",
           "original": "Dobrowolny",
-          "body": "A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him."
+          "body": "A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him.",
+          "imageAlt": "Story cover: a masked man sits with one leg bandaged to the foot, holding a small portrait, papers and a wax seal at his feet."
         },
         {
           "order": "III",
           "title": "The List of the Saved",
           "original": "Lista ocalonych",
-          "body": "A sister running the ward records who leaves on the two carts, and who is written down as left behind."
+          "body": "A sister running the ward records who leaves on the two carts, and who is written down as left behind.",
+          "imageAlt": "Story cover: a nursing sister raises a lantern and reads a blood-marked list in a chapel filled with sickbeds."
         },
         {
           "order": "IV",
           "title": "I Will Fix the Rest Later",
           "original": "Resztę naprawię później",
-          "body": "A doctor leaves behind notes that explain his methods more clearly than they explain his mercy."
+          "body": "A doctor leaves behind notes that explain his methods more clearly than they explain his mercy.",
+          "imageAlt": "Story cover: a physician in a beaked mask holds a vial of red liquid up to the light above a workbench of instruments, an open book and a skull."
         }
       ]
     },
@@ -162,19 +170,23 @@
       "items": [
         {
           "title": "Trudne wybory",
-          "body": "Ratuj życie. Ponieś cenę."
+          "body": "Ratuj życie. Ponieś cenę.",
+          "imageAlt": "Lekarz w pękniętej bladej masce opiera obie dłonie na lasce i pochyla głowę, a obok niego pali się latarnia."
         },
         {
           "title": "Ludzie, nie przypadki",
-          "body": "Każdy pacjent wciąż ma coś do stracenia."
+          "body": "Każdy pacjent wciąż ma coś do stracenia.",
+          "imageAlt": "Naga dłoń spoczywa na czole śpiącego dziecka, które trzyma szmacianą lalkę, w kaplicy zastawionej łóżkami chorych."
         },
         {
           "title": "Wiara i medycyna",
-          "body": "Ta sama wiara chroni i skazuje."
+          "body": "Ta sama wiara chroni i skazuje.",
+          "imageAlt": "Siostra w zakrwawionym fartuchu czyta kartkę w świetle latarni, a za nią ciągną się rzędy łóżek chorych."
         },
         {
           "title": "Miasto pod kwarantanną",
-          "body": "Porządek ma cenę. Sprzeciw również."
+          "body": "Porządek ma cenę. Sprzeciw również.",
+          "imageAlt": "Dwaj strażnicy stoją przy drewnianej barykadzie z czerwonym sztandarem, za nimi mokra ulica i katedra na tle księżyca."
         }
       ]
     },
@@ -192,22 +204,26 @@
         {
           "order": "I",
           "title": "Światło pod popiołem",
-          "body": "Ojciec wspomina noc, podczas której lekarstwo zażądało czegoś, czego przez dwadzieścia lat nie potrafił nazwać."
+          "body": "Ojciec wspomina noc, podczas której lekarstwo zażądało czegoś, czego przez dwadzieścia lat nie potrafił nazwać.",
+          "imageAlt": "Okładka opowiadania: zakapturzony lekarz w masce z dziobem niesie latarnię wśród opadającego popiołu, a niżej w oświetlonym oknie śpi dziecko."
         },
         {
           "order": "II",
           "title": "Dobrowolny",
-          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo wbrew niemu."
+          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo wbrew niemu.",
+          "imageAlt": "Okładka opowiadania: zamaskowany mężczyzna siedzi z nogą zabandażowaną aż po stopę, trzyma mały portret, u jego stóp leżą dokumenty z woskową pieczęcią."
         },
         {
           "order": "III",
           "title": "Lista ocalonych",
-          "body": "Siostra prowadząca lazaret zapisuje, kto odjedzie dwoma wozami, a kto zostaje w kaplicy."
+          "body": "Siostra prowadząca lazaret zapisuje, kto odjedzie dwoma wozami, a kto zostaje w kaplicy.",
+          "imageAlt": "Okładka opowiadania: siostra unosi latarnię i czyta poplamioną krwią listę w kaplicy pełnej łóżek chorych."
         },
         {
           "order": "IV",
           "title": "Resztę naprawię później",
-          "body": "Doktor pozostawia notatki, które wyjaśniają jego metody lepiej niż jego miłosierdzie."
+          "body": "Doktor pozostawia notatki, które wyjaśniają jego metody lepiej niż jego miłosierdzie.",
+          "imageAlt": "Okładka opowiadania: lekarz w masce z dziobem unosi pod światło fiolkę z czerwonym płynem nad stołem z narzędziami, otwartą księgą i czaszką."
         }
       ]
     },

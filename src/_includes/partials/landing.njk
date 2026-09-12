@@ -36,7 +36,10 @@
       {% for item in t.experience.items %}
         {% set art = moodAssets[loop.index0] %}
         <li class="vignettes__item">
-          <img class="vignettes__image" src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="" loading="lazy" decoding="async">
+          {# Winieta niesie tresc, nie ozdobe: ilustruje filar gry, ktory obok
+             opisuje tylko tytul i jedno zdanie. Opis lezy w i18n razem z ta
+             para, wiec tlumaczy sie tak samo jak reszta tekstu. #}
+          <img class="vignettes__image" src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="{{ item.imageAlt }}" loading="lazy" decoding="async">
           <div class="vignettes__caption">
             <h3>{{ item.title }}</h3>
             <p>{{ item.body }}</p>
@@ -71,7 +74,9 @@
         {% set art = storyAssets[loop.index0] %}
         <li class="story-card">
           <div class="story-card__cover">
-            <img src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="" loading="lazy" decoding="async">
+            {# Okladka opowiadania to osobna grafika, nie powtorzenie tytulu.
+               Opis mowi, co na niej widac, bo sam tytul stoi juz obok w H3. #}
+            <img src="{{ art.src }}" width="{{ art.width }}" height="{{ art.height }}" alt="{{ story.imageAlt }}" loading="lazy" decoding="async">
             <span class="story-card__index" aria-hidden="true">{{ story.order }}</span>
           </div>
           <div class="story-card__content">

@@ -149,6 +149,45 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
       `${name} image has no alt attribute at all: ${source}. Use alt="" for a decorative image, so the omission stays a decision rather than an oversight.`
     ]);
   }
+
+  // Winiety i okladki opowiadan niosa tresc, ktorej tekst obok nie powtarza,
+  // wiec ich opisy nie moga byc puste. Reszta obrazow na tej stronie jest
+  // ozdobna i ma zostac pusta, dlatego wymagamy tego tylko od tych dwoch grup.
+  //
+  // Prog dlugosci istnieje po to, zeby nie przeszlo wypelniacze w rodzaju
+  // "grafika" albo "cover". Porownanie z naglowkiem karty lapie drugi typowy
+  // skrot, czyli przepisanie tytulu w miejsce opisu, ktore dla czytnika ekranu
+  // znaczy tyle co nic, bo tytul i tak zostanie odczytany z H3.
+  const karty = [
+    ["vignette", [...html.matchAll(/<img class="vignettes__image"[^>]*>/g)].map(m => m[0]), 4],
+    ["story cover", [...html.matchAll(/<div class="story-card__cover">\s*<img[^>]*>/g)].map(m => m[0]), 4]
+  ];
+
+  for (const [rodzaj, znaczniki, oczekiwane] of karty) {
+    assertions.push([
+      znaczniki.length === oczekiwane,
+      `${name} page should render ${oczekiwane} ${rodzaj} images, found ${znaczniki.length}.`
+    ]);
+
+    for (const tag of znaczniki) {
+      const opis = tag.match(/\salt="([^"]*)"/)?.[1] ?? "";
+      assertions.push([
+        opis.trim().length >= 40,
+        `${name} ${rodzaj} image has an alt of ${opis.trim().length} characters, which is too short to describe it: "${opis}"`
+      ]);
+    }
+  }
+
+  const naglowki = [...html.matchAll(/<h3[^>]*>([^<]+)<\/h3>/g)].map(m => m[1].trim());
+  for (const [, znaczniki] of karty) {
+    for (const tag of znaczniki) {
+      const opis = (tag.match(/\salt="([^"]*)"/)?.[1] ?? "").trim();
+      assertions.push([
+        !naglowki.includes(opis),
+        `${name} page repeats a heading as an image description: "${opis}". The heading is already read out, so this tells the listener nothing new.`
+      ]);
+    }
+  }
   assertions.push([html.includes("data-intro-skip"), name + " entrance must have a skip control."]);
   // Podglad linku w komunikatorach jest kryterium ukonczenia MVP.
   const image = html.match(/property="og:image" content="([^"]+)"/);
