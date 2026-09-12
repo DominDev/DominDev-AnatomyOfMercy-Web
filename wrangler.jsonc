@@ -4,14 +4,24 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "anatomyofmercy-web",
   "compatibility_date": "2026-09-11",
-  // Adres roboczy `workers.dev` jest dzis jedynym adresem strony i sluzy do
-  // kontroli jakosci. Po podpieciu domeny trzeba go wylaczyc, inaczej ta sama
-  // tresc bedzie dostepna pod dwoma adresami. Wpisane jawnie, zeby ta decyzja
-  // byla widoczna w repozytorium, a nie zalezala od domyslnej wartosci.
-  "workers_dev": true,
+  // Domena jest podpieta, wiec adres roboczy `workers.dev` zostaje wylaczony.
+  // Zostawiony trzymalby te sama tresc pod drugim adresem, a adres kanoniczny
+  // wskazuje juz tylko domene. Wpisane jawnie, zeby ta decyzja byla widoczna
+  // w repozytorium, a nie zalezala od domyslnej wartosci.
+  "workers_dev": false,
   // Adresy wersji dla galezi innych niz produkcyjna. Kazda galaz robocza
   // dostaje wlasny adres, na ktorym mozna obejrzec zmiany przed scaleniem.
+  // Wedlug dokumentacji `preview_urls` domyslnie przyjmuje wartosc
+  // `workers_dev`, wiec bez tego jawnego wpisu wylaczenie adresu roboczego
+  // zabraloby po cichu takze podglady galezi.
   "preview_urls": true,
+  // Domena glowna jako Custom Domain Workera. Cloudflare sam tworzy rekord DNS
+  // i wystawia certyfikat. Dla Custom Domain nie podaje sie `zone_id` ani
+  // `zone_name`. Zapisane tutaj, a nie klikniete w panelu, zeby podpiecie
+  // domeny bylo czescia repozytorium tak samo jak reszta konfiguracji.
+  "routes": [
+    { "pattern": "anatomyofmercy.com", "custom_domain": true }
+  ],
   "assets": {
     // Katalog budowany przez `npm run build`. Nie jest w repozytorium.
     "directory": "./dist",
