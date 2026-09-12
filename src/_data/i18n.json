@@ -33,8 +33,8 @@
     },
     "backToTop": "Back to the top of the page",
     "hero": {
-      "eyebrow": "A dark fantasy game · In development",
-      "lead": "Become an outcast physician in a city sealed by quarantine. Study the disease, fight for what treatment demands and decide how much can be taken from a person before rescue becomes another name for harm.",
+      "eyebrow": "A first-person game of medicine and dark fantasy · In development",
+      "lead": "Become Julian, an outcast physician in Vespera, a city sealed by quarantine. Examine the sick, choose between treatments that each have a price, and take the material every cure needs from the only place it comes from: other people. Then answer for each of them.",
       "primary": "Enter the world",
       "secondary": "Discover the stories",
       "scroll": "Beyond the cure",
@@ -42,41 +42,42 @@
     },
     "experience": {
       "eyebrow": "The anatomy of a choice",
-      "title": "Saving a life does not make the cost disappear.",
-      "body": "Every patient is a person, every remedy consumes something, and every decision changes who Julian becomes. There are no clean victories, only consequences you are willing to carry.",
+      "title": "A saved life does not cancel the cost.",
+      "body": "The game does not only ask whether you will kill. It asks whether you will ask someone to sacrifice, whether you will tell a donor the whole truth, whether you will maim an enemy to spare his life, and whether you will spend on your own weapon the material a patient is still waiting for.",
+      "facts": ["First-person", "Single-player", "Windows PC", "No release date announced"],
       "items": [
         {
           "title": "Difficult choices",
-          "body": "Save a life. Carry the cost.",
+          "body": "The best donor for a dying girl may be the man sent to burn the ward.",
           "imageAlt": "An inquisitor in a cracked white mask rests both hands on his cane and bows his head, a lantern burning beside him."
         },
         {
           "title": "People, not cases",
-          "body": "Every patient has something left to lose.",
+          "body": "A patient keeps a name, a family and the right to refuse. Even after you have decided for them.",
           "imageAlt": "A bare hand rests on the forehead of a sleeping child holding a rag doll, in a chapel lined with sickbeds."
         },
         {
           "title": "Faith and medicine",
-          "body": "The same faith can shelter and condemn.",
+          "body": "The Church of Light feeds the sick, nurses them, buries them and burns the streets it cannot save. It is right more often than Julian would like.",
           "imageAlt": "A nursing sister in a blood-stained apron reads a sheet of paper by lantern light, rows of sickbeds behind her."
         },
         {
           "title": "A city in quarantine",
-          "body": "Order has a price. So does defiance.",
+          "body": "Gates close between districts. Red cloth marks a sealed house. Three strikes of the bell mean the street burns.",
           "imageAlt": "Two inquisitors in white masks stand at a timber barricade hung with a red banner, a wet street behind them and a cathedral against the moon."
         }
       ]
     },
     "world": {
       "eyebrow": "Vespera",
-      "title": "The city still breathes. Something beneath it breathes back.",
-      "body": "The Crimson Plague moves through flesh, memory and belief. Quarantine divides the streets. The Church keeps order. Doctors count what remains. Somewhere between duty and desperation, mercy acquires an anatomy of its own."
+      "title": "The city still breathes. Something beneath it answers.",
+      "body": "Vespera grew rich on trade, pilgrimage and medical scholarship. It is dying of the Crimson Plague, which turns blood and marrow to crystal; what the crystal breaks sheds a dust that infects whoever breathes it. The Church of Light calls the disease the Crimson Blemish and answers it with quarantine and fire. Julian calls it blood crystallica and answers it with a knife. In its last stage, the sick begin to see the same things."
     },
     "stories": {
       "eyebrow": "Stories from the quarantine",
       "title": "Four witnesses. One wound seen from different sides.",
-      "intro": "The first cycle of stories introduces the people, choices and silences that shaped Julian before the game begins.",
-      "note": "All four stories are finished and written in Polish. English versions do not exist yet, and none of the texts are published for reading.",
+      "intro": "Four stories from the world of the game. One night in a chapel turned into a ward, told by four people who were there.",
+      "note": "All four are finished, in Polish. They will be published here first.",
       "items": [
         {
           "order": "I",
@@ -89,7 +90,7 @@
           "order": "II",
           "title": "The Volunteer",
           "original": "Dobrowolny",
-          "body": "A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him.",
+          "body": "A commander refuses to give up the living tissue a dying child needs, and watches one word enter the record against him.",
           "imageAlt": "Story cover: an inquisitor in a white mask sits with one leg bandaged to the foot, holding a small portrait, papers and a wax seal at his feet."
         },
         {
@@ -109,10 +110,10 @@
       ]
     },
     "contact": {
-      "eyebrow": "The work continues",
+      "eyebrow": "Who is behind it",
       "title": "Anatomy of Mercy is in development.",
-      "body": "There is no release date yet. For publishing, press and project enquiries, write to us directly.",
-      "action": "Contact the project"
+      "body": "Anatomy of Mercy is made after hours by two amateurs fascinated by games and programming, working under the name DominDev. There is no release date yet. For press and project enquiries, or simply to say you want to read the stories, write to us.",
+      "action": "Write to us"
     },
     "footer": {
       "navLabel": "Footer navigation",
@@ -124,7 +125,7 @@
   },
   "pl": {
     "meta": {
-      "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
+      "title": "Anatomy of Mercy | Every cure leaves a scar",
       "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia.",
       "imageAlt": "W kaplicy zamienionej w lazaret siostra z latarnią podnosi wzrok znad listy, gdy do środka wchodzi zamaskowany lekarz."
     },
@@ -156,8 +157,8 @@
     },
     "backToTop": "Powrót na górę strony",
     "hero": {
-      "eyebrow": "Dark fantasy · Gra w produkcji",
-      "lead": "Wciel się w wyklętego lekarza w mieście zamkniętym kwarantanną. Badaj chorobę, walcz o to, czego wymaga leczenie, i decyduj, jak wiele można odebrać człowiekowi, zanim ratunek stanie się inną nazwą krzywdy.",
+      "eyebrow": "Pierwszoosobowa gra o medycynie i dark fantasy · W produkcji",
+      "lead": "Wciel się w Juliana, wyklętego lekarza w Vesperze, mieście zamkniętym kwarantanną. Badaj chorych, wybieraj między metodami leczenia, z których każda ma swoją cenę, i zdobywaj materiał, którego wymaga każda kuracja, a który pochodzi z ciał innych ludzi. Potem odpowiadaj za każdą z tych decyzji.",
       "primary": "Wejdź do świata",
       "secondary": "Poznaj opowiadania",
       "scroll": "Po drugiej stronie ratunku",
@@ -166,26 +167,27 @@
     "experience": {
       "eyebrow": "Anatomia wyboru",
       "title": "Uratowane życie nie unieważnia ceny.",
-      "body": "Każdy pacjent jest człowiekiem, każde lekarstwo coś zużywa, a każda decyzja zmienia Juliana. Nie ma czystych zwycięstw. Są tylko konsekwencje, które zgodzisz się ponieść.",
+      "body": "Gra nie pyta tylko, czy zabijesz. Pyta, czy poprosisz kogoś o poświęcenie, czy powiesz dawcy całą prawdę, czy okaleczysz wroga, żeby nie odebrać mu życia, i czy zużyjesz na własną broń materiał, na który wciąż czeka pacjent.",
+      "facts": ["Pierwsza osoba", "Gra dla jednego gracza", "Windows PC", "Bez ogłoszonej daty premiery"],
       "items": [
         {
           "title": "Trudne wybory",
-          "body": "Ratuj życie. Ponieś cenę.",
+          "body": "Najlepszym dawcą dla umierającej dziewczynki może być człowiek, który przyszedł spalić lazaret.",
           "imageAlt": "Inkwizytor w pękniętej białej masce opiera obie dłonie na lasce i pochyla głowę, a obok niego pali się latarnia."
         },
         {
           "title": "Ludzie, nie przypadki",
-          "body": "Każdy pacjent wciąż ma coś do stracenia.",
+          "body": "Pacjent ma imię, rodzinę i prawo odmówić. Także wtedy, gdy już zdecydowałeś za niego.",
           "imageAlt": "Naga dłoń spoczywa na czole śpiącego dziecka, które trzyma szmacianą lalkę, w kaplicy zastawionej łóżkami chorych."
         },
         {
           "title": "Wiara i medycyna",
-          "body": "Ta sama wiara chroni i skazuje.",
+          "body": "Kościół Światła karmi chorych, opiekuje się nimi, grzebie ich i pali ulice, których nie umie ocalić. Ma rację częściej, niż Julian by chciał.",
           "imageAlt": "Siostra w zakrwawionym fartuchu czyta kartkę w świetle latarni, a za nią ciągną się rzędy łóżek chorych."
         },
         {
           "title": "Miasto pod kwarantanną",
-          "body": "Porządek ma cenę. Sprzeciw również.",
+          "body": "Bramy dzielą dzielnice. Czerwone płótno oznacza zapieczętowany dom. Trzy uderzenia dzwonu znaczą, że ulica spłonie.",
           "imageAlt": "Dwaj inkwizytorzy w białych maskach stoją przy drewnianej barykadzie z czerwonym sztandarem, za nimi mokra ulica i katedra na tle księżyca."
         }
       ]
@@ -193,24 +195,24 @@
     "world": {
       "eyebrow": "Vespera",
       "title": "Miasto wciąż oddycha. Coś pod nim odpowiada.",
-      "body": "Karmazynowy Pomór przenika ciało, pamięć i wiarę. Kwarantanna dzieli ulice. Kościół utrzymuje porządek. Lekarze liczą to, co zostało. Gdzieś między obowiązkiem a desperacją miłosierdzie zyskuje własną anatomię."
+      "body": "Vespera wzbogaciła się na handlu, pielgrzymkach i nauce medycznej. Umiera na Karmazynowy Pomór, który zamienia krew i szpik w kryształ; to, co kryształ rozłamie, sypie pyłem, a pył zaraża każdego, kto go wdycha. Kościół Światła nazywa chorobę Karmazynową Skazą i odpowiada na nią kwarantanną i ogniem. Julian nazywa ją krystalicą krwi i odpowiada nożem. W ostatnim stadium chorzy zaczynają widzieć to samo."
     },
     "stories": {
       "eyebrow": "Opowieści z kwarantanny",
       "title": "Czterech świadków. Jedna rana widziana z różnych stron.",
-      "intro": "Pierwszy cykl opowiadań przedstawia ludzi, decyzje i przemilczenia, które ukształtowały Juliana przed rozpoczęciem gry.",
-      "note": "Wszystkie cztery opowiadania są ukończone i napisane po polsku. Nie udostępniamy ich jeszcze do czytania.",
+      "intro": "Cztery opowiadania ze świata gry. Jedna noc w kaplicy zamienionej w lazaret, opowiedziana przez czworo ludzi, którzy tam byli.",
+      "note": "Wszystkie cztery są ukończone, po polsku. Pojawią się najpierw tutaj.",
       "items": [
         {
           "order": "I",
           "title": "Światło pod popiołem",
-          "body": "Ojciec wspomina noc, podczas której lekarstwo zażądało czegoś, czego przez dwadzieścia lat nie potrafił nazwać.",
+          "body": "Ojciec wspomina noc, podczas której lekarstwo zażądało czegoś, czego przez dwadzieścia lat nie chciał nazwać.",
           "imageAlt": "Okładka opowiadania: zakapturzony lekarz w masce z dziobem niesie latarnię wśród opadającego popiołu, a niżej w oświetlonym oknie śpi dziecko."
         },
         {
           "order": "II",
           "title": "Dobrowolny",
-          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo wbrew niemu.",
+          "body": "Dowódca odmawia oddania tkanki potrzebnej umierającemu dziecku i patrzy, jak w karcie zapisują jedno słowo przeciw niemu.",
           "imageAlt": "Okładka opowiadania: inkwizytor w białej masce siedzi z nogą zabandażowaną aż po stopę, trzyma mały portret, u jego stóp leżą dokumenty z woskową pieczęcią."
         },
         {
@@ -222,16 +224,16 @@
         {
           "order": "IV",
           "title": "Resztę naprawię później",
-          "body": "Doktor pozostawia notatki, które wyjaśniają jego metody lepiej niż jego miłosierdzie.",
+          "body": "Doktor pozostawia notatki, które wyjaśniają jego metody, ale nie jego miłosierdzie.",
           "imageAlt": "Okładka opowiadania: lekarz w masce z dziobem unosi pod światło fiolkę z czerwonym płynem nad stołem z narzędziami, otwartą księgą i czaszką."
         }
       ]
     },
     "contact": {
-      "eyebrow": "Praca trwa",
+      "eyebrow": "Kto za tym stoi",
       "title": "Anatomy of Mercy jest w produkcji.",
-      "body": "Nie ogłaszamy jeszcze daty premiery. W sprawach wydawniczych, medialnych i dotyczących projektu napisz do nas bezpośrednio.",
-      "action": "Skontaktuj się z projektem"
+      "body": "Anatomy of Mercy robią po godzinach dwaj amatorzy zafascynowani grami i programowaniem, pod nazwą DominDev. Daty premiery jeszcze nie ma. W sprawach prasowych i projektowych, albo po prostu żeby powiedzieć, że chcesz przeczytać opowiadania, napisz do nas.",
+      "action": "Napisz do nas"
     },
     "footer": {
       "navLabel": "Nawigacja w stopce",

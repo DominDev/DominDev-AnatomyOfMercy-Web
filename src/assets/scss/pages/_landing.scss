@@ -70,6 +70,23 @@
 // Zdanie programowe stoi nad winietami, wiec odstep nalezy sie pod nim, nie
 // nad nim. Zerowy margines pochodzil z ukladu, w ktorym stalo pod lista.
 .experience__statement { margin-top: 0; margin-bottom: clamp(3.25rem, 5.5vw, 5.5rem); }
+// Pasek faktow pod zdaniem programowym. Ten sam kroj i rozstrzelenie co
+// eyebrow, bo to jest informacja techniczna, nie kolejne zdanie tresci.
+// Separator jest rombem z jezyka ramy, wstawionym z CSS, wiec czytnik ekranu
+// dostaje czysta liste czterech pozycji.
+.facts {
+  list-style: none; padding: 0; margin: 1.75rem auto 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 0;
+  li {
+    color: #d6c08d; font: 500 0.78rem / 1.7 var(--font-label);
+    letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+    &:not(:last-child)::after { content: "\25C6"; margin-inline: 0.9rem; font-size: 0.45em; vertical-align: middle; color: rgba(214, 192, 141, 0.55); }
+  }
+}
+@media (max-width: 35rem) {
+  .facts { flex-direction: column; gap: 0.35rem; }
+  .facts li:not(:last-child)::after { content: none; }
+}
 .world {
   isolation: isolate; overflow: hidden; min-height: 43rem; display: flex; align-items: center;
   &__panorama { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }

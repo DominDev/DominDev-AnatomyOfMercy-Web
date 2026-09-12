@@ -482,6 +482,14 @@ for (const page of pages) {
 
   assertions.push([game.url === canonical, `${page} JSON-LD names ${game.url} while the page is canonical at ${canonical}.`]);
 
+  // Podczas jednej lokalnej sesji strona zbudowala sie bez danych `site`:
+  // kanoniczny byl samym ukosnikiem, a stopka nie miala roku ani adresu.
+  // Powyzsza kontrola tego nie widziala, bo obie strony rownania byly tak samo
+  // puste. Dane globalne musza wiec byc widoczne w samej tresci.
+  assertions.push([canonical.startsWith(site.url + "/"), `${page} canonical ${canonical} does not start with the site address, so the site data did not reach the template.`]);
+  assertions.push([markup.includes(`mailto:${site.email}`), `${page} has no mailto link to ${site.email}, so the site data did not reach the template.`]);
+  assertions.push([markup.includes(`Copyright ${site.year}`), `${page} footer has no copyright year, so the site data did not reach the template.`]);
+
   const description = markup.match(/<meta name="description" content="([^"]*)"/)?.[1];
   assertions.push([
     Boolean(description) && game.description === description,
@@ -497,15 +505,27 @@ for (const page of pages) {
     `${page} JSON-LD points at image ${game.image}, which is not in the build.`
   ]);
 
-  // Stopka mowi wprost, ze data premiery nie zostala ogloszona, a platform
-  // strona nie oglasza wcale. Dopisanie ich tutaj byloby klamstwem wobec
-  // wlasnej tresci, wiec ich brak jest decyzja, nie przeoczeniem.
-  for (const forbidden of ["datePublished", "gamePlatform"]) {
-    assertions.push([
-      !(forbidden in game),
-      `${page} JSON-LD declares ${forbidden}, which the page itself never states.`
-    ]);
-  }
+  // Stopka mowi wprost, ze data premiery nie zostala ogloszona. Dopisanie jej
+  // tutaj byloby klamstwem wobec wlasnej tresci, wiec jej brak jest decyzja,
+  // nie przeoczeniem.
+  assertions.push([
+    !("datePublished" in game),
+    `${page} JSON-LD declares datePublished, which the page itself never states.`
+  ]);
+
+  // Platforme wolno zadeklarowac tylko dlatego, ze pasek faktow w sekcji o
+  // grze podaje ja czytelnikowi. Znacznik ma opisywac tresc, nie ja dopisywac,
+  // wiec ten sam napis musi stac w tresci strony poza blokiem JSON-LD.
+  const platform = game.gamePlatform;
+  const visible = markup.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, "");
+  assertions.push([
+    typeof platform === "string" && platform.trim() !== "",
+    `${page} JSON-LD does not declare gamePlatform, while the page states the platform in its facts list.`
+  ]);
+  assertions.push([
+    typeof platform === "string" && visible.includes(`<li>${platform}</li>`),
+    `${page} JSON-LD declares gamePlatform "${platform}", which does not appear as a fact in the page text.`
+  ]);
 
   assertions.push([
     game.author?.["@id"] === studio["@id"],

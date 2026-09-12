@@ -10,7 +10,9 @@
     a nie osobnym, ladniejszym opisem;
   - `genre` i `creativeWorkStatus` pochodza z `hero.eyebrow` i ze stopki,
     czyli z napisow, ktore czytelnik widzi;
-  - `gamePlatform` nie ma, bo strona nigdzie nie oglasza platform;
+  - `gamePlatform` to "Windows PC", bo od pasa faktow w sekcji o grze strona
+    oglasza platforme wprost, a walidacja pilnuje, zeby ten napis stal w
+    tresci strony;
   - `datePublished` nie ma, bo stopka mowi wprost, ze data premiery nie zostala
     ogloszona. Wpisanie tu czegokolwiek byloby klamstwem wobec wlasnej tresci;
   - `publisher` nie ma, bo zadne wydawnictwo nie zostalo ogloszone. Jest tylko
@@ -38,6 +40,7 @@
       "image": site.url + "/assets/images/social/og-1200x630.jpg",
       "genre": t.schema.genre,
       "creativeWorkStatus": t.schema.status,
+      "gamePlatform": "Windows PC",
       "author": { "@id": site.studioUrl + "/#studio" }
     },
     {

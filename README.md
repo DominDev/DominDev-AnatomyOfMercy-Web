@@ -23,7 +23,9 @@ Vespera grew rich on trade, pilgrimage and medical scholarship. It is now dying 
 
 You are Julian, an outcast physician. He can cure what nobody else can cure. The material his treatment needs comes out of living people.
 
-**Every cure has a donor.**
+**Every cure leaves a scar.**
+
+A first-person, single-player game for Windows PC. In development, no release date announced.
 
 This is not a game about defeating a plague. It is a game about how far a decent person will go for someone he loves, and what is left of him afterwards. The horror is quiet and procedural: a single instrument laid out on a cloth, a name written on a list, a door that was sealed first.
 
@@ -41,14 +43,14 @@ This is not a game about defeating a plague. It is a game about how far a decent
     <td width="25%"><img src="src/static/assets/images/mood/scene-4.webp" alt="A street of Vespera closed by timber barriers at night, with a red banner and guards at the cordon."></td>
   </tr>
   <tr>
-    <td><b>Difficult choices</b><br>Save a life. Carry the cost.</td>
-    <td><b>People, not cases</b><br>Every patient has something left to lose.</td>
-    <td><b>Faith and medicine</b><br>The same faith can shelter and condemn.</td>
-    <td><b>A city in quarantine</b><br>Order has a price. So does defiance.</td>
+    <td><b>Difficult choices</b><br>The best donor for a dying girl may be the man sent to burn the ward.</td>
+    <td><b>People, not cases</b><br>A patient keeps a name, a family and the right to refuse. Even after you have decided for them.</td>
+    <td><b>Faith and medicine</b><br>The Church of Light feeds the sick, nurses them, buries them and burns the streets it cannot save. It is right more often than Julian would like.</td>
+    <td><b>A city in quarantine</b><br>Gates close between districts. Red cloth marks a sealed house. Three strikes of the bell mean the street burns.</td>
   </tr>
 </table>
 
-Every patient is a person, every remedy consumes something, and every decision changes who Julian becomes. There are no clean victories, only consequences you are willing to carry.
+The game does not only ask whether you will kill. It asks whether you will ask someone to sacrifice, whether you will tell a donor the whole truth, whether you will maim an enemy to spare his life, and whether you will spend on your own weapon the material a patient is still waiting for. There are no clean victories, only consequences you are willing to carry.
 
 ## The world
 
@@ -56,7 +58,7 @@ Every patient is a person, every remedy consumes something, and every decision c
   <img src="src/static/assets/images/world/vespera.webp" width="900" alt="A panorama of Vespera: steep roofs, a cathedral silhouette and smoke rising from several districts at once.">
 </p>
 
-The Crimson Plague moves through flesh, memory and belief. Quarantine divides the streets. Doctors count what remains. Somewhere between duty and desperation, mercy acquires an anatomy of its own.
+The Crimson Plague turns blood and marrow to crystal; what the crystal breaks sheds a dust that infects whoever breathes it. The Church of Light calls the disease the Crimson Blemish and answers it with quarantine and fire. Julian calls it blood crystallica and answers it with a knife. In its last stage, the sick begin to see the same things.
 
 The world is built to stay morally ambiguous, and every part of it is written to hold that ambiguity:
 
@@ -77,7 +79,7 @@ Alongside the game there is a cycle of four short stories. They came out of the 
   </tr>
   <tr>
     <td valign="top"><b>I. Light Beneath the Ash</b><br><i>Światło pod popiołem</i><br><br>A father remembers the night a cure demanded something he has spent twenty years refusing to name.</td>
-    <td valign="top"><b>II. The Volunteer</b><br><i>Dobrowolny</i><br><br>A commander refuses to give up the tissue a dying child needs, and watches one word enter the record against him.</td>
+    <td valign="top"><b>II. The Volunteer</b><br><i>Dobrowolny</i><br><br>A commander refuses to give up the living tissue a dying child needs, and watches one word enter the record against him.</td>
     <td valign="top"><b>III. The List of the Saved</b><br><i>Lista ocalonych</i><br><br>A sister running the ward records who leaves on the two carts, and who is written down as left behind.</td>
     <td valign="top"><b>IV. I Will Fix the Rest Later</b><br><i>Resztę naprawię później</i><br><br>A doctor leaves behind notes that explain his methods more clearly than they explain his mercy.</td>
   </tr>
@@ -85,7 +87,7 @@ Alongside the game there is a cycle of four short stories. They came out of the 
 
 Four witnesses, one wound seen from different sides.
 
-All four stories are finished and written in Polish. English versions do not exist yet, and none of the texts are published for reading. The covers above are the only part of the cycle that is public so far.
+All four are finished, in Polish. They will be published on the website first. The covers above are the only part of the cycle that is public so far.
 
 ## Project status
 
@@ -101,11 +103,11 @@ What exists today:
 | Website | Live at [anatomyofmercy.com](https://anatomyofmercy.com) in English and Polish since 2026-09-12 |
 | Game build | Not started. The first milestone is a combat proof, and it is gated behind the work above |
 
-Everything here is made by DominDev, an independent studio.
+Everything here is made after hours by two amateurs fascinated by games and programming, working under the name DominDev.
 
 ## Contact
 
-For publishing, press and project enquiries, write to **contact@anatomyofmercy.com**.
+For press and project enquiries, or simply to say you want to read the stories, write to **contact@anatomyofmercy.com**.
 
 The website that this repository builds is live at [anatomyofmercy.com](https://anatomyofmercy.com).
 
