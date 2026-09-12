@@ -310,6 +310,29 @@ for (const [, selectors, declarations] of styles.matchAll(/([^{}]+)\{([^}]*)\}/g
   ]);
 }
 
+// PNG sluzy tu wylacznie za znak marki i ikone karty, czyli grafiki o kilku
+// barwach i duzej przezroczystosci. Wszystko, co ma gradienty i zdjecia, idzie
+// w webp. Zapisany wprost z programu graficznego znak wazyl 37 kB przy
+// wyswietlaniu 30 na 30 pikseli i ladowal sie rownolegle z obrazem LCP, wiec
+// zabieral mu pasmo. Po kwantyzacji do 256 kolorow schodzi ponizej 9 kB i
+// wyglada tak samo. Limit jest z zapasem: lapie ponowny eksport bez optymalizacji,
+// a nie drobne roznice miedzy zapisami.
+const PNG_BUDGET = 16 * 1024;
+const pngFiles = fs
+  .readdirSync(path.resolve("dist"), { recursive: true })
+  .map(String)
+  .filter(name => name.toLowerCase().endsWith(".png"));
+
+assertions.push([pngFiles.length > 0, "No PNG files found in the build, which means this check stopped looking at anything."]);
+
+for (const file of pngFiles) {
+  const bytes = fs.statSync(path.resolve("dist", file)).size;
+  assertions.push([
+    bytes <= PNG_BUDGET,
+    `${file.replace(/\\/g, "/")} weighs ${Math.round(bytes / 1024)} kB, over the ${PNG_BUDGET / 1024} kB budget for PNG. Quantise it or use webp.`
+  ]);
+}
+
 const fontReferences = [...styles.matchAll(/url\(["']?(\/assets\/fonts\/[^"')]+)["']?\)/g)];
 assertions.push([
   fontReferences.length > 0,
