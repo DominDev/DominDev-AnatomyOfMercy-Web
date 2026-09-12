@@ -66,7 +66,8 @@ function parseRobots(text) {
   return groups;
 }
 
-const robotGroups = parseRobots(fs.readFileSync(path.resolve("dist/robots.txt"), "utf8"));
+const robotsText = fs.readFileSync(path.resolve("dist/robots.txt"), "utf8");
+const robotGroups = parseRobots(robotsText);
 const everyone = robotGroups.find(group => group.agents.includes("*"));
 
 assertions.push([Boolean(everyone), "robots.txt is missing a group for every user agent."]);
@@ -76,6 +77,13 @@ if (everyone) {
     assertions.push([
       everyone.rules.includes("allow: /") && !everyone.rules.includes("disallow: /"),
       "Production robots.txt must allow indexing for every user agent."
+    ]);
+    // Zaproszenie robotow bez wskazania mapy to polowa roboty. Mapa jest tanim
+    // sposobem podania pelnej listy adresow, zamiast liczyc na to, ze robot
+    // znajdzie druga wersje jezykowa sam.
+    assertions.push([
+      robotsText.includes(`Sitemap: ${site.productionUrl}/sitemap.xml`),
+      "Production robots.txt does not point at the sitemap."
     ]);
   } else {
     assertions.push([
@@ -89,6 +97,13 @@ if (everyone) {
     assertions.push([
       Boolean(preview) && preview.rules.includes("allow: /"),
       "Non production robots.txt must let facebookexternalhit through, or the link preview cannot be checked."
+    ]);
+    // Wydanie podgladowe nie oglasza mapy. Mapa wymienia adresy produkcyjne,
+    // wiec podglad wskazywalby roboty poza siebie, proszac jednoczesnie, zeby
+    // do niego nie zagladaly.
+    assertions.push([
+      !/^Sitemap:/m.test(robotsText),
+      "Non production robots.txt advertises a sitemap, which lists production addresses."
     ]);
   }
 }
@@ -226,6 +241,18 @@ if (fs.existsSync(headersPath)) {
     assertions.push([headers.includes(header), `dist/_headers is missing ${header}.`]);
   }
 
+  // robots.txt i naglowek noindex musza mowic to samo. robots.txt dziala tylko
+  // wtedy, gdy robot go przeczyta, wiec podglad zabezpieczamy takze naglowkiem.
+  // Rozjazd tych dwoch jest cichy w obie strony: podglad zaproszony do indeksu
+  // albo produkcja wyciszona bez sladu w tresci strony.
+  const noindex = /X-Robots-Tag:\s*noindex/i.test(headers);
+  assertions.push([
+    noindex !== site.isProduction,
+    site.isProduction
+      ? "Production _headers sends X-Robots-Tag noindex, which would quietly hide the live site from search engines."
+      : "Non production _headers sends no X-Robots-Tag noindex, so a preview address reached from a link could still be indexed."
+  ]);
+
   const inline = english.match(/<script>([\s\S]*?)<\/script>/);
   assertions.push([Boolean(inline), "The inline bootstrap script is missing from the English page."]);
   if (inline) {
@@ -308,6 +335,53 @@ for (const [, selectors, declarations] of styles.matchAll(/([^{}]+)\{([^}]*)\}/g
     !touchesLazyImage,
     `"${selectors.trim()}" sets height: auto on a lazy loaded image without an aspect ratio, so the browser cannot reserve its space.`
   ]);
+}
+
+// Mapa strony i adresy kanoniczne musza opisywac dokladnie ten sam zbior.
+// Rozjazd jest cichy: mapa albo zaprasza robota pod adres, ktory sam wskazuje
+// gdzie indziej, albo pomija strone, ktora istnieje i chce byc znaleziona.
+// Dlatego nie sprawdzamy tu listy wpisanej z palca, tylko zgodnosc dwoch
+// zbiorow wyliczonych z wydania.
+const sitemapPath = path.resolve("dist", "sitemap.xml");
+assertions.push([fs.existsSync(sitemapPath), "dist/sitemap.xml is missing, so search engines get no list of pages."]);
+
+if (fs.existsSync(sitemapPath)) {
+  const sitemap = fs.readFileSync(sitemapPath, "utf8");
+  const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+
+  assertions.push([locations.length > 0, "dist/sitemap.xml lists no addresses, which means this check stopped looking at anything."]);
+
+  const canonicals = new Set();
+  for (const page of pages) {
+    const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
+    const canonical = markup.match(/rel="canonical" href="([^"]+)"/)?.[1];
+    if (canonical) canonicals.add(canonical);
+  }
+
+  assertions.push([canonicals.size > 0, "No page declares a canonical address, so the sitemap has nothing to be checked against."]);
+
+  for (const location of locations) {
+    assertions.push([
+      canonicals.has(location),
+      `dist/sitemap.xml lists ${location}, which no page declares as its canonical address.`
+    ]);
+
+    // Adres katalogowy wskazuje index.html w tym katalogu, tak samo jak
+    // rozwiazuje go Worker.
+    const relative = new URL(location).pathname.replace(/^\//, "");
+    const file = relative === "" || relative.endsWith("/") ? path.join(relative, "index.html") : relative;
+    assertions.push([
+      fs.existsSync(path.resolve("dist", file)),
+      `dist/sitemap.xml lists ${location}, but ${file.replace(/\\/g, "/")} is not in the build.`
+    ]);
+  }
+
+  for (const canonical of canonicals) {
+    assertions.push([
+      locations.includes(canonical),
+      `${canonical} is declared canonical by a page but is missing from dist/sitemap.xml.`
+    ]);
+  }
 }
 
 // PNG sluzy tu wylacznie za znak marki i ikone karty, czyli grafiki o kilku

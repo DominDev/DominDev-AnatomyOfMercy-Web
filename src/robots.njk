@@ -5,6 +5,8 @@ eleventyExcludeFromCollections: true
 {%- if site.isProduction -%}
 User-agent: *
 Allow: /
+
+Sitemap: {{ site.productionUrl }}/sitemap.xml
 {%- else -%}
 # Wydanie podgladowe. Wskazuje samo siebie jako adres kanoniczny, wiec nie moze
 # trafic do wyszukiwarek obok wlasciwej strony.

@@ -1,0 +1,32 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+{#-
+  Mapa strony budowana z kolekcji, a nie z listy wpisanej recznie, zeby nowa
+  strona trafiala do niej sama. Adresy bierzemy z `canonicalPath`, czyli z tego
+  samego pola, z ktorego powstaje znacznik kanoniczny. Dzieki temu mapa nie
+  moze sie rozjechac z kanonicznym, a kontrola budowania pilnuje, ze oba zbiory
+  sa identyczne.
+
+  Czego tu celowo nie ma:
+
+  `lastmod` pomijamy, bo jedyna wartosc, ktora umielibysmy podac bez klamstwa,
+  to data budowania, a ta zmienia sie przy kazdym wdrozeniu niezaleznie od
+  tresci. Google korzysta z `lastmod` tylko wtedy, gdy jest konsekwentnie
+  prawdziwa, wiec nieprawdziwa jest gorsza niz zadna.
+
+  `changefreq` i `priority` pomijamy, bo Google ich nie uzywa.
+
+  Powiazan jezykowych `xhtml:link` tez tu nie ma. Znaczniki `hreflang` sa w
+  HTML kazdej strony i to wystarcza. Powtorzenie ich tutaj wymagaloby pola
+  grupujacego tlumaczenia tej samej tresci, a takiego nie mamy. Przy dwoch
+  stronach moglibysmy zalozyc, ze kazda jest tlumaczeniem kazdej, ale przy
+  pierwszej stronie opowiadania to zalozenie przestaloby byc prawdziwe.
+-#}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for entry in collections.all %}
+  <url><loc>{{ site.productionUrl }}{{ entry.data.canonicalPath }}</loc></url>
+{%- endfor %}
+</urlset>

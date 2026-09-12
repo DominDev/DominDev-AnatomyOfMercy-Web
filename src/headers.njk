@@ -12,6 +12,16 @@ eleventyExcludeFromCollections: true
 #
 # Odkad fonty leza na naszym serwerze, polityka nie wpuszcza zadnego obcego
 # serwera. Wczesniej byly tu wyjatki na fonts.googleapis.com i fonts.gstatic.com.
+{%- if not site.isProduction %}
+#
+# Wydanie podgladowe. robots.txt juz prosi roboty, zeby nie zagladaly, ale ten
+# plik dziala wylacznie wtedy, gdy robot go przeczyta. Naglowek nizej dziala
+# takze wtedy, gdy adres podgladu trafi do wyszukiwarki z linku, bo noindex nie
+# wymaga wczesniejszej zgody na czytanie robots.txt.
+#
+# Robotom budujacym kafelek linku to nie przeszkadza. One niczego nie indeksuja,
+# tylko pobieraja strone po Open Graph, a naglowek dotyczy indeksowania.
+{%- endif %}
 /*
   Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -19,3 +29,6 @@ eleventyExcludeFromCollections: true
   Referrer-Policy: strict-origin-when-cross-origin
   Cross-Origin-Opener-Policy: same-origin
   Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+{%- if not site.isProduction %}
+  X-Robots-Tag: noindex, nofollow
+{%- endif %}
