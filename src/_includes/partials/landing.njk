@@ -31,6 +31,13 @@
       <p class="eyebrow">{{ t.experience.eyebrow }}</p>
       <h2 id="experience-title">{{ t.experience.title }}</h2>
       <p>{{ t.experience.body }}</p>
+      {# Cztery fakty o produkcie, kazdy z zatwierdzonej decyzji: perspektywa
+         i tryb z GDD, platforma z D-012, brak daty z zasad komunikacji. To
+         jedyne miejsce na stronie, ktore mowi wprost, czym ta gra jest, wiec
+         dane strukturalne moga sie do niego odwolac. #}
+      <ul class="facts" role="list">
+        {% for fact in t.experience.facts %}<li>{{ fact }}</li>{% endfor %}
+      </ul>
     </div>
     <ol class="vignettes" role="list">
       {% for item in t.experience.items %}
