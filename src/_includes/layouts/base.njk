@@ -11,6 +11,10 @@
     <meta property="og:description" content="{{ t.meta.description }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ locale }}">
+    {# Druga wersja jezykowa zglaszana takze Open Graphowi. `hreflang` mowi to
+       wyszukiwarkom, ale nie komunikatorom ani serwisom spolecznosciowym, ktore
+       czytaja wylacznie Open Graph i bez tego nie wiedza, ze istnieje. #}
+    <meta property="og:locale:alternate" content="{{ localeAlternate }}">
     <meta property="og:site_name" content="{{ site.name }}">
     <meta property="og:url" content="{{ site.url }}{{ canonicalPath }}">
     <meta property="og:image" content="{{ site.url }}/assets/images/social/og-1200x630.jpg">
@@ -28,6 +32,7 @@
     <link rel="alternate" hreflang="pl" href="{{ site.url }}/pl/">
     <link rel="alternate" hreflang="x-default" href="{{ site.url }}/">
     <link rel="icon" type="image/png" href="/favicon.png">
+    {% include "partials/structured-data.njk" %}
     {# Fonty leza na naszym serwerze, a deklaracje @font-face sa w main.css.
        Wczesniej arkusz z Google blokowal renderowanie: przegladarka musiala
        nawiazac polaczenie z obcym serwerem i pobrac arkusz, zanim w ogole

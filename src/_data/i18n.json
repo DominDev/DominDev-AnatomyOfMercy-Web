@@ -5,6 +5,10 @@
       "description": "A dark first-person game about plague medicine, faith and the price of saving a life.",
       "imageAlt": "In a chapel turned into a plague ward, a nursing sister with a lantern looks up from her list as a masked physician walks in."
     },
+    "schema": {
+      "genre": ["Dark fantasy", "First-person"],
+      "status": "In development"
+    },
     "skip": "Skip to main content",
     "brandLabel": "Anatomy of Mercy home page",
     "navLabel": "Main navigation",
@@ -115,6 +119,10 @@
       "title": "Anatomy of Mercy | Każde lekarstwo zostawia bliznę",
       "description": "Mroczna gra pierwszoosobowa o medycynie czasu zarazy, wierze i cenie ratowania życia.",
       "imageAlt": "W kaplicy zamienionej w lazaret siostra z latarnią podnosi wzrok znad listy, gdy do środka wchodzi zamaskowany lekarz."
+    },
+    "schema": {
+      "genre": ["Dark fantasy", "Gra pierwszoosobowa"],
+      "status": "Gra w produkcji"
     },
     "skip": "Przejdź do głównej treści",
     "brandLabel": "Anatomy of Mercy, strona główna",

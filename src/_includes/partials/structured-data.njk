@@ -1,0 +1,50 @@
+{#-
+  Dane strukturalne. Wyszukiwarki radza sobie z ta strona bez nich, ale
+  odpowiadacze oparte na modelach jezykowych cytuja chetniej to, co moga
+  odczytac jako fakty o konkretnym bycie, a nie wyciagnac z akapitu.
+
+  Zasada, ktora tu obowiazuje: **kazde twierdzenie musi juz byc na stronie**.
+  Dane strukturalne opisuja tresc, nie dopisuja jej. Dlatego:
+
+  - `description` jest dokladnie tym samym ciagiem co `meta description`,
+    a nie osobnym, ladniejszym opisem;
+  - `genre` i `creativeWorkStatus` pochodza z `hero.eyebrow` i ze stopki,
+    czyli z napisow, ktore czytelnik widzi;
+  - `gamePlatform` nie ma, bo strona nigdzie nie oglasza platform;
+  - `datePublished` nie ma, bo stopka mowi wprost, ze data premiery nie zostala
+    ogloszona. Wpisanie tu czegokolwiek byloby klamstwem wobec wlasnej tresci;
+  - `publisher` nie ma, bo zadne wydawnictwo nie zostalo ogloszone. Jest tylko
+    `author`, czyli studio, ktore gre robi;
+  - nie ma zadnego znaku towarowego ani roszczenia do marki, poniewaz pytanie
+    Q-012 jest otwarte.
+
+  `slogan` sprawdzone i odrzucone: nie istnieje na CreativeWork, wiec haslo
+  „Every cure leaves a scar" zostaje tam, gdzie jest, czyli w tytule i w tresci.
+
+  Byty maja wlasne `@id`, zeby dwie wersje jezykowe odnosily sie do tego samego
+  studia, a nie tworzyly dwoch osobnych. Powiazanie miedzy wersjami jezykowymi
+  zostawiamy znacznikom `hreflang`, ktore juz to robia poprawnie.
+-#}
+<script type="application/ld+json">{{ {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "VideoGame",
+      "@id": site.url + canonicalPath + "#game",
+      "name": site.name,
+      "url": site.url + canonicalPath,
+      "description": t.meta.description,
+      "inLanguage": lang,
+      "image": site.url + "/assets/images/social/og-1200x630.jpg",
+      "genre": t.schema.genre,
+      "creativeWorkStatus": t.schema.status,
+      "author": { "@id": site.studioUrl + "/#studio" }
+    },
+    {
+      "@type": "Organization",
+      "@id": site.studioUrl + "/#studio",
+      "name": "DominDev",
+      "url": site.studioUrl
+    }
+  ]
+} | dump | safe }}</script>

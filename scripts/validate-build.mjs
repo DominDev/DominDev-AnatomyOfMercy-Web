@@ -384,6 +384,89 @@ if (fs.existsSync(sitemapPath)) {
   }
 }
 
+// Dane strukturalne opisuja tresc strony, a nie dopisuja jej. Jesli opis w
+// JSON-LD rozejdzie sie z opisem strony, powstanie twierdzenie, ktorego na
+// stronie nie ma, a wlasnie to wytyczne Google nazywaja wprowadzaniem w blad.
+// Rozjazd jest cichy, bo czytelnik danych strukturalnych nie widzi. Dlatego
+// zamiast sprawdzac, czy blok istnieje, sprawdzamy, czy mowi to samo co strona.
+for (const page of pages) {
+  const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
+  const canonical = markup.match(/rel="canonical" href="([^"]+)"/)?.[1];
+  if (!canonical) continue;
+
+  const blocks = [...markup.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => match[1]);
+  assertions.push([blocks.length === 1, `${page} should carry exactly one JSON-LD block, found ${blocks.length}.`]);
+  if (blocks.length !== 1) continue;
+
+  const raw = blocks[0];
+
+  let data;
+  try {
+    // Tu wychodzi takze zamykajacy znacznik `script` wstawiony w tresc. Blok
+    // danych konczy sie na pierwszym takim znaczniku, wiec opis zawierajacy go
+    // urywa blok, a urwany blok nie jest poprawnym JSON. Osobna kontrola na
+    // ten ciag byla tu wczesniej i zostala usunieta, bo nie mogla sie zapalic:
+    // wyrazenie wycinajace blok konczy dopasowanie w tym samym miejscu, w
+    // ktorym konczy je przegladarka. Sprawdzone testem.
+    data = JSON.parse(raw);
+  } catch (error) {
+    assertions.push([false, `${page} has a JSON-LD block that is not valid JSON: ${error.message}`]);
+    continue;
+  }
+
+  assertions.push([data["@context"] === "https://schema.org", `${page} JSON-LD does not declare the schema.org context.`]);
+
+  const nodes = data["@graph"] ?? [data];
+  const game = nodes.find(node => node["@type"] === "VideoGame");
+  const studio = nodes.find(node => node["@type"] === "Organization");
+
+  assertions.push([Boolean(game), `${page} JSON-LD has no VideoGame node.`]);
+  assertions.push([Boolean(studio), `${page} JSON-LD has no Organization node.`]);
+  if (!game || !studio) continue;
+
+  assertions.push([game.url === canonical, `${page} JSON-LD names ${game.url} while the page is canonical at ${canonical}.`]);
+
+  const description = markup.match(/<meta name="description" content="([^"]*)"/)?.[1];
+  assertions.push([
+    Boolean(description) && game.description === description,
+    `${page} JSON-LD description differs from the page description, so the markup claims something the page does not say.`
+  ]);
+
+  const language = markup.match(/<html lang="([^"]+)"/)?.[1];
+  assertions.push([game.inLanguage === language, `${page} JSON-LD says inLanguage ${game.inLanguage} while the document is ${language}.`]);
+
+  const imagePath = game.image ? new URL(game.image).pathname.replace(/^\//, "") : "";
+  assertions.push([
+    imagePath !== "" && fs.existsSync(path.resolve("dist", imagePath)),
+    `${page} JSON-LD points at image ${game.image}, which is not in the build.`
+  ]);
+
+  // Stopka mowi wprost, ze data premiery nie zostala ogloszona, a platform
+  // strona nie oglasza wcale. Dopisanie ich tutaj byloby klamstwem wobec
+  // wlasnej tresci, wiec ich brak jest decyzja, nie przeoczeniem.
+  for (const forbidden of ["datePublished", "gamePlatform"]) {
+    assertions.push([
+      !(forbidden in game),
+      `${page} JSON-LD declares ${forbidden}, which the page itself never states.`
+    ]);
+  }
+
+  assertions.push([
+    game.author?.["@id"] === studio["@id"],
+    `${page} JSON-LD credits an author that is not the Organization node in the same graph.`
+  ]);
+}
+
+// Druga wersja jezykowa musi byc zgloszona takze Open Graphowi. Komunikatory i
+// serwisy spolecznosciowe nie czytaja hreflang, wiec bez tego nie wiedza, ze
+// istnieje.
+for (const [name, markup] of [["English", english], ["Polish", polish]]) {
+  const locale = markup.match(/property="og:locale" content="([^"]+)"/)?.[1];
+  const alternate = markup.match(/property="og:locale:alternate" content="([^"]+)"/)?.[1];
+  assertions.push([Boolean(alternate), `${name} page does not declare og:locale:alternate.`]);
+  assertions.push([locale !== alternate, `${name} page declares og:locale:alternate ${alternate}, the same as its own locale.`]);
+}
+
 // PNG sluzy tu wylacznie za znak marki i ikone karty, czyli grafiki o kilku
 // barwach i duzej przezroczystosci. Wszystko, co ma gradienty i zdjecia, idzie
 // w webp. Zapisany wprost z programu graficznego znak wazyl 37 kB przy
