@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/status-in%20development-b19459?style=for-the-badge&labelColor=0b0907" alt="Status: in development">
   <img src="https://img.shields.io/badge/engine-Unreal%20Engine%205-b19459?style=for-the-badge&labelColor=0b0907" alt="Engine: Unreal Engine 5">
   <img src="https://img.shields.io/badge/stories-4%20written-b19459?style=for-the-badge&labelColor=0b0907" alt="Stories: four written">
-  <img src="https://img.shields.io/badge/website-not%20live%20yet-6b5b3e?style=for-the-badge&labelColor=0b0907" alt="Website: not live yet">
+  <a href="https://anatomyofmercy.com"><img src="https://img.shields.io/badge/website-anatomyofmercy.com-b19459?style=for-the-badge&labelColor=0b0907" alt="Website: anatomyofmercy.com"></a>
 </p>
 
 ---
@@ -66,7 +66,7 @@ The world is built to stay morally ambiguous, and every part of it is written to
 
 ## The stories
 
-Before the game begins, there is a cycle of four short stories. They introduce the people, choices and silences that shaped Julian, and they are canon.
+Alongside the game there is a cycle of four short stories. They came out of the work on the game and share its city, its people and its rules. They are a separate literary continuity, not the script of the game: one night in a chapel turned into a ward, told by four people who were there.
 
 <table>
   <tr>
@@ -98,7 +98,7 @@ What exists today:
 | Design documentation | Complete enough to build from, maintained as a living document |
 | Story cycle | Four stories finished in Polish, unpublished |
 | Visual identity | Established, with a written world and visual brief driving every new image |
-| Website | Built and bilingual, not published yet |
+| Website | Live at [anatomyofmercy.com](https://anatomyofmercy.com) in English and Polish since 2026-09-12 |
 | Game build | Not started. The first milestone is a combat proof, and it is gated behind the work above |
 
 Everything here is made by DominDev, an independent studio.
@@ -107,7 +107,7 @@ Everything here is made by DominDev, an independent studio.
 
 For publishing, press and project enquiries, write to **contact@anatomyofmercy.com**.
 
-The website that this repository builds will live at `anatomyofmercy.com`. It is not published yet.
+The website that this repository builds is live at [anatomyofmercy.com](https://anatomyofmercy.com).
 
 <details>
 <summary><b>About this repository</b></summary>
@@ -149,7 +149,7 @@ Production output is written to `dist/`. That directory is generated and must ne
 
 The site is served by a Cloudflare Worker with Static Assets and no Worker code, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push.
 
-The canonical address comes from the `SITE_URL` environment variable and falls back to the production domain when the variable is absent. A build with `SITE_URL` set describes itself in its canonical, Open Graph and hreflang tags, and its `robots.txt` switches to `Disallow: /` so a preview deployment can never be indexed alongside the real site. Build validation enforces both halves of that rule.
+The canonical address is the production domain. A build that Workers Builds runs from any branch other than `main` is recognised through the `WORKERS_CI` and `WORKERS_CI_BRANCH` variables that Cloudflare sets itself: its `robots.txt` switches to `Disallow: /` and it sends `X-Robots-Tag: noindex`, so a preview deployment can never be indexed alongside the real site. `SITE_URL` remains available as an override for checking a build under a different address. Build validation enforces both halves of that rule.
 
 **Contributing and content rules**
 
