@@ -132,6 +132,23 @@ for (const [name, html] of [["English", english], ["Polish", polish]]) {
   for (const image of images) {
     assertions.push([fs.existsSync(path.join("dist", image)), name + " image missing: " + image]);
   }
+
+  // Pominiety atrybut `alt` i `alt=""` to dwie rozne rzeczy, choc narzedzia
+  // czesto licza je razem. Pusty alt jest deklaracja, ze obraz jest ozdobny i
+  // czytnik ekranu ma go pominac. Brak atrybutu nie deklaruje niczego, wiec
+  // czytnik czyta wtedy nazwe pliku, co daje odbiorcy ciag w rodzaju
+  // "i-will-fix-the-rest-later dot webp". Wymagamy wiec obecnosci atrybutu,
+  // nie jego tresci. Decyzja, ktory obraz zasluguje na opis, jest decyzja
+  // tresciowa i nie da sie jej sprawdzic automatem.
+  const tags = [...html.matchAll(/<img[^>]*>/g)].map(match => match[0]);
+  assertions.push([tags.length > 0, name + " page has no images at all, which means this check stopped looking at anything."]);
+  for (const tag of tags) {
+    const source = tag.match(/src="([^"]+)"/)?.[1] ?? tag.slice(0, 60);
+    assertions.push([
+      /\salt=("[^"]*"|'[^']*')/.test(tag),
+      `${name} image has no alt attribute at all: ${source}. Use alt="" for a decorative image, so the omission stays a decision rather than an oversight.`
+    ]);
+  }
   assertions.push([html.includes("data-intro-skip"), name + " entrance must have a skip control."]);
   // Podglad linku w komunikatorach jest kryterium ukonczenia MVP.
   const image = html.match(/property="og:image" content="([^"]+)"/);
