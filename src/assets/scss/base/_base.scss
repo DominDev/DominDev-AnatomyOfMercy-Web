@@ -2,6 +2,14 @@ html {
   background: var(--color-ink);
   font-size: 100%;
   scrollbar-gutter: stable;
+  // Suwak i bieznia w zlocie strony. `color-scheme: dark` samo w sobie daje juz
+  // ciemny pasek, to jest tylko odcien. Kontrast suwaka do biezni wynosi 3,7:1,
+  // czyli z zapasem ponad wymagane 3:1 (WCAG 1.4.11, technika G183); pierwotny
+  // odcien #6d5d3d wychodzil dokladnie 3,0:1, bez marginesu na zaokraglenie.
+  // Nie laczyc tego z `::-webkit-scrollbar`: przegladarki ignoruja te
+  // pseudoelementy wszedzie, gdzie `scrollbar-color` ma wartosc inna niz `auto`,
+  // a wlasciwosc dziedziczy sie w dol drzewa.
+  scrollbar-color: #7a6844 #100e0c;
 }
 body {
   min-width: 20rem;
