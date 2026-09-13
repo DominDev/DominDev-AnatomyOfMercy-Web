@@ -32,9 +32,20 @@
     stroke-linecap: round;
   }
 
-  svg path:first-child {
+  &__finial {
     fill: currentColor;
     stroke: none;
+  }
+
+  // Kamien, ten sam motyw co gem w sigilu preloadera i co rubin na kapturze:
+  // karmazynowe wnetrze w zlotej oprawie. Oprawa nie jest ozdoba, tylko
+  // warunkiem czytelnosci. Sam karmazyn na tle przycisku daje okolo 1,6:1,
+  // czyli ponizej 3:1 wymaganych przez WCAG 1.4.11 dla elementow interfejsu,
+  // wiec ksztalt musi niesc zloty obrys, a karmazyn tylko go wypelnia.
+  &__gem {
+    fill: var(--color-crimson);
+    stroke: currentColor;
+    transition: fill 200ms ease;
   }
 
   &--visible {
@@ -42,10 +53,15 @@
     visibility: visible;
   }
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     border-color: #d6c08d;
     background: rgba(24, 19, 13, 0.94);
     color: #f2e4c5;
+
+    // Ten sam odcien co `.preloader__gem`. Roznica jest niewielka i taka ma
+    // byc: kamien ma sie zapalic razem z reszta przycisku, a nie zamiast niej.
+    .to-top__gem { fill: #731e27; }
   }
 }
 

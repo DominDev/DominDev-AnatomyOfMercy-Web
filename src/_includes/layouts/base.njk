@@ -76,9 +76,13 @@
     </main>
     {% include "partials/footer.njk" %}
     <button class="to-top" type="button" data-to-top aria-label="{{ t.backToTop }}" title="{{ t.backToTop }}">
+      {#- Ornament, nie strzalka interfejsowa: kamien na trzonku z zakonczeniem.
+          Kolejnosc rysowania ma znaczenie, kamien idzie na koncu, bo zakrywa
+          gorny odcinek trzonka, ktory biegnie pod nim. -#}
       <svg viewBox="0 0 24 28" aria-hidden="true" focusable="false">
-        <path d="M12 3l4 5.6-4 5.6-4-5.6z M12 21.4l1.5 2.2-1.5 2.2-1.5-2.2z"/>
-        <path d="M12 11v13.4"/>
+        <path class="to-top__stem" d="M12 11v13.4"/>
+        <path class="to-top__finial" d="M12 21.4l1.5 2.2-1.5 2.2-1.5-2.2z"/>
+        <path class="to-top__gem" d="M12 3l4 5.6-4 5.6-4-5.6z"/>
       </svg>
     </button>
   </body>
