@@ -5,7 +5,7 @@ its role. The originals stay outside this repository, in the project material
 folder. The files committed here are optimised derivatives.
 
 All artwork was created for the Anatomy of Mercy project by its author and is
-not covered by an open source license. See [NOTICE.md](NOTICE.md).
+not covered by an open source license. See [LICENSE.md](LICENSE.md).
 
 ## Brand
 

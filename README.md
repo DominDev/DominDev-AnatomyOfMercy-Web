@@ -52,6 +52,14 @@ This is not a game about defeating a plague. It is a game about how far a decent
 
 The game does not only ask whether you will kill. It asks whether you will ask someone to sacrifice, whether you will tell a donor the whole truth, whether you will maim an enemy to spare his life, and whether you will spend on your own weapon the material a patient is still waiting for. There are no clean victories, only consequences you are willing to carry.
 
+## What the game is built on
+
+Scope can change and features can be cut. These three cannot, because without them this would be a different game.
+
+1. **A story with an author.** Julian is a written character, not an empty avatar. You do not choose whether he wants to save people. You choose what he is willing to spend doing it, and whether he can accept being told no.
+2. **Dilemmas without a clean way out.** No path saves everyone, and refusing to act is a choice as well. Every main road keeps a cost that cannot be undone: a body, a freedom, an obligation, or the trust of someone who was in the room.
+3. **Anatomy as one language.** Fighting, taking and healing draw on the same knowledge and the same scarce material. Nothing here is a separate minigame bolted on: the graft that treats a patient and the weapon that keeps Julian alive come out of the same person.
+
 ## The world
 
 <p align="center">
@@ -65,6 +73,8 @@ The world is built to stay morally ambiguous, and every part of it is written to
 - **The Church of Light** holds executive power during the epidemic. Its **Order of the Lantern** runs the wards, kitchens and almshouses. Its **Holy Office** investigates and judges. Its **Inquisition** seals districts and carries out purges. The Church genuinely protects people, and it genuinely burns them. It is never drawn as obviously evil.
 - **Julian** is genuinely trying to save people. That is what makes him frightening.
 - **Consequence stays visible on the body.** A scar, a missing piece, a stiffened walk. The state of a donor after a procedure matters more than the procedure.
+
+The site carries a longer account of all of this on a page of its own, in [English](https://anatomyofmercy.com/world/) and in [Polish](https://anatomyofmercy.com/pl/swiat/): the city, the four stages of the disease, the four arms of the Church, and the objects that keep coming back.
 
 ## The stories
 
@@ -100,7 +110,7 @@ What exists today:
 | Design documentation | Complete enough to build from, maintained as a living document |
 | Story cycle | Four stories finished in Polish, unpublished |
 | Visual identity | Established, with a written world and visual brief driving every new image |
-| Website | Live at [anatomyofmercy.com](https://anatomyofmercy.com) in English and Polish since 2026-09-12 |
+| Website | Live at [anatomyofmercy.com](https://anatomyofmercy.com) in English and Polish since 2026-09-12, with a page of its own on the world since 2026-09-13 |
 | Game build | Not started. The first milestone is a combat proof, and it is gated behind the work above |
 
 Everything here is made after hours by two amateurs fascinated by games and programming, working under the name DominDev.
@@ -118,6 +128,10 @@ The website that this repository builds is live at [anatomyofmercy.com](https://
 
 This repository holds the source of the official Anatomy of Mercy website. It is not the game.
 
+**What the site is**
+
+Four pages in two languages: a home page at `/` and `/pl/`, and a page on the world at `/world/` and `/pl/swiat/`. Every page works without JavaScript. The scripted layer adds the entrance sequence, the mobile menu and the reveal on scroll, and each of those falls back to something usable when it is absent.
+
 **Built with**
 
 - Eleventy for static HTML generation
@@ -127,14 +141,14 @@ This repository holds the source of the official Anatomy of Mercy website. It is
 
 **Local development**
 
-Use Node.js 24 when possible.
+Use Node.js 24, the version pinned in `.nvmrc`. The package manifest accepts 20.19 and newer, which is the floor the build actually needs.
 
 ```text
 npm install
 npm run dev
 ```
 
-The development server serves English at `/` and Polish at `/pl/`.
+The development server serves English at `/` and `/world/`, Polish at `/pl/` and `/pl/swiat/`.
 
 **Production build**
 
@@ -143,7 +157,14 @@ npm run build
 npm run check
 ```
 
-`npm run check` runs the build validation in `scripts/validate-build.mjs`, which enforces the things that have broken before: required files, language and canonical metadata, heading order, link preview metadata, key parity between the English and Polish data files, image existence, and a guard against any property on the site header that would turn it into a containing block for the mobile menu overlay.
+`npm run check` runs the build validation in `scripts/validate-build.mjs`. Every guard in it exists because something broke once, and each one was added by first breaking the build on purpose to watch it fail. It covers:
+
+- **The output itself.** Required files, the global site data actually reaching the pages, canonical addresses, and a sitemap that matches the pages that were built.
+- **Both languages at once.** Identical keys and equal list lengths across the English and Polish data, `hreflang` pairs that resolve to pages that exist, and a language switcher that never points at a dead address.
+- **Structured data.** Exactly one `VideoGame` entity, owned by the home page, with subpages describing themselves as `Article` and pointing back at it. `gamePlatform` is allowed only while the visible text on the page says the same thing.
+- **Indexing.** A preview build must answer with `Disallow: /` and send `X-Robots-Tag: noindex`. Production must do neither.
+- **Accessibility.** An `alt` attribute on every image, because a missing one and an empty one are different declarations. Real descriptions on the images that carry content rather than decoration. Heading order, and no empty headings or buttons.
+- **The things that fail silently.** The content security policy hash matching the inline bootstrap script, self hosted fonts actually declared in the compiled stylesheet, that same bootstrap script present on every page because it is what adds the `js` class, and any property on the site header that would turn it into a containing block for the mobile menu overlay.
 
 Production output is written to `dist/`. That directory is generated and must never be edited or committed.
 
@@ -167,7 +188,9 @@ Copyright 2026 DominDev. All rights reserved.
 
 The source code, the Anatomy of Mercy name, the written content, characters, world, visual identity and associated assets are protected by copyright and other applicable rights. All artwork in this repository was created for the project by its author.
 
-Public access to this repository does not grant permission to copy, modify, distribute, publish, sublicense or create derivative works from its contents. See [NOTICE.md](NOTICE.md).
+Public access to this repository does not grant permission to copy, modify, distribute, publish, sublicense or create derivative works from its contents. This is not an open source project and no open source license applies to any part of it.
+
+The full terms, including the few things that are allowed, are in [LICENSE.md](LICENSE.md).
 
 <p align="center">
   <br>
