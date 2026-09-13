@@ -158,7 +158,7 @@
       },
       "plague": {
         "title": "The Crimson Plague",
-        "epigraph": "Fire kills it. Fire also carries it.",
+        "epigraph": "It does not kill quickly. First it takes whatever made the person recognisable.",
         "lead": "Three names for one disease, and the one a person uses tells you where they stand. Most call it the Crimson Plague. The Church calls it the Crimson Blemish, a sickness of the body that works through the cracks in a person's character. Julian calls it blood crystallica and declines the rest.",
         "stagesTitle": "How it advances",
         "stages": [
@@ -187,7 +187,7 @@
       },
       "church": {
         "title": "The Church of Light",
-        "epigraph": "The Church really protects people. It really burns them.",
+        "epigraph": "Every gate in Vespera was closed by someone who believed it would save more people than it killed.",
         "lead": "The Church of Light feeds the sick, nurses them, buries them, keeps the quarantine and keeps order. It also runs an apparatus of coercion that can justify almost anything by pointing at the majority it protects. Both halves are true at once, and nothing on this page is going to resolve that for you.",
         "structuresTitle": "Four structures, one institution",
         "structures": [
@@ -214,8 +214,8 @@
         ]
       },
       "objects": {
-        "title": "Things that carry meaning",
-        "intro": "A handful of objects keep coming back: in the wards, in the stories, and in the physician's own bag.",
+        "title": "The objects that keep coming back",
+        "intro": "In Vespera an object usually means that a decision about someone has already been made. These ten come back constantly: in the wards, in the paperwork, and in the physician's own bag.",
         "items": [
           "A thin metal rod for percussing bone, worn smooth by years of use.",
           "Small glass vials, waxed and sealed. In some of them, something moves.",
@@ -399,7 +399,7 @@
       },
       "plague": {
         "title": "Karmazynowy Pomór",
-        "epigraph": "Ogień ją zabija. Ogień ją też roznosi.",
+        "epigraph": "Nie zabija szybko. Najpierw zabiera to, po czym dawało się poznać człowieka.",
         "lead": "Trzy nazwy jednej choroby, a po tym, której ktoś używa, poznasz, po czyjej jest stronie. Większość mówi: Karmazynowy Pomór. Kościół mówi: Karmazynowa Skaza, choroba ciała, która wchodzi przez pęknięcia w ludzkim charakterze. Julian mówi: krystalica krwi, i na tym kończy rozmowę.",
         "stagesTitle": "Jak postępuje",
         "stages": [
@@ -428,7 +428,7 @@
       },
       "church": {
         "title": "Kościół Światła",
-        "epigraph": "Kościół naprawdę chroni ludzi. I naprawdę ich pali.",
+        "epigraph": "Każdą bramę w Vesperze zamknął ktoś, kto wierzył, że uratuje więcej ludzi, niż zabije.",
         "lead": "Kościół Światła karmi chorych, pielęgnuje ich, grzebie, pilnuje kwarantanny i utrzymuje porządek. Ma też aparat przymusu, który usprawiedliwi niemal wszystko, wskazując na większość, którą chroni. Obie te rzeczy są prawdziwe naraz i nic na tej stronie nie rozstrzygnie tego za ciebie.",
         "structuresTitle": "Cztery struktury, jedna instytucja",
         "structures": [
@@ -455,8 +455,8 @@
         ]
       },
       "objects": {
-        "title": "Rzeczy, które coś znaczą",
-        "intro": "Kilka przedmiotów wraca tu bez przerwy: w lazaretach, w opowiadaniach i w torbie samego lekarza.",
+        "title": "Przedmioty, które tu wracają",
+        "intro": "W Vesperze przedmiot zwykle znaczy, że o kimś już zdecydowano. Tych dziesięć wraca bez przerwy: w lazaretach, w dokumentach i w torbie samego lekarza.",
         "items": [
           "Cienki metalowy pręt do opukiwania kości, wygładzony od lat używania.",
           "Małe szklane fiolki, woskowane i zapieczętowane. W niektórych coś się porusza.",
