@@ -26,7 +26,35 @@
   Byty maja wlasne `@id`, zeby dwie wersje jezykowe odnosily sie do tego samego
   studia, a nie tworzyly dwoch osobnych. Powiazanie miedzy wersjami jezykowymi
   zostawiamy znacznikom `hreflang`, ktore juz to robia poprawnie.
+
+  Strona swiata nie jest druga gra. Opisuje ja `Article`, ktory przez `about`
+  wskazuje ten sam byt `VideoGame` co strona glowna tej wersji jezykowej.
+  Dwa byty `VideoGame` pod dwoma adresami oznaczalyby dwie gry.
 -#}
+{%- if pageType == "world" -%}
+<script type="application/ld+json">{{ {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": site.url + canonicalPath + "#article",
+      "headline": t.worldPage.metaTitle,
+      "url": site.url + canonicalPath,
+      "description": t.worldPage.metaDescription,
+      "inLanguage": lang,
+      "image": site.url + "/assets/images/social/og-1200x630.jpg",
+      "about": { "@id": site.url + homePath + "#game" },
+      "author": { "@id": site.studioUrl + "/#studio" }
+    },
+    {
+      "@type": "Organization",
+      "@id": site.studioUrl + "/#studio",
+      "name": "DominDev",
+      "url": site.studioUrl
+    }
+  ]
+} | dump | safe }}</script>
+{%- else -%}
 <script type="application/ld+json">{{ {
   "@context": "https://schema.org",
   "@graph": [
@@ -51,3 +79,4 @@
     }
   ]
 } | dump | safe }}</script>
+{%- endif -%}

@@ -45,6 +45,28 @@
     p { margin: 0.85rem auto 0; max-width: 28ch; font-size: 1.08rem; line-height: 1.45; color: #cfc2a6; }
   }
 }
+// Filary gry. Bez grafik: winiety wyzej niosa juz cztery obrazy tego samego
+// rodzaju, wiec kolejne kafle z ilustracja zamienilyby argument w galerie.
+// Numer i cienka linia nad nim naleza do tego samego jezyka ornamentu co rama.
+.pillars {
+  list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(1.5rem, 3vw, 2.75rem);
+  &__item {
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(174,143,84,0.45);
+    h3 { margin-top: 0.85rem; font-size: clamp(1.05rem, 1.3vw, 1.2rem); color: #ecdcb7; letter-spacing: 0.03em; }
+    p { margin-top: 0.9rem; font-size: 1.05rem; line-height: 1.65; color: var(--color-text-muted); }
+  }
+  &__index {
+    display: block;
+    font: 500 0.82rem / 1 var(--font-label);
+    letter-spacing: 0.18em;
+    color: #b19459;
+  }
+}
+@media (max-width: 63.99rem) {
+  .pillars { grid-template-columns: 1fr; gap: 2rem; }
+}
+
 @media (max-width: 63.99rem) {
   .vignettes { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }

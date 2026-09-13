@@ -1,11 +1,14 @@
       (() => {
         const root = document.documentElement;
         root.classList.add("js");
-        // The entrance plays on every load. It is part of the experience, not a
-        // loading screen, so it is not remembered per session.
+        // Sekwencja wejscia odtwarza sie przy kazdym wczytaniu strony. Jest
+        // czescia doswiadczenia, nie ekranem ladowania, wiec nie zapamietujemy
+        // jej na sesje. Uklad wstawia ten skrypt wylacznie na stronach, ktore
+        // maja preloader; na pozostalych klasa nigdy nie powstaje.
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
           root.classList.add("intro-pending");
-          // Release the page even if the deferred script fails to load.
+          // Strona musi sie odblokowac takze wtedy, gdy odroczony skrypt nie
+          // wczyta sie wcale.
           window.aomIntroFailsafe = setTimeout(() => {
             root.classList.remove("intro-pending");
             document.querySelectorAll("[data-intro-inert]").forEach(node => {

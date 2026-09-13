@@ -71,7 +71,30 @@
     "world": {
       "eyebrow": "Vespera",
       "title": "The city still breathes. Something beneath it answers.",
-      "body": "Vespera grew rich on trade, pilgrimage and medical scholarship. It is dying of the Crimson Plague, which turns blood and marrow to crystal; what the crystal breaks sheds a dust that infects whoever breathes it. The Church of Light calls the disease the Crimson Blemish and answers it with quarantine and fire. Julian calls it blood crystallica and answers it with a knife. In its last stage, the sick begin to see the same things."
+      "body": "Vespera grew rich on trade, pilgrimage and medical scholarship. It is dying of the Crimson Plague, which turns blood and marrow to crystal; what the crystal breaks sheds a dust that infects whoever breathes it. The Church of Light calls the disease the Crimson Blemish and answers it with quarantine and fire. Julian calls it blood crystallica and answers it with a knife. In its last stage, the sick begin to see the same things.",
+      "action": "Explore Vespera"
+    },
+    "pillars": {
+      "eyebrow": "What the game is built on",
+      "title": "Three things the game will not trade away.",
+      "intro": "Scope can change and features can be cut. These three cannot, because without them this would be a different game.",
+      "items": [
+        {
+          "order": "I",
+          "title": "A story with an author",
+          "body": "Julian is a written character, not an empty avatar. You do not choose whether he wants to save people. You choose what he is willing to spend doing it, and whether he can accept being told no."
+        },
+        {
+          "order": "II",
+          "title": "Dilemmas without a clean way out",
+          "body": "No path saves everyone, and refusing to act is a choice as well. Every main road keeps a cost that cannot be undone: a body, a freedom, an obligation, or the trust of someone who was in the room."
+        },
+        {
+          "order": "III",
+          "title": "Anatomy as one language",
+          "body": "Fighting, taking and healing draw on the same knowledge and the same scarce material. Nothing here is a separate minigame bolted on: the graft that treats a patient and the weapon that keeps Julian alive come out of the same person."
+        }
+      ]
     },
     "stories": {
       "eyebrow": "Stories from the quarantine",
@@ -114,6 +137,73 @@
       "title": "Anatomy of Mercy is in development.",
       "body": "Anatomy of Mercy is made after hours by two amateurs fascinated by games and programming, working under the name DominDev. There is no release date yet. For press and project enquiries, or simply to say you want to read the stories, write to us.",
       "action": "Write to us"
+    },
+    "worldPage": {
+      "metaTitle": "The world of Vespera | Anatomy of Mercy",
+      "metaDescription": "Vespera, the Crimson Plague and the Church of Light: the city, the disease and the institution that decides which streets burn.",
+      "eyebrow": "The world",
+      "title": "Vespera",
+      "lead": "A city that grew rich on trade, pilgrimage and medical scholarship, and is now dying behind its own quarantine gates. What follows is what a physician working these streets would take for granted.",
+      "city": {
+        "title": "The city",
+        "body": [
+          "Vespera is a late medieval city of steep roofs, narrow lanes, canals and stone bridges, under a cathedral that dominates every view it appears in. Its wealth came from three things: goods that passed through it, pilgrims who stopped in it, and a school of medicine that outlived the reputation of everyone who taught there.",
+          "The plague changed who gives orders. Secular authority still exists and still signs documents, but it is weak. The Church of Light holds executive power: it decides which gates close, which houses are marked and which streets are cleansed. Experimental treatment has been forbidden since a handful of well documented disasters.",
+          "Quarantine is visible from the street. Timber barriers stand across the lanes, doors are sealed and marked with red cloth, barrels of resin wait against the walls of a district scheduled to burn, and ash falls over all of it like dirty snow. A sealed street is not an empty street. People live behind the barriers, and they can hear the bell.",
+          "By city law a body belongs to the family. The Church may take it anyway, as a sanitary hazard. Bone and blood carry medical, religious and commercial value at the same time, which is why there is a market for both that nobody admits to."
+        ]
+      },
+      "plague": {
+        "title": "The Crimson Plague",
+        "body": [
+          "Three names for one disease, and the one a person uses tells you where they stand. Most call it the Crimson Plague. The Church calls it the Crimson Blemish, a sickness of the body that works through the cracks in a person's character. Julian calls it blood crystallica and declines the rest.",
+          "It passes through blood and bodily fluids. Standing near a sick person is not enough to catch it. What is dangerous is an open wound, a spill, and above all dust: in the late stages the disease grows crystalline deposits in vessels and marrow, and broken crystal sheds a dust that infects whoever breathes it.",
+          "This is why fire is not a clean answer. Flame destroys active tissue, but inside a closed room it spreads the dust before it burns it. A controlled cleansing means evacuating the building, sealing the rooms, binding the dust with a reagent and burning outward from the source. The Church knows this. It does not always have the time."
+        ],
+        "stagesTitle": "How it advances",
+        "stages": [
+          { "name": "Latency", "body": "Weakness, fever, and eyes that cannot bear bright light." },
+          { "name": "Blood change", "body": "Dark veins, bleeding that does not stop when it should, and a temper that is not quite the person you knew." },
+          { "name": "Crystallisation", "body": "Pain in the bones, stiffness, red deposits under the skin. This is the stage a physician can still act on." },
+          { "name": "Resonance", "body": "Hallucinations, images shared with other sick people, and the loss of one's own will." }
+        ],
+        "after": "Removing the affected tissue and setting a living, compatible bone and marrow graft in its place can stop some forms of the disease. That graft has to come out of somebody. Where the plague came from in the first place is not known, and the physicians of Vespera have stopped pretending otherwise."
+      },
+      "church": {
+        "title": "The Church of Light",
+        "body": [
+          "The Church of Light feeds the sick, nurses them, buries them, keeps the quarantine and keeps order. It also runs an apparatus of coercion that can justify almost anything by pointing at the majority it protects. Both halves are true at once, and nothing here is going to resolve that for you.",
+          "Its doctrine holds that Light is truth, order and cleansing, and that the Blemish is a disease of the body that exploits a person's moral fractures. Not every cleric reads that literally. The sign of the Church is a sun cross inside a circle, and it appears on aprons, banners, seals and armour."
+        ],
+        "structuresTitle": "Four structures, one institution",
+        "structures": [
+          { "name": "The Synod of Light", "body": "The highest authority in Vespera. Sets doctrine, holds the property and negotiates with what is left of the secular city." },
+          { "name": "The Order of the Lantern", "body": "Runs the wards, the kitchens and the almshouses. Nursing sisters in dark habits over stained aprons, carrying lanterns and lists of names. Some of them consider Julian a heretic. Some of them use his methods quietly." },
+          { "name": "The Holy Office", "body": "Investigates and judges: heresy, illegal autopsies, broken quarantine, experiments. Dangerous through procedure and certainty rather than through cruelty." },
+          { "name": "The Inquisition", "body": "Carries those decisions out. Guards the wards, seals the districts, conducts the cleansings. Plain white masks and dark coats, worn by fanatics, professional soldiers, people who lost their families, and people trying to blunt the orders they are given." }
+        ],
+        "after": "The Church holds part of the truth. Isolation does limit infection, fire does destroy active tissue, and some of Julian's experiments really do raise the risk of mutation. It also crosses lines: infection is read as evidence of guilt, sentences are passed on incomplete diagnoses, quarantine serves political control, and the institution hides its own mistakes to keep its authority."
+      },
+      "objects": {
+        "title": "Things that carry meaning",
+        "intro": "A handful of objects come back again and again, in the wards, in the stories and in the physician's own case.",
+        "items": [
+          "A thin metal rod for percussing bone, worn smooth by use.",
+          "Small glass vials, waxed and sealed, sometimes with something inside that moves.",
+          "A silver plate for testing whether blood will clot.",
+          "A roll of surgical instruments in leather, laid open on cloth.",
+          "An extraction card with a donor's name, a compatibility note and one word that matters.",
+          "Seals, wax, and deferral documents carrying a commander's stamp.",
+          "Lanterns of gothic ironwork, carried by people who are not allowed to put them down.",
+          "Red banners on poles, and red cloth nailed to a sealed door.",
+          "Barrels of resin, the sign that a district is about to be cleansed.",
+          "A bell. Three strikes mean the street burns."
+        ]
+      },
+      "closing": {
+        "body": "Four people lived through one night of this and wrote it down afterwards. Each of them is certain about something the others got wrong.",
+        "action": "The stories"
+      }
     },
     "footer": {
       "navLabel": "Footer navigation",
@@ -195,7 +285,30 @@
     "world": {
       "eyebrow": "Vespera",
       "title": "Miasto wciąż oddycha. Coś pod nim odpowiada.",
-      "body": "Vespera wzbogaciła się na handlu, pielgrzymkach i nauce medycznej. Umiera na Karmazynowy Pomór, który zamienia krew i szpik w kryształ; to, co kryształ rozłamie, sypie pyłem, a pył zaraża każdego, kto go wdycha. Kościół Światła nazywa chorobę Karmazynową Skazą i odpowiada na nią kwarantanną i ogniem. Julian nazywa ją krystalicą krwi i odpowiada nożem. W ostatnim stadium chorzy zaczynają widzieć to samo."
+      "body": "Vespera wzbogaciła się na handlu, pielgrzymkach i nauce medycznej. Umiera na Karmazynowy Pomór, który zamienia krew i szpik w kryształ; to, co kryształ rozłamie, sypie pyłem, a pył zaraża każdego, kto go wdycha. Kościół Światła nazywa chorobę Karmazynową Skazą i odpowiada na nią kwarantanną i ogniem. Julian nazywa ją krystalicą krwi i odpowiada nożem. W ostatnim stadium chorzy zaczynają widzieć to samo.",
+      "action": "Poznaj Vesperę"
+    },
+    "pillars": {
+      "eyebrow": "Na czym stoi ta gra",
+      "title": "Trzy rzeczy, których ta gra nie odda.",
+      "intro": "Zakres może się zmienić, a funkcje można wyciąć. Tych trzech nie, bo bez nich byłaby to inna gra.",
+      "items": [
+        {
+          "order": "I",
+          "title": "Historia z autorem",
+          "body": "Julian jest napisaną postacią, nie pustym awatarem. Nie wybierasz, czy chce ratować ludzi. Wybierasz, ile jest gotów za to zapłacić i czy potrafi przyjąć czyjąś odmowę."
+        },
+        {
+          "order": "II",
+          "title": "Dylematy bez czystego wyjścia",
+          "body": "Żadna droga nie ratuje wszystkich, a zaniechanie również jest wyborem. Każda główna droga zachowuje koszt, którego nie da się cofnąć: ciało, wolność, zobowiązanie albo zaufanie kogoś, kto przy tym był."
+        },
+        {
+          "order": "III",
+          "title": "Anatomia jako jeden język",
+          "body": "Walka, pozyskiwanie i leczenie korzystają z tej samej wiedzy i z tego samego skąpego materiału. Nic tu nie jest osobną minigrą doklejoną z boku: przeszczep, który ratuje pacjenta, i broń, która utrzymuje Juliana przy życiu, pochodzą z tego samego człowieka."
+        }
+      ]
     },
     "stories": {
       "eyebrow": "Opowieści z kwarantanny",
@@ -234,6 +347,73 @@
       "title": "Anatomy of Mercy jest w produkcji.",
       "body": "Anatomy of Mercy robią po godzinach dwaj amatorzy zafascynowani grami i programowaniem, pod nazwą DominDev. Daty premiery jeszcze nie ma. W sprawach prasowych i projektowych, albo po prostu żeby powiedzieć, że chcesz przeczytać opowiadania, napisz do nas.",
       "action": "Napisz do nas"
+    },
+    "worldPage": {
+      "metaTitle": "Świat Vespery | Anatomy of Mercy",
+      "metaDescription": "Vespera, Karmazynowy Pomór i Kościół Światła: miasto, choroba i instytucja, która decyduje, która ulica spłonie.",
+      "eyebrow": "Świat",
+      "title": "Vespera",
+      "lead": "Miasto, które wzbogaciło się na handlu, pielgrzymkach i nauce medycznej, a teraz umiera za własnymi bramami kwarantanny. Poniżej to, co lekarz pracujący na tych ulicach uznaje za oczywiste.",
+      "city": {
+        "title": "Miasto",
+        "body": [
+          "Vespera to późnośredniowieczne miasto stromych dachów, wąskich zaułków, kanałów i kamiennych mostów, nad którymi góruje katedra widoczna z każdej strony. Bogactwo wzięło się z trzech rzeczy: z towarów, które przez nie przechodziły, z pielgrzymów, którzy się w nim zatrzymywali, i ze szkoły medycznej, która przetrwała reputację wszystkich swoich wykładowców.",
+          "Zaraza zmieniła to, kto wydaje rozkazy. Władza świecka nadal istnieje i nadal podpisuje dokumenty, ale jest słaba. Władzę wykonawczą ma Kościół Światła: decyduje, które bramy się zamykają, które domy zostają oznaczone i którą ulicę się oczyszcza. Leczenie eksperymentalne jest zakazane od kilku dobrze udokumentowanych katastrof.",
+          "Kwarantannę widać z ulicy. W poprzek zaułków stoją drewniane zapory, drzwi są zapieczętowane i oznaczone czerwonym płótnem, pod murami dzielnicy przeznaczonej do spalenia czekają beczki żywicy, a na to wszystko pada popiół jak brudny śnieg. Zapieczętowana ulica nie jest pustą ulicą. Za zaporami mieszkają ludzie i słyszą dzwon.",
+          "Według prawa miejskiego ciało należy do rodziny. Kościół i tak może je przejąć jako zagrożenie sanitarne. Kości i krew mają jednocześnie wartość medyczną, religijną i handlową, więc istnieje na nie rynek, do którego nikt się nie przyznaje."
+        ]
+      },
+      "plague": {
+        "title": "Karmazynowy Pomór",
+        "body": [
+          "Trzy nazwy jednej choroby, a to, której ktoś używa, mówi, po której stoi stronie. Większość mówi Karmazynowy Pomór. Kościół nazywa ją Karmazynową Skazą, chorobą ciała, która działa przez pęknięcia w ludzkim charakterze. Julian mówi krystalica krwi i reszty nie przyjmuje.",
+          "Przenosi się przez krew i płyny ustrojowe. Sama obecność przy chorym nie wystarcza, żeby się zarazić. Groźna jest otwarta rana, rozlana krew, a przede wszystkim pył: w późnych stadiach choroba tworzy krystaliczne złogi w naczyniach i szpiku, a rozłamany kryształ sypie pyłem, który zaraża każdego, kto go wdycha.",
+          "Dlatego ogień nie jest czystą odpowiedzią. Płomień niszczy aktywną tkankę, ale w zamkniętym pomieszczeniu rozniesie pył, zanim go spali. Kontrolowane oczyszczenie oznacza ewakuację budynku, uszczelnienie pomieszczeń, związanie pyłu odczynnikiem i palenie od źródła na zewnątrz. Kościół o tym wie. Nie zawsze ma na to czas."
+        ],
+        "stagesTitle": "Jak postępuje",
+        "stages": [
+          { "name": "Utajenie", "body": "Osłabienie, gorączka i oczy, które nie znoszą ostrego światła." },
+          { "name": "Przemiana krwi", "body": "Ciemne żyły, krwawienia, które nie ustają wtedy, kiedy powinny, i charakter, który przestaje być tym, co się znało." },
+          { "name": "Krystalizacja", "body": "Ból kości, sztywność, czerwone złogi pod skórą. To jest stadium, w którym lekarz jeszcze może coś zrobić." },
+          { "name": "Rezonans", "body": "Halucynacje, obrazy wspólne z innymi chorymi i utrata własnej woli." }
+        ],
+        "after": "Usunięcie zajętej tkanki i osadzenie w jej miejsce żywego, zgodnego przeszczepu kostno-szpikowego może zatrzymać niektóre postacie choroby. Ten przeszczep musi pochodzić z kogoś. Skąd wziął się sam Pomór, nie wiadomo, a lekarze Vespery przestali udawać, że jest inaczej."
+      },
+      "church": {
+        "title": "Kościół Światła",
+        "body": [
+          "Kościół Światła karmi chorych, opiekuje się nimi, grzebie ich, pilnuje kwarantanny i utrzymuje porządek. Prowadzi też aparat przymusu, który potrafi usprawiedliwić niemal wszystko, wskazując na większość, której broni. Obie połowy są prawdziwe naraz i nic tutaj nie rozstrzygnie tego za ciebie.",
+          "Doktryna mówi, że Światło jest prawdą, porządkiem i oczyszczeniem, a Skaza chorobą ciała, która wykorzystuje moralne pęknięcia człowieka. Nie każdy duchowny czyta to dosłownie. Znakiem Kościoła jest słoneczny krzyż w kręgu i pojawia się na fartuchach, sztandarach, pieczęciach i zbrojach."
+        ],
+        "structuresTitle": "Cztery struktury, jedna instytucja",
+        "structures": [
+          { "name": "Synod Światła", "body": "Najwyższa władza w Vesperze. Ustala doktrynę, zarządza majątkiem i negocjuje z tym, co zostało z miasta świeckiego." },
+          { "name": "Zakon Latarni", "body": "Prowadzi lazarety, kuchnie i przytułki. Siostry w ciemnych habitach na poplamionych fartuchach, z latarniami i listami nazwisk. Część uważa Juliana za heretyka. Część po cichu korzysta z jego metod." },
+          { "name": "Święte Oficjum", "body": "Bada i sądzi: herezję, nielegalne autopsje, złamaną kwarantannę, eksperymenty. Groźne przez procedurę i pewność własnej racji, nie przez okrucieństwo." },
+          { "name": "Inkwizycja", "body": "Wykonuje te decyzje. Chroni lazarety, zamyka dzielnice, przeprowadza oczyszczenia. Białe maski i ciemne płaszcze, noszone przez fanatyków, zawodowych żołnierzy, ludzi po stracie rodziny i ludzi, którzy próbują tępić ostrza własnych rozkazów." }
+        ],
+        "after": "Kościół ma część racji. Izolacja rzeczywiście ogranicza zakażenia, ogień rzeczywiście niszczy aktywną tkankę, a część eksperymentów Juliana naprawdę zwiększa ryzyko mutacji. Przekracza też granice: zakażenie bywa czytane jako dowód winy, wyroki zapadają przy niepełnej diagnozie, kwarantanna służy kontroli politycznej, a instytucja ukrywa własne błędy, żeby zachować autorytet."
+      },
+      "objects": {
+        "title": "Rzeczy, które coś znaczą",
+        "intro": "Kilka przedmiotów wraca tu raz po raz: w lazaretach, w opowiadaniach i w futerale samego lekarza.",
+        "items": [
+          "Cienki metalowy pręt do opukiwania kości, wygładzony od używania.",
+          "Małe szklane fiolki, woskowane i zapieczętowane, czasem z czymś w środku, co się porusza.",
+          "Srebrna płytka do sprawdzania, czy krew skrzepnie.",
+          "Zwój narzędzi chirurgicznych w skórze, rozłożony na płótnie.",
+          "Karta pobrania z imieniem dawcy, notatką o zgodności i jednym słowem, które ma znaczenie.",
+          "Pieczęcie, wosk i odroczenia opatrzone stemplem dowódcy.",
+          "Latarnie z gotyckiego żelaza, niesione przez ludzi, którym nie wolno ich odstawić.",
+          "Czerwone sztandary na drzewcach i czerwone płótno przybite do zapieczętowanych drzwi.",
+          "Beczki żywicy, znak, że dzielnica ma zostać oczyszczona.",
+          "Dzwon. Trzy uderzenia znaczą, że ulica spłonie."
+        ]
+      },
+      "closing": {
+        "body": "Czworo ludzi przeżyło jedną taką noc i spisało ją później. Każde z nich jest pewne czegoś, co pozostali zapamiętali inaczej.",
+        "action": "Opowiadania"
+      }
     },
     "footer": {
       "navLabel": "Nawigacja w stopce",

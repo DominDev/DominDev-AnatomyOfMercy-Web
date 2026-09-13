@@ -1,0 +1,146 @@
+// Strona swiata. Typografia zamiast kolejnych ilustracji: caly material
+// wizualny tej sekcji niesie juz panorama, a druga i trzecia grafika o tym
+// samym motywie zamienilyby opis w galerie.
+.world-page {
+  &__masthead {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    min-height: 26rem;
+    padding-block: clamp(5rem, 9vw, 8rem) clamp(2.5rem, 5vw, 4rem);
+  }
+
+  &__panorama {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  // Ten sam podwojny gradient co w sekcji swiata na stronie glownej: pionowy
+  // wygasza krawedzie, poziomy zostawia lewa strone ciemna pod tekst.
+  &__masthead::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(9, 8, 7, .95), rgba(9, 8, 7, .72) 45%, rgba(9, 8, 7, .3)),
+      linear-gradient(#090807, transparent 22%, transparent 55%, #090807);
+    content: "";
+  }
+
+  &__masthead-inner { max-width: 46rem; }
+
+  &__masthead h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    line-height: 1.05;
+    color: #e9d9b4;
+  }
+
+  &__lead {
+    margin-top: 1.5rem;
+    max-width: 44ch;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #ddd2bd;
+  }
+
+  &__body {
+    padding-block: clamp(3rem, 6vw, 5rem) clamp(4rem, 7vw, 6rem);
+    max-width: 46rem;
+  }
+
+  &__section {
+    + .world-page__section { margin-top: clamp(2.75rem, 5vw, 4rem); }
+
+    h2 {
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      color: #e6d7b6;
+    }
+
+    // Linia ornamentalna pod naglowkiem, ten sam romb co w naroznikach ramy.
+    h2::after {
+      display: block;
+      width: 4.5rem;
+      margin-top: 0.9rem;
+      border-top: 1px solid rgba(177, 148, 89, .45);
+      content: "";
+    }
+
+    h3 {
+      margin-top: 2rem;
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      color: #d6c08d;
+    }
+
+    p {
+      margin-top: 1.25rem;
+      font-size: 1.08rem;
+      line-height: 1.75;
+      color: var(--color-text-muted);
+    }
+  }
+
+  &__stages,
+  &__structures,
+  &__objects {
+    margin-top: 1.25rem;
+    padding-left: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      padding-left: 1.6rem;
+      margin-top: 0.9rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+    }
+
+    // Romb zamiast punktora, w jezyku ramy i przycisku powrotu na gore.
+    li::before {
+      position: absolute;
+      top: 0.72em;
+      left: 0.15rem;
+      width: 6px;
+      height: 6px;
+      background: rgba(177, 148, 89, .8);
+      transform: rotate(45deg);
+      content: "";
+    }
+  }
+
+  &__term {
+    color: #e2d2ae;
+    font-weight: 600;
+  }
+
+  // Definicja idzie do nowego wiersza dopiero wtedy, gdy jest na to miejsce.
+  &__definition { display: inline; }
+
+  &__closing {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--frame-color);
+
+    p {
+      max-width: 44ch;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+    }
+
+    .button { margin-top: 1.75rem; }
+  }
+}
+
+@media (max-width: 48rem) {
+  .world-page__masthead { min-height: 20rem; }
+  .world-page__lead { font-size: 1.05rem; }
+}

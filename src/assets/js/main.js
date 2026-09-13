@@ -152,7 +152,10 @@ if (header && menuButton && navigation && menuLabel) {
   updateHeader();
 
   if ("IntersectionObserver" in window) {
-    const links = [...navigation.querySelectorAll('a[href^="#"]')];
+    // Odnosniki sekcji zawieraja teraz takze adres strony glownej, bo ten sam
+    // pasek stoi na podstronach. Dlatego szukamy kotwicy w srodku adresu, a nie
+    // na jego poczatku, i porownujemy przez `hash`, ktory obcina reszte.
+    const links = [...navigation.querySelectorAll('a[href*="#"]')];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;

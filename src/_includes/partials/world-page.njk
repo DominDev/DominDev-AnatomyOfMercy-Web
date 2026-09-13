@@ -1,0 +1,59 @@
+{% set t = i18n[lang] %}
+{% set w = t.worldPage %}
+<article class="world-page">
+  <header class="world-page__masthead">
+    {# Panorama Vespery jest tu tlem, a nie trescia: caly opis miasta stoi obok
+       slowami. Ten sam plik sluzy sekcji swiata na stronie glownej, wiec nie
+       dokladamy wagi ani drugiej grafiki o tym samym motywie. #}
+    <img class="world-page__panorama" src="/assets/images/world/vespera.webp" width="950" height="1044" alt="" fetchpriority="high" decoding="async">
+    <div class="shell world-page__masthead-inner">
+      <p class="eyebrow">{{ w.eyebrow }}</p>
+      <h1>{{ w.title }}</h1>
+      <p class="world-page__lead">{{ w.lead }}</p>
+    </div>
+  </header>
+
+  <div class="shell world-page__body">
+    <section class="world-page__section" aria-labelledby="world-city">
+      <h2 id="world-city">{{ w.city.title }}</h2>
+      {% for paragraph in w.city.body %}<p>{{ paragraph }}</p>{% endfor %}
+    </section>
+
+    <section class="world-page__section" aria-labelledby="world-plague">
+      <h2 id="world-plague">{{ w.plague.title }}</h2>
+      {% for paragraph in w.plague.body %}<p>{{ paragraph }}</p>{% endfor %}
+      <h3>{{ w.plague.stagesTitle }}</h3>
+      <ol class="world-page__stages">
+        {% for stage in w.plague.stages %}
+          <li><span class="world-page__term">{{ stage.name }}</span> <span class="world-page__definition">{{ stage.body }}</span></li>
+        {% endfor %}
+      </ol>
+      <p>{{ w.plague.after }}</p>
+    </section>
+
+    <section class="world-page__section" aria-labelledby="world-church">
+      <h2 id="world-church">{{ w.church.title }}</h2>
+      {% for paragraph in w.church.body %}<p>{{ paragraph }}</p>{% endfor %}
+      <h3>{{ w.church.structuresTitle }}</h3>
+      <ul class="world-page__structures" role="list">
+        {% for structure in w.church.structures %}
+          <li><span class="world-page__term">{{ structure.name }}</span> <span class="world-page__definition">{{ structure.body }}</span></li>
+        {% endfor %}
+      </ul>
+      <p>{{ w.church.after }}</p>
+    </section>
+
+    <section class="world-page__section" aria-labelledby="world-objects">
+      <h2 id="world-objects">{{ w.objects.title }}</h2>
+      <p>{{ w.objects.intro }}</p>
+      <ul class="world-page__objects" role="list">
+        {% for item in w.objects.items %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    </section>
+
+    <div class="world-page__closing">
+      <p>{{ w.closing.body }}</p>
+      <a class="button button--primary" href="{{ homePath }}#stories">{{ w.closing.action }}</a>
+    </div>
+  </div>
+</article>

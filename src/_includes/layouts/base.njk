@@ -1,4 +1,9 @@
 {% set t = i18n[lang] %}
+{#- Tytul i opis zalezne od rodzaju strony. Trzymane tutaj, a nie w naglowkach
+    poszczegolnych plikow, zeby kazda nowa strona dziedziczyla ten sam uklad
+    metadanych zamiast powtarzac go z palca. -#}
+{% set metaTitle = t.worldPage.metaTitle if pageType == "world" else t.meta.title %}
+{% set metaDescription = t.worldPage.metaDescription if pageType == "world" else t.meta.description %}
 <!doctype html>
 <html lang="{{ lang }}">
   <head>
@@ -6,9 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#090807">
     <meta name="color-scheme" content="dark">
-    <meta name="description" content="{{ t.meta.description }}">
-    <meta property="og:title" content="{{ t.meta.title }}">
-    <meta property="og:description" content="{{ t.meta.description }}">
+    <meta name="description" content="{{ metaDescription }}">
+    <meta property="og:title" content="{{ metaTitle }}">
+    <meta property="og:description" content="{{ metaDescription }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ locale }}">
     {# Druga wersja jezykowa zglaszana takze Open Graphowi. `hreflang` mowi to
@@ -23,31 +28,46 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="{{ t.meta.imageAlt }}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ t.meta.title }}">
-    <meta name="twitter:description" content="{{ t.meta.description }}">
+    <meta name="twitter:title" content="{{ metaTitle }}">
+    <meta name="twitter:description" content="{{ metaDescription }}">
     <meta name="twitter:image" content="{{ site.url }}/assets/images/social/og-1200x630.jpg">
     <meta name="twitter:image:alt" content="{{ t.meta.imageAlt }}">
     <link rel="canonical" href="{{ site.url }}{{ canonicalPath }}">
-    <link rel="alternate" hreflang="en" href="{{ site.url }}/">
-    <link rel="alternate" hreflang="pl" href="{{ site.url }}/pl/">
-    <link rel="alternate" hreflang="x-default" href="{{ site.url }}/">
+    {# Powiazania jezykowe wskazuja odpowiednik tej samej tresci, a nie korzen
+       wersji. Kazda strona podaje oba adresy w naglowku pliku, wiec strona
+       swiata prowadzi do strony swiata, a nie na strone glowna. #}
+    <link rel="alternate" hreflang="en" href="{{ site.url }}{{ enPath }}">
+    <link rel="alternate" hreflang="pl" href="{{ site.url }}{{ plPath }}">
+    <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ enPath }}">
     <link rel="icon" type="image/png" href="/favicon.png">
     {% include "partials/structured-data.njk" %}
     {# Fonty leza na naszym serwerze, a deklaracje @font-face sa w main.css.
        Wczesniej arkusz z Google blokowal renderowanie: przegladarka musiala
        nawiazac polaczenie z obcym serwerem i pobrac arkusz, zanim w ogole
        dowiedziala sie, gdzie leza pliki fontow. #}
+    {%- if entrance %}
     {# Skrypt siedzi w osobnym pliku, poniewaz ten sam plik jest zrodlem skrotu
        w polityce bezpieczenstwa tresci. Trzymanie go w dwoch miejscach
        skonczyloby sie tym, ze po zmianie jednego z nich przegladarka po cichu
-       przestalaby wykonywac wejscie. #}
+       przestalaby wykonywac wejscie.
+
+       Skrypt wchodzi wylacznie na strony z sekwencja wejscia. Bez preloadera
+       nie mialby czego odslonic, a klasa `intro-pending` zablokowalaby
+       przewijanie az do zadzialania bezpiecznika. #}
     <script>{% include "partials/intro-bootstrap.js" %}</script>
+    {%- endif %}
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/main.js" defer></script>
-    <title>{{ t.meta.title }}</title>
+    <title>{{ metaTitle }}</title>
   </head>
   <body class="page">
+    {%- if entrance %}
+    {# Sekwencja wejscia nalezy do pierwszego kontaktu z marka, wiec gra na
+       stronie glownej kazdej wersji jezykowej. Przy przejsciu do podstrony nie
+       gra ponownie: powtorzona przy kazdej nawigacji przestalaby byc wejsciem,
+       a stalaby sie oplata za klikniecie. #}
     {% include "partials/preloader.njk" %}
+    {%- endif %}
     {% include "partials/frame.njk" %}
     <a class="skip-link" href="#main-content">{{ t.skip }}</a>
     {% include "partials/header.njk" %}
