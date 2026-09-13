@@ -9,6 +9,8 @@ import site from "../src/_data/site.js";
 const requiredFiles = [
   "dist/index.html",
   "dist/pl/index.html",
+  "dist/world/index.html",
+  "dist/pl/swiat/index.html",
   "dist/404.html",
   "dist/assets/css/main.css",
   "dist/assets/js/main.js",
@@ -29,8 +31,12 @@ const english = fs.readFileSync(path.resolve("dist/index.html"), "utf8");
 const polish = fs.readFileSync(path.resolve("dist/pl/index.html"), "utf8");
 
 const assertions = [
-  [english.includes('<html lang="en">'), "English page is missing lang=en."],
-  [polish.includes('<html lang="pl">'), "Polish page is missing lang=pl."],
+  [/<html lang="en"[\s>]/.test(english), "English page is missing lang=en."],
+  [/<html lang="pl"[\s>]/.test(polish), "Polish page is missing lang=pl."],
+  // Sekwencja wejscia gra wylacznie na stronach glownych i jest sterowana
+  // atrybutem na elemencie html, nie obecnoscia skryptu.
+  [english.includes('<html lang="en" data-entrance>'), "English home page does not enable the entrance sequence."],
+  [polish.includes('<html lang="pl" data-entrance>'), "Polish home page does not enable the entrance sequence."],
   [english.includes('hreflang="pl"'), "English page is missing the Polish alternate."],
   [polish.includes('hreflang="en"'), "Polish page is missing the English alternate."],
   [english.includes(`<link rel="canonical" href="${site.url}/">`), `English canonical URL is missing or is not ${site.url}/.`],
@@ -393,6 +399,80 @@ for (const [, selectors, declarations] of styles.matchAll(/([^{}]+)\{([^}]*)\}/g
   ]);
 }
 
+// Przelacznik jezyka i znaczniki hreflang musza prowadzic do odpowiednika tej
+// samej tresci, a nie do korzenia wersji. Dwie rzeczy moga to po cichu zepsuc:
+// adres wpisany na sztywno w partialu i podstrona bez odpowiednika. W obu
+// przypadkach strona nadal dziala, tylko wyrzuca czytelnika na strone glowna.
+//
+// Przy okazji lapiemy blad, ktory wyszedl przy dodawaniu strony swiata: pasek
+// nawigacji stoi na kazdej stronie, wiec odnosnik sekcji zapisany jako sama
+// kotwica nie prowadzi z podstrony donikad.
+for (const page of pages) {
+  const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
+  if (!markup.includes('rel="canonical"')) continue;
+
+  for (const [, address] of markup.matchAll(/<link rel="alternate" hreflang="[^"]+" href="([^"]+)">/g)) {
+    const relative = new URL(address).pathname.replace(/^\//, "");
+    const file = relative === "" || relative.endsWith("/") ? path.join(relative, "index.html") : relative;
+    assertions.push([
+      fs.existsSync(path.resolve("dist", file)),
+      `${page} declares the alternate ${address}, but ${file.replace(/\\/g, "/")} is not in the build.`
+    ]);
+  }
+
+  // Klasa `js` przelacza pasek nawigacji z listy zapasowej na przycisk menu.
+  // Nadaje ja skrypt startowy, wiec musi byc na kazdej stronie, nie tylko na
+  // tych z sekwencja wejscia. Strona swiata bez niego pokazywala na telefonie
+  // rozwinieta liste zamiast hamburgera.
+  assertions.push([
+    markup.includes('classList.add("js")'),
+    `${page} does not run the bootstrap script, so the navigation falls back to the no script list on every device.`
+  ]);
+
+  // Kazdy obraz na kazdej stronie ma atrybut alt; strona glowna ma osobne,
+  // ostrzejsze kontrole tresci opisow.
+  for (const tag of [...markup.matchAll(/<img[^>]*>/g)].map(match => match[0])) {
+    const source = tag.match(/src="([^"]+)"/)?.[1] ?? tag.slice(0, 60);
+    assertions.push([/\salt=("[^"]*"|'[^']*')/.test(tag), `${page} image has no alt attribute at all: ${source}.`]);
+  }
+
+  // Ilustracje sekcji strony swiata niosa tresc, ktorej tekst obok nie
+  // powtarza, wiec ich opisy nie moga byc puste ani byc wypelniaczem. Panorama
+  // w naglowku jest tlem i zostaje pusta celowo, dlatego wymagamy tego tylko
+  // od obrazow w elemencie `figure`.
+  const figures = [...markup.matchAll(/<figure class="world-page__figure"[^>]*>\s*<img[^>]*>/g)].map(match => match[0]);
+  if (markup.includes('class="world-page"')) {
+    assertions.push([figures.length === 3, `${page} should render three world section illustrations, found ${figures.length}.`]);
+    for (const tag of figures) {
+      const description = (tag.match(/\salt="([^"]*)"/)?.[1] ?? "").trim();
+      assertions.push([
+        description.length >= 40,
+        `${page} world illustration has an alt of ${description.length} characters, which is too short to describe it: "${description}"`
+      ]);
+    }
+  }
+
+  const navigation = markup.match(/<nav class="site-header__navigation"[\s\S]*?<\/nav>\s*<nav/)?.[0] ?? "";
+  const bareAnchors = [...navigation.matchAll(/href="(#[^"]*)"/g)].map(match => match[1]);
+  assertions.push([
+    bareAnchors.length === 0,
+    `${page} has navigation links that are bare anchors (${bareAnchors.join(", ")}). The same header sits on subpages, where an anchor alone leads nowhere.`
+  ]);
+
+  const switchers = [...markup.matchAll(/<nav class="language-switcher[^"]*"[\s\S]*?<\/nav>/g)];
+  assertions.push([switchers.length > 0, `${page} has no language switcher.`]);
+  for (const [switcher] of switchers) {
+    for (const [, address] of switcher.matchAll(/href="(\/[^"]*)"/g)) {
+      const relative = address.replace(/^\//, "");
+      const file = relative === "" || relative.endsWith("/") ? path.join(relative, "index.html") : relative;
+      assertions.push([
+        fs.existsSync(path.resolve("dist", file)),
+        `${page} language switcher points at ${address}, but ${file.replace(/\\/g, "/")} is not in the build.`
+      ]);
+    }
+  }
+}
+
 // Mapa strony i adresy kanoniczne musza opisywac dokladnie ten sam zbior.
 // Rozjazd jest cichy: mapa albo zaprasza robota pod adres, ktory sam wskazuje
 // gdzie indziej, albo pomija strone, ktora istnieje i chce byc znaleziona.
@@ -445,6 +525,29 @@ if (fs.existsSync(sitemapPath)) {
 // stronie nie ma, a wlasnie to wytyczne Google nazywaja wprowadzaniem w blad.
 // Rozjazd jest cichy, bo czytelnik danych strukturalnych nie widzi. Dlatego
 // zamiast sprawdzac, czy blok istnieje, sprawdzamy, czy mowi to samo co strona.
+// Strony glowne obu wersji jezykowych. Lista jest wpisana wprost, bo od niej
+// zalezy, ktora strona ma prawo deklarowac byt gry, a rozpoznawanie tego po
+// sciezce przepuscilo by kazda nowa podstrone jako kolejna gre.
+const landingPages = new Set(["index.html", "pl/index.html"]);
+
+// Identyfikatory bytu gry, zebrane z wydania, a nie zalozone. Podstrony musza
+// wskazywac dokladnie ten byt, ktory istnieje w tej samej wersji jezykowej.
+const gameIds = new Map();
+for (const page of pages) {
+  if (!landingPages.has(page.replace(/\\/g, "/"))) continue;
+  const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
+  const language = markup.match(/<html lang="([^"]+)"/)?.[1];
+  const block = markup.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
+  if (!language || !block) continue;
+  try {
+    const nodes = JSON.parse(block)["@graph"] ?? [];
+    const id = nodes.find(node => node["@type"] === "VideoGame")?.["@id"];
+    if (id) gameIds.set(language, id);
+  } catch {
+    // Niepoprawny JSON wychodzi w petli ponizej razem z komunikatem.
+  }
+}
+
 for (const page of pages) {
   const markup = fs.readFileSync(path.resolve("dist", page), "utf8");
   const canonical = markup.match(/rel="canonical" href="([^"]+)"/)?.[1];
@@ -473,12 +576,49 @@ for (const page of pages) {
   assertions.push([data["@context"] === "https://schema.org", `${page} JSON-LD does not declare the schema.org context.`]);
 
   const nodes = data["@graph"] ?? [data];
-  const game = nodes.find(node => node["@type"] === "VideoGame");
   const studio = nodes.find(node => node["@type"] === "Organization");
+  assertions.push([Boolean(studio), `${page} JSON-LD has no Organization node.`]);
+  if (!studio) continue;
+
+  // Gra jest jednym bytem na wersje jezykowa i mieszka na stronie glownej.
+  // Podstrona opisuje sie jako `Article` i wskazuje przez `about` ten sam byt.
+  // Drugi `VideoGame` pod drugim adresem oznaczalby druga gre.
+  const isLanding = landingPages.has(page.replace(/\\/g, "/"));
+  const game = nodes.find(node => node["@type"] === "VideoGame");
+  const article = nodes.find(node => node["@type"] === "Article");
+
+  if (!isLanding) {
+    assertions.push([!game, `${page} JSON-LD declares a second VideoGame node, which would describe a second game.`]);
+    assertions.push([Boolean(article), `${page} JSON-LD has no Article node, so the page describes nothing.`]);
+    if (!article) continue;
+
+    const language = markup.match(/<html lang="([^"]+)"/)?.[1];
+    const description = markup.match(/<meta name="description" content="([^"]*)"/)?.[1];
+    const imagePath = article.image ? new URL(article.image).pathname.replace(/^\//, "") : "";
+
+    assertions.push([article.url === canonical, `${page} JSON-LD names ${article.url} while the page is canonical at ${canonical}.`]);
+    assertions.push([
+      Boolean(description) && article.description === description,
+      `${page} JSON-LD description differs from the page description, so the markup claims something the page does not say.`
+    ]);
+    assertions.push([article.inLanguage === language, `${page} JSON-LD says inLanguage ${article.inLanguage} while the document is ${language}.`]);
+    assertions.push([
+      imagePath !== "" && fs.existsSync(path.resolve("dist", imagePath)),
+      `${page} JSON-LD points at image ${article.image}, which is not in the build.`
+    ]);
+    assertions.push([
+      gameIds.get(language) !== undefined && article.about?.["@id"] === gameIds.get(language),
+      `${page} JSON-LD is about ${article.about?.["@id"]}, which is not the game entity declared by the ${language} home page.`
+    ]);
+    assertions.push([
+      article.author?.["@id"] === studio["@id"],
+      `${page} JSON-LD credits an author that is not the Organization node in the same graph.`
+    ]);
+    continue;
+  }
 
   assertions.push([Boolean(game), `${page} JSON-LD has no VideoGame node.`]);
-  assertions.push([Boolean(studio), `${page} JSON-LD has no Organization node.`]);
-  if (!game || !studio) continue;
+  if (!game) continue;
 
   assertions.push([game.url === canonical, `${page} JSON-LD names ${game.url} while the page is canonical at ${canonical}.`]);
 

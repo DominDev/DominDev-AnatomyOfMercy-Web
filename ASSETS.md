@@ -43,7 +43,26 @@ and too small for dense displays.
 | `assets/images/mood/scene-2.webp` | `AoM-web-winieta-2.png` | 800 x 1000 | Vignette, people not cases |
 | `assets/images/mood/scene-3.webp` | `AoM-web-winieta-3.png` | 800 x 1000 | Vignette, faith and medicine |
 | `assets/images/mood/scene-4.webp` | `AoM-web-winieta-4.png` | 800 x 1000 | Vignette, a city in quarantine |
-| `assets/images/world/vespera.webp` | `AoM-web-vespera.png` | 1800 x 1013 | Background of the world section |
+| `assets/images/world/vespera.webp` | `AoM-web-vespera.png` | 1800 x 1013 | Background of the world section, and the masthead of the world page |
+
+## World page illustrations
+
+Generated from the world brief on 2026-09-13, one per section of the world
+page. None of them has a figure in the foreground, so that they do not repeat
+the hero, the panorama or any of the four vignettes. The first version of the
+page borrowed the vignettes; the same artwork in two places on one site reads
+as a shortage of material.
+
+| Website asset | Source filename | Size | Purpose |
+|---|---|---|---|
+| `assets/images/world/city.webp` | `AoM-web-swiat-miasto.png` | 800 x 1000 | A sealed door in a lane at night. Section on Vespera. |
+| `assets/images/world/plague.webp` | `AoM-web-swiat-pomor.png` | 800 x 1000 | A silver test plate, a sealed vial and dust. Section on the Crimson Plague. |
+| `assets/images/world/church.webp` | `AoM-web-swiat-kosciol.png` | 800 x 1000 | The desk of a church investigator. Section on the Church of Light. |
+
+The first prompt for the plague illustration described a cut section of human
+bone and was refused by the generator under its rules on violence. The disease
+is now shown through what it leaves behind rather than through remains, which
+is also what the brief asks for in its section on the violence threshold.
 
 ## Social
 

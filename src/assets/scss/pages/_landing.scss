@@ -99,6 +99,7 @@
   .section-heading p:not(.eyebrow) { max-width: 42ch; color: #ddd2bd; }
   .button { margin-top: 2rem; }
 }
+.section--pillars { background: linear-gradient(#090807, #0d0b08 60%, #090807); }
 .section--stories {
   background: radial-gradient(ellipse at 90% 50%, rgba(85,25,22,.11), transparent 65%), #090807;
   .section-heading { margin-bottom: 4rem; }

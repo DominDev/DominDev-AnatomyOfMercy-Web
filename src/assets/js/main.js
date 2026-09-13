@@ -152,7 +152,10 @@ if (header && menuButton && navigation && menuLabel) {
   updateHeader();
 
   if ("IntersectionObserver" in window) {
-    const links = [...navigation.querySelectorAll('a[href^="#"]')];
+    // Odnosniki sekcji zawieraja teraz takze adres strony glownej, bo ten sam
+    // pasek stoi na podstronach. Dlatego szukamy kotwicy w srodku adresu, a nie
+    // na jego poczatku, i porownujemy przez `hash`, ktory obcina reszte.
+    const links = [...navigation.querySelectorAll('a[href*="#"]')];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -163,6 +166,32 @@ if (header && menuButton && navigation && menuLabel) {
       });
     }, { rootMargin: "-15% 0px -55% 0px" });
     document.querySelectorAll("main section[id]").forEach(section => observer.observe(section));
+  }
+}
+
+/* ------------------------------------------------------------ pojawianie */
+/* Elementy z `data-reveal` dostaja klase przy wejsciu w widok. Style dzialaja
+   tylko z klasa `js`, wiec bez skryptu wszystko jest widoczne od razu, a przy
+   ograniczonym ruchu style same wylaczaja przesuniecie. Bez obserwatora
+   pokazujemy wszystko natychmiast. */
+const revealTargets = [...document.querySelectorAll("[data-reveal]")];
+if (revealTargets.length > 0) {
+  const showAll = () => revealTargets.forEach(node => node.classList.add("is-visible"));
+  if ("IntersectionObserver" in window && !motionPreference.matches) {
+    const revealer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -10% 0px" });
+    revealTargets.forEach(node => revealer.observe(node));
+    // Ukryta tresc jest gorsza niz brak animacji. Jesli obserwator z jakiegos
+    // powodu nie zadziala, na przyklad w oknie, ktore nie maluje, wszystko
+    // i tak pokazuje sie po chwili. Elementy juz odsloniete nic nie traca.
+    window.setTimeout(showAll, 2500);
+  } else {
+    showAll();
   }
 }
 

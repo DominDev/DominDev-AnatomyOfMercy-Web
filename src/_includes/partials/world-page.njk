@@ -1,0 +1,105 @@
+{% set t = i18n[lang] %}
+{% set w = t.worldPage %}
+{#- Trzy wlasne ilustracje sekcji, wygenerowane z briefu swiata 2026-09-13.
+    Pierwsza wersja strony pozyczala winiety ze strony glownej; ta sama grafika
+    w dwoch miejscach serwisu czyta sie jak brak materialu. Zadna z tych trzech
+    nie ma postaci na pierwszym planie, zeby nie powtarzaly hero, panoramy ani
+    zadnej z czterech winiet. -#}
+<article class="world-page">
+  <header class="world-page__masthead">
+    {# Panorama Vespery jest tu tlem, a nie trescia: caly opis miasta stoi obok
+       slowami. Ten sam plik sluzy sekcji swiata na stronie glownej. #}
+    <img class="world-page__panorama" src="/assets/images/world/vespera.webp" width="950" height="1044" alt="" fetchpriority="high" decoding="async">
+    <div class="shell world-page__masthead-inner">
+      <p class="eyebrow">{{ w.eyebrow }}</p>
+      <h1>{{ w.title }}</h1>
+      <p class="world-page__lead">{{ w.lead }}</p>
+      <nav class="world-page__contents" aria-label="{{ w.contentsLabel }}">
+        <a href="#world-city">{{ w.city.title }}</a>
+        <a href="#world-plague">{{ w.plague.title }}</a>
+        <a href="#world-church">{{ w.church.title }}</a>
+        <a href="#world-objects">{{ w.objects.title }}</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="shell world-page__body">
+    {#- Kazda z trzech glownych sekcji ma ten sam rytm: jedno mocne zdanie,
+        obraz, jeden akapit, ktory mowi najwazniejsze, lista do przejrzenia
+        wzrokiem, i reszta za `details`. Bez skryptu `details` dziala jak
+        zawsze; z ograniczonym ruchem nic sie nie animuje. -#}
+    <section class="world-page__section" id="world-city" aria-labelledby="world-city-title">
+      <h2 id="world-city-title">{{ w.city.title }}</h2>
+      <p class="world-page__epigraph" data-reveal>{{ w.city.epigraph }}</p>
+      <figure class="world-page__figure" data-reveal>
+        <img src="{{ worldAssets.city.src }}" width="{{ worldAssets.city.width }}" height="{{ worldAssets.city.height }}" alt="{{ w.city.imageAlt }}" loading="lazy" decoding="async">
+      </figure>
+      <p>{{ w.city.lead }}</p>
+      <details class="disclosure">
+        <summary>{{ w.readMore }}</summary>
+        <div class="disclosure__body">
+          {% for paragraph in w.city.more %}<p>{{ paragraph }}</p>{% endfor %}
+        </div>
+      </details>
+    </section>
+
+    <section class="world-page__section" id="world-plague" aria-labelledby="world-plague-title">
+      <h2 id="world-plague-title">{{ w.plague.title }}</h2>
+      <p class="world-page__epigraph" data-reveal>{{ w.plague.epigraph }}</p>
+      <figure class="world-page__figure" data-reveal>
+        <img src="{{ worldAssets.plague.src }}" width="{{ worldAssets.plague.width }}" height="{{ worldAssets.plague.height }}" alt="{{ w.plague.imageAlt }}" loading="lazy" decoding="async">
+      </figure>
+      <p>{{ w.plague.lead }}</p>
+      <h3>{{ w.plague.stagesTitle }}</h3>
+      <ol class="world-page__stages">
+        {% for stage in w.plague.stages %}
+          <li data-reveal><span class="world-page__term">{{ stage.name }}</span> <span class="world-page__definition">{{ stage.body }}</span></li>
+        {% endfor %}
+      </ol>
+      <details class="disclosure">
+        <summary>{{ w.readMore }}</summary>
+        <div class="disclosure__body">
+          {% for paragraph in w.plague.more %}<p>{{ paragraph }}</p>{% endfor %}
+        </div>
+      </details>
+    </section>
+
+    <section class="world-page__section" id="world-church" aria-labelledby="world-church-title">
+      <h2 id="world-church-title">{{ w.church.title }}</h2>
+      <p class="world-page__epigraph" data-reveal>{{ w.church.epigraph }}</p>
+      <figure class="world-page__figure" data-reveal>
+        <img src="{{ worldAssets.church.src }}" width="{{ worldAssets.church.width }}" height="{{ worldAssets.church.height }}" alt="{{ w.church.imageAlt }}" loading="lazy" decoding="async">
+      </figure>
+      <p>{{ w.church.lead }}</p>
+      <h3>{{ w.church.structuresTitle }}</h3>
+      <ul class="world-page__structures" role="list">
+        {% for structure in w.church.structures %}
+          <li data-reveal><span class="world-page__term">{{ structure.name }}</span> <span class="world-page__definition">{{ structure.body }}</span></li>
+        {% endfor %}
+      </ul>
+      <details class="disclosure">
+        <summary>{{ w.readMore }}</summary>
+        <div class="disclosure__body">
+          {% for paragraph in w.church.more %}<p>{{ paragraph }}</p>{% endfor %}
+        </div>
+      </details>
+    </section>
+
+    <section class="world-page__section" id="world-objects" aria-labelledby="world-objects-title">
+      <h2 id="world-objects-title">{{ w.objects.title }}</h2>
+      <p>{{ w.objects.intro }}</p>
+      <ul class="world-page__objects" role="list">
+        {% for item in w.objects.items %}<li data-reveal>{{ item }}</li>{% endfor %}
+      </ul>
+    </section>
+
+    <div class="world-page__closing">
+      <blockquote class="world-page__quote" data-reveal>
+        <p>{{ w.closing.quote }}</p>
+        <footer>{{ w.closing.attribution }}</footer>
+      </blockquote>
+      <p>{{ w.closing.body }}</p>
+      <a class="button button--primary" href="{{ homePath }}#stories">{{ w.closing.action }}</a>
+    </div>
+  </div>
+</article>

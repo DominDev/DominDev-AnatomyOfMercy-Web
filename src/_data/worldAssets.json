@@ -1,0 +1,17 @@
+{
+  "city": {
+    "src": "/assets/images/world/city.webp",
+    "width": 800,
+    "height": 1000
+  },
+  "plague": {
+    "src": "/assets/images/world/plague.webp",
+    "width": 800,
+    "height": 1000
+  },
+  "church": {
+    "src": "/assets/images/world/church.webp",
+    "width": 800,
+    "height": 1000
+  }
+}

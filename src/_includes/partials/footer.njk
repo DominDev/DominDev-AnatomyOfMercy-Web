@@ -9,7 +9,7 @@
       <nav class="site-footer__column" aria-label="{{ t.footer.navLabel }}">
         <p class="site-footer__heading">{{ t.footer.explore }}</p>
         <a href="{{ homePath }}#experience">{{ t.nav.experience }}</a>
-        <a href="{{ homePath }}#world">{{ t.nav.world }}</a>
+        <a href="{{ worldPath }}">{{ t.nav.world }}</a>
         <a href="{{ homePath }}#stories">{{ t.nav.stories }}</a>
         <a href="{{ homePath }}#contact">{{ t.nav.contact }}</a>
       </nav>
@@ -26,9 +26,9 @@
         {{ t.footer.rights }}
       </p>
       <nav class="language-switcher language-switcher--footer" aria-label="{{ t.languageLabel }}">
-        <a href="/" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>
+        <a href="{{ enPath }}" lang="en" hreflang="en"{% if lang == "en" %} aria-current="page"{% endif %}>EN</a>
         <span aria-hidden="true">/</span>
-        <a href="/pl/" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
+        <a href="{{ plPath }}" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
       </nav>
     </div>
   </div>

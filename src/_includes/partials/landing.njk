@@ -16,7 +16,7 @@
       <div class="hero__rule" aria-hidden="true"><span></span></div>
       <p class="hero__lead">{{ t.hero.lead }}</p>
       <div class="hero__actions">
-        <a class="button button--primary" href="#world">{{ t.hero.primary }}</a>
+        <a class="button button--primary" href="{{ worldPath }}">{{ t.hero.primary }}</a>
         <a class="button button--secondary" href="#stories">{{ t.hero.secondary }}</a>
       </div>
     </div>
@@ -64,8 +64,34 @@
       <p class="eyebrow">{{ t.world.eyebrow }}</p>
       <h2 id="world-title">{{ t.world.title }}</h2>
       <p>{{ t.world.body }}</p>
-      <a class="button button--secondary" href="#stories">{{ t.hero.secondary }}</a>
+      {# Sekcja jest zapowiedzia, a caly opis swiata stoi na wlasnej stronie.
+         Wszystko, co na tej stronie mowi „swiat", prowadzi w to samo miejsce:
+         pozycja w menu, glowny przycisk w hero i ten link. #}
+      <a class="button button--secondary" href="{{ worldPath }}">{{ t.world.action }}</a>
     </div>
+  </div>
+</section>
+
+<section class="section section--pillars" id="pillars" aria-labelledby="pillars-title">
+  <div class="shell">
+    <div class="section-heading section-heading--center">
+      <p class="eyebrow">{{ t.pillars.eyebrow }}</p>
+      <h2 id="pillars-title">{{ t.pillars.title }}</h2>
+      <p>{{ t.pillars.intro }}</p>
+    </div>
+    {# Filary sa tekstem, nie kartami z grafika. Winiety wyzej nios juz cztery
+       obrazy tego samego rodzaju, a piata i szosta ilustracja w jednym ciagu
+       zamienilaby argument w galerie. Numeracja korzysta z tego samego
+       ornamentu co karty opowiadan. #}
+    <ol class="pillars" role="list">
+      {% for pillar in t.pillars.items %}
+        <li class="pillars__item">
+          <span class="pillars__index" aria-hidden="true">{{ pillar.order }}</span>
+          <h3>{{ pillar.title }}</h3>
+          <p>{{ pillar.body }}</p>
+        </li>
+      {% endfor %}
+    </ol>
   </div>
 </section>
 
