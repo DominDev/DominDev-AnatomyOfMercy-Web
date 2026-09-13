@@ -1,15 +1,10 @@
 {% set t = i18n[lang] %}
 {% set w = t.worldPage %}
-{#- Ilustracje sekcji to winiety ze strony glownej: kwarantanna, chore dziecko,
-    siostra z lista. Ta sama grafika na innej stronie nie jest powtorzeniem,
-    a nowych ilustracji o tych samych motywach brief swiata zabrania. Opisy
-    alternatywne biora sie z tego samego zrodla co na stronie glownej, zeby
-    nie rozjechaly sie przy wymianie grafiki. -#}
-{% set figures = {
-  "city":   { "art": moodAssets[3], "alt": t.experience.items[3].imageAlt },
-  "plague": { "art": moodAssets[1], "alt": t.experience.items[1].imageAlt },
-  "church": { "art": moodAssets[2], "alt": t.experience.items[2].imageAlt }
-} %}
+{#- Trzy wlasne ilustracje sekcji, wygenerowane z briefu swiata 2026-09-13.
+    Pierwsza wersja strony pozyczala winiety ze strony glownej; ta sama grafika
+    w dwoch miejscach serwisu czyta sie jak brak materialu. Zadna z tych trzech
+    nie ma postaci na pierwszym planie, zeby nie powtarzaly hero, panoramy ani
+    zadnej z czterech winiet. -#}
 <article class="world-page">
   <header class="world-page__masthead">
     {# Panorama Vespery jest tu tlem, a nie trescia: caly opis miasta stoi obok
@@ -37,7 +32,7 @@
       <h2 id="world-city-title">{{ w.city.title }}</h2>
       <p class="world-page__epigraph" data-reveal>{{ w.city.epigraph }}</p>
       <figure class="world-page__figure" data-reveal>
-        <img src="{{ figures.city.art.src }}" width="{{ figures.city.art.width }}" height="{{ figures.city.art.height }}" alt="{{ figures.city.alt }}" loading="lazy" decoding="async">
+        <img src="{{ worldAssets.city.src }}" width="{{ worldAssets.city.width }}" height="{{ worldAssets.city.height }}" alt="{{ w.city.imageAlt }}" loading="lazy" decoding="async">
       </figure>
       <p>{{ w.city.lead }}</p>
       <details class="disclosure">
@@ -52,7 +47,7 @@
       <h2 id="world-plague-title">{{ w.plague.title }}</h2>
       <p class="world-page__epigraph" data-reveal>{{ w.plague.epigraph }}</p>
       <figure class="world-page__figure" data-reveal>
-        <img src="{{ figures.plague.art.src }}" width="{{ figures.plague.art.width }}" height="{{ figures.plague.art.height }}" alt="{{ figures.plague.alt }}" loading="lazy" decoding="async">
+        <img src="{{ worldAssets.plague.src }}" width="{{ worldAssets.plague.width }}" height="{{ worldAssets.plague.height }}" alt="{{ w.plague.imageAlt }}" loading="lazy" decoding="async">
       </figure>
       <p>{{ w.plague.lead }}</p>
       <h3>{{ w.plague.stagesTitle }}</h3>
@@ -73,7 +68,7 @@
       <h2 id="world-church-title">{{ w.church.title }}</h2>
       <p class="world-page__epigraph" data-reveal>{{ w.church.epigraph }}</p>
       <figure class="world-page__figure" data-reveal>
-        <img src="{{ figures.church.art.src }}" width="{{ figures.church.art.width }}" height="{{ figures.church.art.height }}" alt="{{ figures.church.alt }}" loading="lazy" decoding="async">
+        <img src="{{ worldAssets.church.src }}" width="{{ worldAssets.church.width }}" height="{{ worldAssets.church.height }}" alt="{{ w.church.imageAlt }}" loading="lazy" decoding="async">
       </figure>
       <p>{{ w.church.lead }}</p>
       <h3>{{ w.church.structuresTitle }}</h3>

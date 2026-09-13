@@ -436,6 +436,22 @@ for (const page of pages) {
     assertions.push([/\salt=("[^"]*"|'[^']*')/.test(tag), `${page} image has no alt attribute at all: ${source}.`]);
   }
 
+  // Ilustracje sekcji strony swiata niosa tresc, ktorej tekst obok nie
+  // powtarza, wiec ich opisy nie moga byc puste ani byc wypelniaczem. Panorama
+  // w naglowku jest tlem i zostaje pusta celowo, dlatego wymagamy tego tylko
+  // od obrazow w elemencie `figure`.
+  const figures = [...markup.matchAll(/<figure class="world-page__figure"[^>]*>\s*<img[^>]*>/g)].map(match => match[0]);
+  if (markup.includes('class="world-page"')) {
+    assertions.push([figures.length === 3, `${page} should render three world section illustrations, found ${figures.length}.`]);
+    for (const tag of figures) {
+      const description = (tag.match(/\salt="([^"]*)"/)?.[1] ?? "").trim();
+      assertions.push([
+        description.length >= 40,
+        `${page} world illustration has an alt of ${description.length} characters, which is too short to describe it: "${description}"`
+      ]);
+    }
+  }
+
   const navigation = markup.match(/<nav class="site-header__navigation"[\s\S]*?<\/nav>\s*<nav/)?.[0] ?? "";
   const bareAnchors = [...navigation.matchAll(/href="(#[^"]*)"/g)].map(match => match[1]);
   assertions.push([
