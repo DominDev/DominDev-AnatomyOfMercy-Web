@@ -5,7 +5,7 @@
 {% set metaTitle = t.worldPage.metaTitle if pageType == "world" else t.meta.title %}
 {% set metaDescription = t.worldPage.metaDescription if pageType == "world" else t.meta.description %}
 <!doctype html>
-<html lang="{{ lang }}">
+<html lang="{{ lang }}"{% if entrance %} data-entrance{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -45,17 +45,17 @@
        Wczesniej arkusz z Google blokowal renderowanie: przegladarka musiala
        nawiazac polaczenie z obcym serwerem i pobrac arkusz, zanim w ogole
        dowiedziala sie, gdzie leza pliki fontow. #}
-    {%- if entrance %}
     {# Skrypt siedzi w osobnym pliku, poniewaz ten sam plik jest zrodlem skrotu
        w polityce bezpieczenstwa tresci. Trzymanie go w dwoch miejscach
        skonczyloby sie tym, ze po zmianie jednego z nich przegladarka po cichu
        przestalaby wykonywac wejscie.
 
-       Skrypt wchodzi wylacznie na strony z sekwencja wejscia. Bez preloadera
-       nie mialby czego odslonic, a klasa `intro-pending` zablokowalaby
-       przewijanie az do zadzialania bezpiecznika. #}
+       Wchodzi na kazda strone, bo nadaje klase `js`, od ktorej zalezy pasek
+       nawigacji. Sam preloader jest sterowany atrybutem `data-entrance` na
+       elemencie html; strona bez niego dostaje klase `js`, ale nie sekwencje.
+       Pierwsza wersja wlaczala caly skrypt warunkowo i strona swiata na
+       telefonie pokazywala rozwinieta liste zamiast przycisku menu. #}
     <script>{% include "partials/intro-bootstrap.js" %}</script>
-    {%- endif %}
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/main.js" defer></script>
     <title>{{ metaTitle }}</title>

@@ -31,8 +31,12 @@ const english = fs.readFileSync(path.resolve("dist/index.html"), "utf8");
 const polish = fs.readFileSync(path.resolve("dist/pl/index.html"), "utf8");
 
 const assertions = [
-  [english.includes('<html lang="en">'), "English page is missing lang=en."],
-  [polish.includes('<html lang="pl">'), "Polish page is missing lang=pl."],
+  [/<html lang="en"[\s>]/.test(english), "English page is missing lang=en."],
+  [/<html lang="pl"[\s>]/.test(polish), "Polish page is missing lang=pl."],
+  // Sekwencja wejscia gra wylacznie na stronach glownych i jest sterowana
+  // atrybutem na elemencie html, nie obecnoscia skryptu.
+  [english.includes('<html lang="en" data-entrance>'), "English home page does not enable the entrance sequence."],
+  [polish.includes('<html lang="pl" data-entrance>'), "Polish home page does not enable the entrance sequence."],
   [english.includes('hreflang="pl"'), "English page is missing the Polish alternate."],
   [polish.includes('hreflang="en"'), "Polish page is missing the English alternate."],
   [english.includes(`<link rel="canonical" href="${site.url}/">`), `English canonical URL is missing or is not ${site.url}/.`],
@@ -414,6 +418,22 @@ for (const page of pages) {
       fs.existsSync(path.resolve("dist", file)),
       `${page} declares the alternate ${address}, but ${file.replace(/\\/g, "/")} is not in the build.`
     ]);
+  }
+
+  // Klasa `js` przelacza pasek nawigacji z listy zapasowej na przycisk menu.
+  // Nadaje ja skrypt startowy, wiec musi byc na kazdej stronie, nie tylko na
+  // tych z sekwencja wejscia. Strona swiata bez niego pokazywala na telefonie
+  // rozwinieta liste zamiast hamburgera.
+  assertions.push([
+    markup.includes('classList.add("js")'),
+    `${page} does not run the bootstrap script, so the navigation falls back to the no script list on every device.`
+  ]);
+
+  // Kazdy obraz na kazdej stronie ma atrybut alt; strona glowna ma osobne,
+  // ostrzejsze kontrole tresci opisow.
+  for (const tag of [...markup.matchAll(/<img[^>]*>/g)].map(match => match[0])) {
+    const source = tag.match(/src="([^"]+)"/)?.[1] ?? tag.slice(0, 60);
+    assertions.push([/\salt=("[^"]*"|'[^']*')/.test(tag), `${page} image has no alt attribute at all: ${source}.`]);
   }
 
   const navigation = markup.match(/<nav class="site-header__navigation"[\s\S]*?<\/nav>\s*<nav/)?.[0] ?? "";

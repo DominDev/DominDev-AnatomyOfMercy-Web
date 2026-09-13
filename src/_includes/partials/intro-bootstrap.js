@@ -1,11 +1,14 @@
       (() => {
         const root = document.documentElement;
+        // Klasa `js` przelacza style z wersji zapasowej na skryptowa, miedzy
+        // innymi pasek nawigacji z listy na przycisk menu. Musi powstac na
+        // kazdej stronie, takze bez sekwencji wejscia; bez niej telefon dostaje
+        // rozwinieta liste zamiast hamburgera.
         root.classList.add("js");
-        // Sekwencja wejscia odtwarza sie przy kazdym wczytaniu strony. Jest
-        // czescia doswiadczenia, nie ekranem ladowania, wiec nie zapamietujemy
-        // jej na sesje. Uklad wstawia ten skrypt wylacznie na stronach, ktore
-        // maja preloader; na pozostalych klasa nigdy nie powstaje.
-        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // Sekwencja wejscia gra wylacznie na stronach oznaczonych w ukladzie
+        // atrybutem `data-entrance`. Jest czescia doswiadczenia, nie ekranem
+        // ladowania, wiec nie zapamietujemy jej na sesje.
+        if (root.hasAttribute("data-entrance") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
           root.classList.add("intro-pending");
           // Strona musi sie odblokowac takze wtedy, gdy odroczony skrypt nie
           // wczyta sie wcale.

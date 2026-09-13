@@ -169,6 +169,27 @@ if (header && menuButton && navigation && menuLabel) {
   }
 }
 
+/* ------------------------------------------------------------ pojawianie */
+/* Elementy z `data-reveal` dostaja klase przy wejsciu w widok. Style dzialaja
+   tylko z klasa `js`, wiec bez skryptu wszystko jest widoczne od razu, a przy
+   ograniczonym ruchu style same wylaczaja przesuniecie. Bez obserwatora
+   pokazujemy wszystko natychmiast. */
+const revealTargets = [...document.querySelectorAll("[data-reveal]")];
+if (revealTargets.length > 0) {
+  if ("IntersectionObserver" in window && !motionPreference.matches) {
+    const revealer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -10% 0px" });
+    revealTargets.forEach(node => revealer.observe(node));
+  } else {
+    revealTargets.forEach(node => node.classList.add("is-visible"));
+  }
+}
+
 /* ------------------------------------------------------------- powrot gory */
 /* Przycisk pojawia sie po opuszczeniu pierwszego ekranu i zatrzymuje sie tuz
    nad stopka, zamiast ja zaslaniac. */
