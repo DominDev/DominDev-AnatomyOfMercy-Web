@@ -176,6 +176,7 @@ if (header && menuButton && navigation && menuLabel) {
    pokazujemy wszystko natychmiast. */
 const revealTargets = [...document.querySelectorAll("[data-reveal]")];
 if (revealTargets.length > 0) {
+  const showAll = () => revealTargets.forEach(node => node.classList.add("is-visible"));
   if ("IntersectionObserver" in window && !motionPreference.matches) {
     const revealer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
@@ -185,8 +186,12 @@ if (revealTargets.length > 0) {
       });
     }, { rootMargin: "0px 0px -10% 0px" });
     revealTargets.forEach(node => revealer.observe(node));
+    // Ukryta tresc jest gorsza niz brak animacji. Jesli obserwator z jakiegos
+    // powodu nie zadziala, na przyklad w oknie, ktore nie maluje, wszystko
+    // i tak pokazuje sie po chwili. Elementy juz odsloniete nic nie traca.
+    window.setTimeout(showAll, 2500);
   } else {
-    revealTargets.forEach(node => node.classList.add("is-visible"));
+    showAll();
   }
 }
 
