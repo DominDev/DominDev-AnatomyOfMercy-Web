@@ -21,7 +21,7 @@
 
 Vespera grew rich on trade, pilgrimage and medical scholarship. It is now dying of the Crimson Plague, a disease that turns blood to crystal and leaves dust behind that infects whoever breathes it. Quarantine gates divide the districts. The Church of Light feeds the sick, nurses them, buries them, and burns the streets it cannot save.
 
-You are Julian, an outcast physician. He can cure what nobody else can cure. The material his treatment needs comes out of living people.
+You are Julian, an outcast physician. He can cure what nobody else can cure. The living tissue his treatment needs can be taken from a living donor or someone recently dead. How it is taken matters.
 
 **Every cure leaves a scar.**
 
@@ -97,7 +97,7 @@ Alongside the game there is a cycle of four short stories. They came out of the 
 
 Four witnesses, one wound seen from different sides.
 
-All four are finished, in Polish. They will be published on the website first. The covers above are the only part of the cycle that is public so far.
+All four are finished in Polish. The texts will appear on the website before any audio editions; the covers above are the only part of the cycle that is public so far. The first story has been submitted to MysteryTV, and its publication timing will be settled after their response or the end of their review window on 2026-10-12. Audio production does not hold back the entire text cycle.
 
 ## Project status
 
