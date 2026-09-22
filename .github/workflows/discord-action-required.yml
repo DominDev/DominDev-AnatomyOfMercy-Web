@@ -1,6 +1,7 @@
 name: Discord routing
 
 on:
+  workflow_dispatch:
   pull_request_target:
     types:
       - opened
@@ -73,6 +74,20 @@ jobs:
           content=""
 
           case "$EVENT_NAME" in
+            workflow_dispatch)
+              run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+              send_failed="false"
+              send_message "$GITHUB_WEBHOOK_URL" "🧪 TEST GitHub: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
+              send_message "$BUILD_WEBHOOK_URL" "🧪 TEST Build: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
+              send_message "$ACTION_WEBHOOK_URL" "🧪 TEST Action: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
+
+              if [[ "$send_failed" == "true" ]]; then
+                exit 1
+              fi
+
+              exit 0
+              ;;
+
             pull_request_target)
               number=$(jq -r '.pull_request.number' <<< "$EVENT_JSON")
               title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
