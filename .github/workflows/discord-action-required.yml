@@ -1,68 +1,187 @@
-name: Discord action required
+name: Discord routing
 
 on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - closed
+      - ready_for_review
+      - review_requested
+  pull_request_review:
+    types:
+      - submitted
+  issues:
+    types:
+      - opened
+      - reopened
+      - closed
+      - assigned
+  issue_comment:
+    types:
+      - created
+      - edited
   workflow_run:
     workflows:
       - pages-build-deployment
     types:
       - completed
-  pull_request:
-    types:
-      - review_requested
-  issues:
-    types:
-      - assigned
 
 permissions:
   contents: read
 
 jobs:
-  notify:
+  route:
     if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion != 'success' &&
-      github.event.workflow_run.conclusion != 'skipped')
+      github.event_name != 'issue_comment' ||
+      github.actor == 'cloudflare-workers-and-pages[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Build and send Discord notification
+      - name: Classify and send Discord notification
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_ACTION_REQUIRED }}
-          EVENT_NAME: ${{ github.event_name }}
+          ACTION_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_ACTION_REQUIRED }}
+          BUILD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_BUILDS }}
+          GITHUB_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
+          EVENT_ACTION: ${{ github.event.action }}
           EVENT_JSON: ${{ toJSON(github.event) }}
+          EVENT_NAME: ${{ github.event_name }}
           REPOSITORY: ${{ github.repository }}
         shell: bash
         run: |
           set -euo pipefail
 
+          send_message() {
+            local webhook_url="$1"
+            local content="$2"
+
+            if [[ -z "$webhook_url" ]]; then
+              echo "Required Discord webhook is not configured."
+              exit 1
+            fi
+
+            content="${content:0:1900}"
+            payload=$(jq -n --arg content "$content" \
+              '{content: $content, allowed_mentions: {parse: []}}')
+
+            curl --fail --silent --show-error --retry 2 \
+              --header 'Content-Type: application/json' \
+              --data "$payload" \
+              "$webhook_url"
+          }
+
+          route=""
+          also_action="false"
+          content=""
+
           case "$EVENT_NAME" in
-            workflow_run)
-              workflow_name=$(jq -r '.workflow_run.name' <<< "$EVENT_JSON")
-              conclusion=$(jq -r '.workflow_run.conclusion' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.workflow_run.html_url' <<< "$EVENT_JSON")
-              content="🚨 Workflow ${workflow_name} zakończył się statusem ${conclusion} w ${REPOSITORY}. ${details_url}"
-              ;;
-            pull_request)
+            pull_request_target)
               number=$(jq -r '.pull_request.number' <<< "$EVENT_JSON")
               title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
               details_url=$(jq -r '.pull_request.html_url' <<< "$EVENT_JSON")
-              requester=$(jq -r '.sender.login' <<< "$EVENT_JSON")
-              target=$(jq -r '.requested_reviewer.login // .requested_team.name // "zespół"' <<< "$EVENT_JSON")
-              content="👀 ${requester} prosi ${target} o review PR #${number}: ${title}. ${details_url}"
+
+              case "$EVENT_ACTION" in
+                review_requested)
+                  requester=$(jq -r '.sender.login' <<< "$EVENT_JSON")
+                  target=$(jq -r '.requested_reviewer.login // .requested_team.name // "zespół"' <<< "$EVENT_JSON")
+                  route="action"
+                  content="👀 ${requester} prosi ${target} o review PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  ;;
+                closed)
+                  merged=$(jq -r '.pull_request.merged' <<< "$EVENT_JSON")
+                  route="github"
+                  if [[ "$merged" == "true" ]]; then
+                    content="✅ Scalono PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  else
+                    content="🗑️ Zamknięto PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  fi
+                  ;;
+                opened|reopened|ready_for_review)
+                  author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
+                  route="github"
+                  content="🔀 ${author} otworzył lub wznowił PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  ;;
+              esac
               ;;
+
+            pull_request_review)
+              state=$(jq -r '.review.state // ""' <<< "$EVENT_JSON")
+              review_body=$(jq -r '.review.body // ""' <<< "$EVENT_JSON")
+              reviewer=$(jq -r '.review.user.login' <<< "$EVENT_JSON")
+              number=$(jq -r '.pull_request.number' <<< "$EVENT_JSON")
+              title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
+              details_url=$(jq -r '.review.html_url // .pull_request.html_url' <<< "$EVENT_JSON")
+              actionable=$(grep -Eio 'Actionable comments posted: [0-9]+' <<< "$review_body" | grep -Eo '[0-9]+' | head -n 1 || true)
+
+              if [[ "$state" == "changes_requested" ]] || [[ -n "$actionable" && "$actionable" != "0" ]]; then
+                route="action"
+                if [[ -n "$actionable" && "$actionable" != "0" ]]; then
+                  content="🚨 ${reviewer} zgłosił ${actionable} uwag wymagających działania w PR #${number}: ${title}. ${details_url}"
+                else
+                  content="🚨 ${reviewer} poprosił o zmiany w PR #${number}: ${title}. ${details_url}"
+                fi
+              fi
+              ;;
+
             issues)
               number=$(jq -r '.issue.number' <<< "$EVENT_JSON")
               title=$(jq -r '.issue.title' <<< "$EVENT_JSON")
               details_url=$(jq -r '.issue.html_url' <<< "$EVENT_JSON")
-              assignee=$(jq -r '.assignee.login' <<< "$EVENT_JSON")
-              content="📌 ${assignee} otrzymał Issue #${number}: ${title}. ${details_url}"
+
+              if [[ "$EVENT_ACTION" == "assigned" ]]; then
+                assignee=$(jq -r '.assignee.login' <<< "$EVENT_JSON")
+                route="action"
+                content="📌 ${assignee} otrzymał Issue #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+              elif [[ "$EVENT_ACTION" =~ ^(opened|reopened|closed)$ ]]; then
+                route="github"
+                content="📋 Issue #${number} w ${REPOSITORY}, status ${EVENT_ACTION}: ${title}. ${details_url}"
+              fi
+              ;;
+
+            issue_comment)
+              comment_body=$(jq -r '.comment.body // ""' <<< "$EVENT_JSON")
+              comment_url=$(jq -r '.comment.html_url' <<< "$EVENT_JSON")
+              number=$(jq -r '.issue.number' <<< "$EVENT_JSON")
+              body_lower=$(tr '[:upper:]' '[:lower:]' <<< "$comment_body")
+
+              if grep -q 'deployment successful' <<< "$body_lower"; then
+                route="build"
+                content="✅ Cloudflare zakończył deployment dla PR #${number} w ${REPOSITORY} sukcesem. ${comment_url}"
+              elif grep -Eq 'deployment failed|deployment failure' <<< "$body_lower"; then
+                route="build"
+                also_action="true"
+                content="❌ Cloudflare zgłosił błąd deploymentu dla PR #${number} w ${REPOSITORY}. ${comment_url}"
+              fi
+              ;;
+
+            workflow_run)
+              workflow_name=$(jq -r '.workflow_run.name' <<< "$EVENT_JSON")
+              conclusion=$(jq -r '.workflow_run.conclusion' <<< "$EVENT_JSON")
+              details_url=$(jq -r '.workflow_run.html_url' <<< "$EVENT_JSON")
+              route="build"
+              content="🚀 Workflow ${workflow_name} w ${REPOSITORY} zakończył się statusem ${conclusion}. ${details_url}"
+
+              if [[ "$conclusion" != "success" && "$conclusion" != "skipped" ]]; then
+                also_action="true"
+              fi
+              ;;
+          esac
+
+          case "$route" in
+            github)
+              send_message "$GITHUB_WEBHOOK_URL" "$content"
+              ;;
+            build)
+              send_message "$BUILD_WEBHOOK_URL" "$content"
+              ;;
+            action)
+              send_message "$ACTION_WEBHOOK_URL" "$content"
               ;;
             *)
+              echo "Event does not require a Discord notification."
               exit 0
               ;;
           esac
 
-          payload=$(jq -n --arg content "$content" '{content: $content}')
-          curl --fail --silent --show-error \
-            --header 'Content-Type: application/json' \
-            --data "$payload" \
-            "$DISCORD_WEBHOOK_URL"
+          if [[ "$also_action" == "true" ]]; then
+            send_message "$ACTION_WEBHOOK_URL" "$content"
+          fi
