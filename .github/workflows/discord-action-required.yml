@@ -17,10 +17,9 @@ on:
       - reopened
       - closed
       - assigned
-  issue_comment:
+  check_run:
     types:
-      - created
-      - edited
+      - completed
   workflow_run:
     workflows:
       - pages-build-deployment
@@ -33,8 +32,8 @@ permissions:
 jobs:
   route:
     if: >-
-      github.event_name != 'issue_comment' ||
-      github.actor == 'cloudflare-workers-and-pages[bot]'
+      github.event_name != 'check_run' ||
+      github.event.check_run.app.slug == 'cloudflare-workers-and-pages'
     runs-on: ubuntu-latest
     steps:
       - name: Classify and send Discord notification
@@ -142,19 +141,15 @@ jobs:
               fi
               ;;
 
-            issue_comment)
-              comment_body=$(jq -r '.comment.body // ""' <<< "$EVENT_JSON")
-              comment_url=$(jq -r '.comment.html_url' <<< "$EVENT_JSON")
-              number=$(jq -r '.issue.number' <<< "$EVENT_JSON")
-              body_lower=$(tr '[:upper:]' '[:lower:]' <<< "$comment_body")
+            check_run)
+              check_name=$(jq -r '.check_run.name' <<< "$EVENT_JSON")
+              conclusion=$(jq -r '.check_run.conclusion' <<< "$EVENT_JSON")
+              details_url=$(jq -r '.check_run.details_url // .check_run.html_url' <<< "$EVENT_JSON")
+              route="build"
+              content="🚀 ${check_name} w ${REPOSITORY} zakończył się statusem ${conclusion}. ${details_url}"
 
-              if grep -q 'deployment successful' <<< "$body_lower"; then
-                route="build"
-                content="✅ Cloudflare zakończył deployment dla PR #${number} w ${REPOSITORY} sukcesem. ${comment_url}"
-              elif grep -Eq 'deployment failed|deployment failure' <<< "$body_lower"; then
-                route="build"
+              if [[ "$conclusion" != "success" && "$conclusion" != "skipped" ]]; then
                 also_action="true"
-                content="❌ Cloudflare zgłosił błąd deploymentu dla PR #${number} w ${REPOSITORY}. ${comment_url}"
               fi
               ;;
 
