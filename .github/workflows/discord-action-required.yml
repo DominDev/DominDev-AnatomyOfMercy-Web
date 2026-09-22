@@ -56,7 +56,7 @@ jobs:
 
             if [[ -z "$webhook_url" ]]; then
               echo "Required Discord webhook is not configured."
-              exit 1
+              return 1
             fi
 
             content="${content:0:1900}"
@@ -95,10 +95,15 @@ jobs:
                     content="🗑️ Zamknięto PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
                   fi
                   ;;
-                opened|reopened|ready_for_review)
+                opened|reopened)
                   author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
                   route="github"
                   content="🔀 ${author} otworzył lub wznowił PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  ;;
+                ready_for_review)
+                  author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
+                  route="github"
+                  content="🔀 PR #${number} użytkownika ${author} jest gotowy do review w ${REPOSITORY}: ${title}. ${details_url}"
                   ;;
               esac
               ;;
@@ -166,6 +171,18 @@ jobs:
               ;;
           esac
 
+          if [[ "$route" == "build" && "$also_action" == "true" ]]; then
+            send_failed="false"
+            send_message "$BUILD_WEBHOOK_URL" "$content" || send_failed="true"
+            send_message "$ACTION_WEBHOOK_URL" "$content" || send_failed="true"
+
+            if [[ "$send_failed" == "true" ]]; then
+              exit 1
+            fi
+
+            exit 0
+          fi
+
           case "$route" in
             github)
               send_message "$GITHUB_WEBHOOK_URL" "$content"
@@ -181,7 +198,3 @@ jobs:
               exit 0
               ;;
           esac
-
-          if [[ "$also_action" == "true" ]]; then
-            send_message "$ACTION_WEBHOOK_URL" "$content"
-          fi
