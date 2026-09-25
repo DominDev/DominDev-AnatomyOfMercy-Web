@@ -75,6 +75,7 @@ jobs:
           }
 
           # Link do commita z pierwszą linią jego opisu (opis pobierany z API GitHuba).
+          # Dla scalenia PR zamiast "Merge pull request #7 from ..." pokazuje "PR #7: tytuł PR".
           commit_line() {
             local sha="$1" message=""
             [[ -z "$sha" ]] && return 0
@@ -82,7 +83,12 @@ jobs:
               --header "Authorization: Bearer ${GH_TOKEN}" \
               --header 'Accept: application/vnd.github+json' \
               "${GITHUB_API_URL}/repos/${REPOSITORY}/commits/${sha}" \
-              | jq -r '.commit.message | split("\n")[0] | .[0:80]' 2>/dev/null || true)
+              | jq -r '.commit.message
+                  | (split("\n") | map(select(length > 0))) as $lines
+                  | if ($lines[0] | test("^Merge pull request #[0-9]+"))
+                    then "PR #" + ($lines[0] | capture("#(?<n>[0-9]+)").n) + ": " + ($lines[1] // "")
+                    else $lines[0] end
+                  | .[0:80]' 2>/dev/null || true)
             echo "[\`${sha:0:7}\`](${GITHUB_SERVER_URL}/${REPOSITORY}/commit/${sha})${message:+ ${message}}"
           }
 
@@ -266,6 +272,12 @@ jobs:
               project="${check_name##*: }"
               service="${check_name%%: *}"
               [[ "$service" == "$check_name" ]] && service="Cloudflare"
+
+              # Cloudflare buduje też gałęzie robocze (podglądy). Z nich zgłaszamy tylko błędy.
+              if [[ "$branch" != "main" && "$conclusion" != "failure" && "$conclusion" != "timed_out" && "$conclusion" != "action_required" ]]; then
+                echo "Preview build on ${branch} (${conclusion}), skipping."
+                exit 0
+              fi
 
               case "$conclusion" in
                 success)
