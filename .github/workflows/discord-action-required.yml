@@ -1,7 +1,16 @@
 name: Discord routing
 
+# Wspólny router powiadomień Discord dla repo Anatomy of Mercy (Docs, Web, Game).
+# Ten sam plik w każdym repo. Każde repo ma własne webhooki (nazwa i awatar repo),
+# podane w sekretach DISCORD_WEBHOOK_GITHUB, DISCORD_WEBHOOK_ACTION_REQUIRED, DISCORD_WEBHOOK_BUILDS.
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - published
   pull_request_target:
     types:
       - opened
@@ -21,17 +30,13 @@ on:
   check_run:
     types:
       - completed
-  workflow_run:
-    workflows:
-      - pages-build-deployment
-    types:
-      - completed
 
 permissions:
   contents: read
 
 jobs:
   route:
+    # Z check_run tylko buildy Cloudflare, reszta checków nie idzie na Discorda.
     if: >-
       github.event_name != 'check_run' ||
       github.event.check_run.app.slug == 'cloudflare-workers-and-pages'
@@ -42,6 +47,7 @@ jobs:
           ACTION_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_ACTION_REQUIRED }}
           BUILD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_BUILDS }}
           GITHUB_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
+          GH_TOKEN: ${{ github.token }}
           EVENT_ACTION: ${{ github.event.action }}
           EVENT_JSON: ${{ toJSON(github.event) }}
           EVENT_NAME: ${{ github.event_name }}
@@ -50,18 +56,57 @@ jobs:
         run: |
           set -euo pipefail
 
-          send_message() {
-            local webhook_url="$1"
-            local content="$2"
+          # Kolory paska w embedzie.
+          COLOR_SUCCESS=4170586   # zielony: scalone, udany build
+          COLOR_DANGER=11740702   # karmazynowy: błąd, prośba o zmiany
+          COLOR_INFO=13936975     # złoty AoM: nowe, informacja
+          COLOR_MUTED=7236196     # szary: zamknięte, anulowane
+
+          # Repo rozpoznaje się po nazwie i awatarze webhooka (każde repo ma własne webhooki),
+          # więc embed nie powtarza nazwy repo.
+
+          # Polska odmiana: 1 commit, 2 commity, 5 commitów.
+          plural_commits() {
+            local n="$1"
+            if (( n == 1 )); then echo "1 commit"
+            elif (( n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) )); then echo "${n} commity"
+            else echo "${n} commitów"
+            fi
+          }
+
+          # Link do commita z pierwszą linią jego opisu (opis pobierany z API GitHuba).
+          commit_line() {
+            local sha="$1" message=""
+            [[ -z "$sha" ]] && return 0
+            message=$(curl --fail --silent --show-error \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header 'Accept: application/vnd.github+json' \
+              "${GITHUB_API_URL}/repos/${REPOSITORY}/commits/${sha}" \
+              | jq -r '.commit.message | split("\n")[0] | .[0:80]' 2>/dev/null || true)
+            echo "[\`${sha:0:7}\`](${GITHUB_SERVER_URL}/${REPOSITORY}/commit/${sha})${message:+ ${message}}"
+          }
+
+          send_embed() {
+            local webhook_url="$1" color="$2" title="$3" url="$4" description="$5"
 
             if [[ -z "$webhook_url" ]]; then
               echo "Required Discord webhook is not configured."
               return 1
             fi
 
-            content="${content:0:1900}"
-            payload=$(jq -n --arg content "$content" \
-              '{content: $content, allowed_mentions: {parse: []}}')
+            payload=$(jq -n \
+              --arg title "$title" --arg url "$url" --arg description "$description" \
+              --argjson color "$color" --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              '{
+                allowed_mentions: {parse: []},
+                embeds: [{
+                  title: $title[0:250],
+                  url: $url,
+                  description: $description[0:1500],
+                  color: $color,
+                  timestamp: $timestamp
+                }]
+              }')
 
             curl --fail --silent --show-error --retry 2 \
               --header 'Content-Type: application/json' \
@@ -71,53 +116,88 @@ jobs:
 
           route=""
           also_action="false"
-          content=""
+          color="$COLOR_INFO"
+          title=""
+          url=""
+          description=""
 
           case "$EVENT_NAME" in
-            workflow_dispatch)
-              run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-              send_failed="false"
-              send_message "$GITHUB_WEBHOOK_URL" "🧪 TEST GitHub: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
-              send_message "$BUILD_WEBHOOK_URL" "🧪 TEST Build: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
-              send_message "$ACTION_WEBHOOK_URL" "🧪 TEST Action: router Discorda działa dla ${REPOSITORY}. ${run_url}" || send_failed="true"
+            push)
+              head_message=$(jq -r '.head_commit.message // ""' <<< "$EVENT_JSON")
+              count=$(jq -r '.commits | length' <<< "$EVENT_JSON")
 
-              if [[ "$send_failed" == "true" ]]; then
-                exit 1
+              # Scalenie PR ma już własne powiadomienie, więc sam push go nie dubluje.
+              if [[ "$head_message" == "Merge pull request #"* || "$count" == "0" ]]; then
+                echo "Merge or empty push, skipping."
+                exit 0
               fi
 
-              exit 0
+              pusher=$(jq -r '.pusher.name' <<< "$EVENT_JSON")
+              branch="${GITHUB_REF#refs/heads/}"
+              route="github"
+              title="⬆️ $(plural_commits "$count") na ${branch}"
+              url=$(jq -r '.compare' <<< "$EVENT_JSON")
+              commit_lines=$(jq -r '.commits[-5:] | reverse | .[] | "[`\(.id[0:7])`](\(.url)) \(.message | split("\n")[0] | .[0:80])"' <<< "$EVENT_JSON")
+              description="${commit_lines}"$'\n'"-# ${pusher}"
+              if (( count > 5 )); then
+                description="${commit_lines}"$'\n'"-# ${pusher} · pokazano 5 z ${count}"
+              fi
+              ;;
+
+            release)
+              tag=$(jq -r '.release.tag_name' <<< "$EVENT_JSON")
+              name=$(jq -r '.release.name // ""' <<< "$EVENT_JSON")
+              author=$(jq -r '.release.author.login' <<< "$EVENT_JSON")
+              route="github"
+              title="🏷️ Wydanie ${tag}${name:+: ${name}}"
+              url=$(jq -r '.release.html_url' <<< "$EVENT_JSON")
+              description="${author}"
               ;;
 
             pull_request_target)
               number=$(jq -r '.pull_request.number' <<< "$EVENT_JSON")
-              title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.pull_request.html_url' <<< "$EVENT_JSON")
+              pr_title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
+              url=$(jq -r '.pull_request.html_url' <<< "$EVENT_JSON")
+              author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
+              head_ref=$(jq -r '.pull_request.head.ref' <<< "$EVENT_JSON")
+              base_ref=$(jq -r '.pull_request.base.ref' <<< "$EVENT_JSON")
+              branches="\`${head_ref}\` → \`${base_ref}\`"
 
               case "$EVENT_ACTION" in
                 review_requested)
                   requester=$(jq -r '.sender.login' <<< "$EVENT_JSON")
                   target=$(jq -r '.requested_reviewer.login // .requested_team.name // "zespół"' <<< "$EVENT_JSON")
                   route="action"
-                  content="👀 ${requester} prosi ${target} o review PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  title="👀 Prośba o review PR #${number}: ${pr_title}"
+                  description="${requester} prosi o review: **${target}**"$'\n'"-# ${branches}"
                   ;;
                 closed)
-                  merged=$(jq -r '.pull_request.merged' <<< "$EVENT_JSON")
                   route="github"
-                  if [[ "$merged" == "true" ]]; then
-                    content="✅ Scalono PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  if [[ "$(jq -r '.pull_request.merged' <<< "$EVENT_JSON")" == "true" ]]; then
+                    color="$COLOR_SUCCESS"
+                    commits=$(jq -r '.pull_request.commits' <<< "$EVENT_JSON")
+                    title="✅ Scalono PR #${number}: ${pr_title}"
+                    description="${author} · ${branches} · $(plural_commits "$commits")"
                   else
-                    content="🗑️ Zamknięto PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                    color="$COLOR_MUTED"
+                    title="🗑️ Zamknięto bez scalenia PR #${number}: ${pr_title}"
+                    description="${author} · ${branches}"
                   fi
                   ;;
-                opened|reopened)
-                  author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
+                opened)
                   route="github"
-                  content="🔀 ${author} otworzył lub wznowił PR #${number} w ${REPOSITORY}: ${title}. ${details_url}"
+                  title="🔀 Nowy PR #${number}: ${pr_title}"
+                  description="${author} · ${branches}"
+                  ;;
+                reopened)
+                  route="github"
+                  title="🔀 Wznowiono PR #${number}: ${pr_title}"
+                  description="${author} · ${branches}"
                   ;;
                 ready_for_review)
-                  author=$(jq -r '.pull_request.user.login' <<< "$EVENT_JSON")
                   route="github"
-                  content="🔀 PR #${number} użytkownika ${author} jest gotowy do review w ${REPOSITORY}: ${title}. ${details_url}"
+                  title="🔀 PR #${number} gotowy do review: ${pr_title}"
+                  description="${author} · ${branches}"
                   ;;
               esac
               ;;
@@ -127,84 +207,102 @@ jobs:
               review_body=$(jq -r '.review.body // ""' <<< "$EVENT_JSON")
               reviewer=$(jq -r '.review.user.login' <<< "$EVENT_JSON")
               number=$(jq -r '.pull_request.number' <<< "$EVENT_JSON")
-              title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.review.html_url // .pull_request.html_url' <<< "$EVENT_JSON")
+              pr_title=$(jq -r '.pull_request.title' <<< "$EVENT_JSON")
+              url=$(jq -r '.review.html_url // .pull_request.html_url' <<< "$EVENT_JSON")
               actionable=$(grep -Eio 'Actionable comments posted: [0-9]+' <<< "$review_body" | grep -Eo '[0-9]+' | head -n 1 || true)
 
               if [[ "$state" == "changes_requested" ]] || [[ -n "$actionable" && "$actionable" != "0" ]]; then
                 route="action"
+                color="$COLOR_DANGER"
+                title="🚨 Uwagi do PR #${number}: ${pr_title}"
                 if [[ -n "$actionable" && "$actionable" != "0" ]]; then
-                  content="🚨 ${reviewer} zgłosił ${actionable} uwag wymagających działania w PR #${number}: ${title}. ${details_url}"
+                  description="${reviewer} zgłosił uwagi do poprawy: **${actionable}**"
                 else
-                  content="🚨 ${reviewer} poprosił o zmiany w PR #${number}: ${title}. ${details_url}"
+                  description="${reviewer} poprosił o zmiany"
                 fi
               fi
               ;;
 
             issues)
               number=$(jq -r '.issue.number' <<< "$EVENT_JSON")
-              title=$(jq -r '.issue.title' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.issue.html_url' <<< "$EVENT_JSON")
+              issue_title=$(jq -r '.issue.title' <<< "$EVENT_JSON")
+              url=$(jq -r '.issue.html_url' <<< "$EVENT_JSON")
+              author=$(jq -r '.issue.user.login' <<< "$EVENT_JSON")
 
-              if [[ "$EVENT_ACTION" == "assigned" ]]; then
-                assignee=$(jq -r '.assignee.login' <<< "$EVENT_JSON")
-                route="action"
-                content="📌 ${assignee} otrzymał Issue #${number} w ${REPOSITORY}: ${title}. ${details_url}"
-              elif [[ "$EVENT_ACTION" =~ ^(opened|reopened|closed)$ ]]; then
-                route="github"
-                content="📋 Issue #${number} w ${REPOSITORY}, status ${EVENT_ACTION}: ${title}. ${details_url}"
-              fi
+              case "$EVENT_ACTION" in
+                assigned)
+                  assignee=$(jq -r '.assignee.login' <<< "$EVENT_JSON")
+                  route="action"
+                  title="📌 Przydzielono Issue #${number}: ${issue_title}"
+                  description="Przydzielono: **${assignee}**"
+                  ;;
+                opened)
+                  route="github"
+                  title="📋 Nowe Issue #${number}: ${issue_title}"
+                  description="${author}"
+                  ;;
+                reopened)
+                  route="github"
+                  title="📋 Ponownie otwarte Issue #${number}: ${issue_title}"
+                  description="${author}"
+                  ;;
+                closed)
+                  route="github"
+                  color="$COLOR_MUTED"
+                  title="☑️ Zamknięte Issue #${number}: ${issue_title}"
+                  description="${author}"
+                  ;;
+              esac
               ;;
 
             check_run)
               check_name=$(jq -r '.check_run.name' <<< "$EVENT_JSON")
               conclusion=$(jq -r '.check_run.conclusion' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.check_run.details_url // .check_run.html_url' <<< "$EVENT_JSON")
+              url=$(jq -r '.check_run.details_url // .check_run.html_url' <<< "$EVENT_JSON")
+              sha=$(jq -r '.check_run.head_sha // ""' <<< "$EVENT_JSON")
+              branch=$(jq -r '.check_run.check_suite.head_branch // ""' <<< "$EVENT_JSON")
+
+              # "Workers Builds: anatomyofmercy-web" -> usługa "Workers Builds", projekt "anatomyofmercy-web".
+              project="${check_name##*: }"
+              service="${check_name%%: *}"
+              [[ "$service" == "$check_name" ]] && service="Cloudflare"
+
+              case "$conclusion" in
+                success)
+                  color="$COLOR_SUCCESS"; title="✅ Build udany: ${project}" ;;
+                failure)
+                  color="$COLOR_DANGER"; title="❌ Build nieudany: ${project}"; also_action="true" ;;
+                timed_out)
+                  color="$COLOR_DANGER"; title="⏱️ Build przekroczył czas: ${project}"; also_action="true" ;;
+                action_required)
+                  color="$COLOR_DANGER"; title="⚠️ Build wymaga działania: ${project}"; also_action="true" ;;
+                cancelled)
+                  color="$COLOR_MUTED"; title="⏹️ Build anulowany: ${project}" ;;
+                *)
+                  echo "Check conclusion ${conclusion} does not need a notification."
+                  exit 0 ;;
+              esac
+
               route="build"
-              content="🚀 ${check_name} w ${REPOSITORY} zakończył się statusem ${conclusion}. ${details_url}"
-
-              if [[ "$conclusion" != "success" && "$conclusion" != "skipped" ]]; then
-                also_action="true"
-              fi
-              ;;
-
-            workflow_run)
-              workflow_name=$(jq -r '.workflow_run.name' <<< "$EVENT_JSON")
-              conclusion=$(jq -r '.workflow_run.conclusion' <<< "$EVENT_JSON")
-              details_url=$(jq -r '.workflow_run.html_url' <<< "$EVENT_JSON")
-              route="build"
-              content="🚀 Workflow ${workflow_name} w ${REPOSITORY} zakończył się statusem ${conclusion}. ${details_url}"
-
-              if [[ "$conclusion" != "success" && "$conclusion" != "skipped" ]]; then
-                also_action="true"
-              fi
+              details="${service}${branch:+ · \`${branch}\`}"
+              description="$(commit_line "$sha")"$'\n'"-# ${details}"
               ;;
           esac
 
-          if [[ "$route" == "build" && "$also_action" == "true" ]]; then
-            send_failed="false"
-            send_message "$BUILD_WEBHOOK_URL" "$content" || send_failed="true"
-            send_message "$ACTION_WEBHOOK_URL" "$content" || send_failed="true"
-
-            if [[ "$send_failed" == "true" ]]; then
-              exit 1
-            fi
-
-            exit 0
-          fi
-
           case "$route" in
             github)
-              send_message "$GITHUB_WEBHOOK_URL" "$content"
-              ;;
-            build)
-              send_message "$BUILD_WEBHOOK_URL" "$content"
+              send_embed "$GITHUB_WEBHOOK_URL" "$color" "$title" "$url" "$description"
               ;;
             action)
-              send_message "$ACTION_WEBHOOK_URL" "$content"
+              send_embed "$ACTION_WEBHOOK_URL" "$color" "$title" "$url" "$description"
+              ;;
+            build)
+              send_embed "$BUILD_WEBHOOK_URL" "$color" "$title" "$url" "$description"
+              if [[ "$also_action" == "true" ]]; then
+                send_embed "$ACTION_WEBHOOK_URL" "$color" "$title" "$url" "$description"
+              fi
               ;;
             *)
               echo "Event does not require a Discord notification."
-              exit 0
               ;;
           esac
