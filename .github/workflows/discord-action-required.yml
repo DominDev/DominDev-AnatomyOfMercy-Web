@@ -5,6 +5,8 @@ name: Discord routing
 # podane w sekretach DISCORD_WEBHOOK_GITHUB, DISCORD_WEBHOOK_ACTION_REQUIRED, DISCORD_WEBHOOK_BUILDS.
 
 on:
+  # Ręczny test: wysyła po jednym oznaczonym komunikacie testowym na każdy skonfigurowany kanał.
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -128,6 +130,25 @@ jobs:
           description=""
 
           case "$EVENT_NAME" in
+            workflow_dispatch)
+              run_url="${GITHUB_SERVER_URL}/${REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+              test_description="Komunikat testowy z ręcznego uruchomienia \`Discord routing\`. Nie jest prawdziwym zdarzeniem, można go usunąć."
+              sent=0
+              failed="false"
+              for target in "GitHub:${GITHUB_WEBHOOK_URL}" "Wymagane działanie:${ACTION_WEBHOOK_URL}" "Buildy i wdrożenia:${BUILD_WEBHOOK_URL}"; do
+                label="${target%%:*}"
+                webhook_url="${target#*:}"
+                # Repo bez buildów (Docs) nie ma sekretu kanału buildów, więc go pomijamy.
+                [[ -z "$webhook_url" ]] && { echo "No webhook for ${label}, skipping."; continue; }
+                send_embed "$webhook_url" "$COLOR_MUTED" "🧪 Test routingu: ${label}" "$run_url" "$test_description" && sent=$((sent + 1)) || failed="true"
+              done
+              echo "Test messages sent: ${sent}"
+              if [[ "$failed" == "true" || -z "$GITHUB_WEBHOOK_URL" || -z "$ACTION_WEBHOOK_URL" ]]; then
+                exit 1
+              fi
+              exit 0
+              ;;
+
             push)
               head_message=$(jq -r '.head_commit.message // ""' <<< "$EVENT_JSON")
               count=$(jq -r '.commits | length' <<< "$EVENT_JSON")
