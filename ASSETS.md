@@ -12,7 +12,7 @@ not covered by an open source license. See [LICENSE.md](LICENSE.md).
 | Website asset | Source filename | Size | Purpose |
 |---|---|---|---|
 | `assets/images/brand/mark-176.png` | `AoM-web-znak.png` | 176 x 176 | Emblem in the header and the footer |
-| `favicon.png` | `AoM-web-znak.png` | 180 x 180 | Browser icon |
+| `favicon.png` | `AoM-mark-background-small.png` | 180 x 180 | Browser icon, the brand mark on its textured background, reduced to a 256 colour palette |
 | `assets/images/brand/doctor.webp` | `avatar-transparent.png` | 900 x 900 | Portrait in the contact section |
 
 ## Hero
