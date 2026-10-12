@@ -1,8 +1,9 @@
 // Interaktywny dylemat "Swiatlo pod popiolem" (/pl/dylemat/). Prowadzi gracza
-// przez wstep, rozdzialy i sceny, pozwala wybierac kwestie jak w grze
-// fabularnej, pokazuje tylko konsekwencje jego wlasnej drogi i na koncu
-// wysyla anonimowy wynik do /api/dylemat. Tresc pochodzi z JSON osadzonego w
-// stronie (src/_data/dylemat.js).
+// przez wstep, rozdzialy i sceny opowiadane zdanie po zdaniu, pozwala wybierac
+// kwestie jak w grze fabularnej, po kazdym wyborze pyta o jego trudnosc,
+// pokazuje tylko konsekwencje wlasnej drogi i na koncu wysyla anonimowy wynik
+// do /api/dylemat. Tresc pochodzi z JSON osadzonego w stronie
+// (src/_data/dylemat.js).
 (() => {
   "use strict";
 
@@ -16,9 +17,11 @@
   const DONE_KEY = "aom-dylemat-done";
 
   // Stan jednej proby. Czas liczymy dla kazdego ekranu osobno, a czas decyzji
-  // od pierwszej karty drogi do wybrania kwestii.
+  // od pierwszej karty drogi do wybrania kwestii. Trudnosc kazdego wyboru
+  // gracz ocenia od razu po nim.
   const fresh = () => ({
-    path: null, difficulty: null, returnMode: null, lucja: null, objection: null, finalPath: null,
+    path: null, returnMode: null, lucja: null, objection: null, finalPath: null,
+    difficulty: null, difficultyReturn: null, difficultyLucja: null, difficultyObjection: null,
     timings: {}, infoOpens: {}, decisionStart: null, decisionMs: null
   });
   let state = fresh();
@@ -28,6 +31,8 @@
   let busy = false;
   let keyHandler = null;
   let chapterShown = null;
+  // Ekrany juz opowiedziane: po powrocie do nich tekst stoi od razu.
+  const told = new Set();
   const timers = new Set();
 
   function readDone() {
@@ -64,14 +69,6 @@
 
   const fill = (template, values) => template.replace(/\{(\w+)\}/g, (_, key) => values[key]);
 
-  // Tekst scen pochodzi z naszego buildu (nie od uzytkownika) i zawiera tylko
-  // <strong> i <em>, dlatego wolno go wstawic jako HTML.
-  function paragraph(html, className) {
-    const p = el("p", className || "dylemat__text");
-    p.innerHTML = html;
-    return p;
-  }
-
   function button(label, onClick, className) {
     const b = el("button", className || "button", label);
     b.type = "button";
@@ -101,6 +98,7 @@
       focus.tabIndex = -1;
       focus.focus({ preventScroll: true });
       busy = false;
+      if (view.narrate) view.narrate();
     };
     if (delay) later(render, delay); else render();
   }
@@ -127,13 +125,76 @@
       view.lastChild.dataset.focus = "";
       view.addEventListener("click", () => { if (!busy) go(); });
       later(() => { keyHandler = () => go(); }, 50);
-      later(go, reduced.matches ? 1600 : 2900);
+      later(go, reduced.matches ? 1600 : 3000);
       return view;
     });
   }
 
-  // Scena: obraz z powolnym najazdem kamery i tekst odslaniany akapit po
-  // akapicie. Kazdy element tresci dostaje swoj numer w kolejce wejscia.
+  // ---------------------------------------------------------------- Narracja
+
+  // Podzial akapitu na zdania. Granica to znak konca zdania, ewentualnie z
+  // cudzyslowem lub zamknieciem znacznika, potem odstep i wielka litera albo
+  // otwarcie cytatu czy znacznika.
+  const SENTENCE = /(?<=[.!?…](?:”|<\/strong>|<\/em>)*)\s+(?=[„"A-ZĄĆĘŁŃÓŚŹŻ<])/u;
+
+  // Tekst scen pochodzi z naszego buildu (nie od uzytkownika) i zawiera tylko
+  // <strong> i <em>, dlatego wolno go wstawic jako HTML.
+  function prose(paragraphs) {
+    const box = el("div", "dylemat__prose");
+    paragraphs.forEach((html) => {
+      const p = el("p", "dylemat__text");
+      html.split(SENTENCE).forEach((part, i) => {
+        if (i) p.append(" ");
+        const span = el("span", "dylemat__sentence");
+        span.innerHTML = part;
+        p.append(span);
+      });
+      box.append(p);
+    });
+    return box;
+  }
+
+  const plain = (node) => node.textContent.length;
+
+  // Tempo czytania: krotkie zdanie okolo poltorej sekundy, dlugie najwyzej trzy.
+  // Nowy akapit i zdanie z wyroznieniem dostaja dodatkowa pauze.
+  function narrate(view, id, sentences, after, keys) {
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimers();
+      sentences.forEach((s) => s.classList.add("is-on"));
+      after.classList.add("is-on");
+      view.classList.remove("is-telling");
+      told.add(id);
+      keyHandler = keys || null;
+    };
+    if (!sentences.length || reduced.matches || told.has(id)) { finish(); return; }
+    view.classList.add("is-telling");
+    let at = 700;
+    let paragraph = null;
+    sentences.forEach((s) => {
+      if (paragraph && s.parentNode !== paragraph) at += 600;
+      if (s.querySelector("strong")) at += 450;
+      paragraph = s.parentNode;
+      later(() => s.classList.add("is-on"), at);
+      at += Math.min(3000, Math.max(1300, 700 + plain(s) * 26));
+    });
+    later(finish, at - 600);
+    view.addEventListener("click", (event) => {
+      if (!finished && !event.target.closest("button")) finish();
+    });
+    keyHandler = (event) => {
+      if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
+        event.preventDefault();
+        finish();
+      }
+    };
+  }
+
+  // Scena: obraz z powolnym najazdem kamery, tytul i tekst odslaniany zdanie
+  // po zdaniu. Wybory i przyciski pojawiaja sie dopiero po calym tekscie.
   function scene(opts) {
     const view = el("article", "dylemat__scene" + (opts.image ? "" : " dylemat__scene--plain"));
     if (opts.image) {
@@ -142,34 +203,57 @@
       image.src = opts.image;
       image.alt = "";
       image.decoding = "async";
+      if (opts.focus) image.style.objectPosition = opts.focus;
       figure.append(image);
       view.append(figure);
     }
     const body = el("div", "dylemat__body");
-    if (opts.tag) body.append(el("p", "dylemat__tag", opts.tag));
+    const head = [];
+    if (opts.tag) head.push(el("p", "dylemat__tag", opts.tag));
     const heading = el("h1", "dylemat__title", opts.title || "");
     heading.dataset.focus = "";
-    body.append(heading);
-    (opts.text || []).forEach((html) => body.append(paragraph(html)));
-    (opts.extra || []).forEach((node) => body.append(node));
+    head.push(heading);
+    head.forEach((node, i) => {
+      node.classList.add("dylemat__reveal");
+      node.style.setProperty("--i", i);
+      body.append(node);
+    });
+    // Podpowiedz stoi pod tytulem, tam gdzie gracz patrzy na poczatku sceny.
+    body.append(el("p", "dylemat__skiphint", data.skipHint));
+    let sentences = [];
+    if (opts.text && opts.text.length) {
+      const box = prose(opts.text);
+      sentences = [...box.querySelectorAll(".dylemat__sentence")];
+      body.append(box);
+    }
+    const after = el("div", "dylemat__after");
+    const extra = opts.extra || [];
+    extra.forEach((node) => after.append(node));
     if (opts.actions && opts.actions.length) {
       const actions = el("div", "dylemat__actions");
       actions.append(...opts.actions);
-      body.append(actions);
+      after.append(actions);
     }
-    [...body.children].forEach((child, i) => {
-      child.classList.add("dylemat__reveal");
-      child.style.setProperty("--i", i);
-    });
+    body.append(after);
     view.append(body);
+    const keys = extra.map((node) => node.keys).find(Boolean);
+    view.narrate = () => narrate(view, opts.id, sentences, after, keys);
     preload(opts.next);
     return view;
   }
 
-  // Kwestie dialogowe. Obok kazdej ikona i z krotkim przypomnieniem ceny.
-  // Ile razy gracz zajrzal do przypomnien, zapisujemy jako sygnal wahania.
+  // Kwestie dialogowe. Obok kazdej ikona i z krotkim przypomnieniem ceny;
+  // otwarte moze byc tylko jedno naraz, zeby strona nie rosla. Ile razy gracz
+  // zajrzal do przypomnien, zapisujemy jako sygnal wahania.
   function choices(options, group, onPick) {
     const list = el("ol", "dylemat__choices");
+    const close = (except) => {
+      list.querySelectorAll(".dylemat__info").forEach((info) => {
+        if (info === except) return;
+        info.setAttribute("aria-expanded", "false");
+        document.getElementById(info.getAttribute("aria-controls")).hidden = true;
+      });
+    };
     options.forEach((option, i) => {
       const item = el("li", "dylemat__option");
       const pick = button("", () => onPick(option.value), "dylemat__choice");
@@ -187,6 +271,7 @@
         panel.hidden = true;
         info.addEventListener("click", () => {
           const open = panel.hidden;
+          close(info);
           panel.hidden = !open;
           info.setAttribute("aria-expanded", String(open));
           if (open) {
@@ -198,12 +283,10 @@
       }
       list.append(item);
     });
-    later(() => {
-      keyHandler = (event) => {
-        const n = Number(event.key);
-        if (Number.isInteger(n) && n >= 1 && n <= options.length) onPick(options[n - 1].value);
-      };
-    }, 0);
+    list.keys = (event) => {
+      const n = Number(event.key);
+      if (Number.isInteger(n) && n >= 1 && n <= options.length) onPick(options[n - 1].value);
+    };
     return list;
   }
 
@@ -223,21 +306,22 @@
     const ends = el("div", "dylemat__scale-ends");
     ends.append(el("span", "", "1 " + spec.low), el("span", "", spec.high + " 5"));
     wrap.append(row, ends);
-    later(() => {
-      keyHandler = (event) => {
-        const n = Number(event.key);
-        if (Number.isInteger(n) && n >= 1 && n <= 5) onPick(n);
-      };
-    }, 0);
+    wrap.keys = (event) => {
+      const n = Number(event.key);
+      if (Number.isInteger(n) && n >= 1 && n <= 5) onPick(n);
+    };
     return wrap;
   }
 
   // ---------------------------------------------------------------- Dzwiek
 
   // Muzyka gra tylko po wyraznym wyborze gracza. Najpierw utwor wstepu, po
-  // nim zapetlone tlo. Glosnosc zmienia sie lagodnie, bez urwanych dzwiekow.
+  // nim zapetlone tlo. Plik wstepu zaczyna sie od okolo dwoch sekund
+  // ciszy i sam narasta, dlatego startujemy dalej i bez dlugiego wyciszenia.
+  const INTRO_START = 2;
   const sound = { on: false, track: introAudio || ambientAudio, fades: new Map() };
-  const VOLUME = new Map([[introAudio, 0.55], [ambientAudio, 0.35]]);
+  const VOLUME = new Map([[introAudio, 0.6], [ambientAudio, 0.35]]);
+  const FADE_IN = new Map([[introAudio, 300], [ambientAudio, 2500]]);
 
   function fade(audio, target, ms, after) {
     clearInterval(sound.fades.get(audio));
@@ -268,9 +352,16 @@
   function startTrack(audio) {
     if (!audio) return;
     try { audio.volume = 0; } catch { /* iOS */ }
+    if (audio === introAudio && audio.currentTime < INTRO_START) {
+      try { audio.currentTime = INTRO_START; } catch { /* metadane jeszcze nie wczytane */ }
+    }
     const playing = audio.play();
     if (playing && playing.catch) playing.catch(soundFailed);
-    fade(audio, VOLUME.get(audio), 2500);
+    fade(audio, VOLUME.get(audio), FADE_IN.get(audio));
+  }
+
+  function stopTrack(audio, ms) {
+    if (audio) fade(audio, 0, ms, () => audio.pause());
   }
 
   function setSound(on) {
@@ -280,7 +371,17 @@
     soundButton.setAttribute("aria-pressed", String(on));
     soundButton.textContent = on ? "Dźwięk: włączony" : "Dźwięk: wyłączony";
     if (on) startTrack(sound.track);
-    else { const audio = sound.track; fade(audio, 0, 800, () => audio.pause()); }
+    else stopTrack(sound.track, 800);
+  }
+
+  // Nowe przejscie zaczyna muzyke od wstepu, tak jak za pierwszym razem.
+  function rewindSound() {
+    if (!introAudio) return;
+    const previous = sound.track;
+    sound.track = introAudio;
+    if (previous && previous !== introAudio) stopTrack(previous, 1200);
+    try { introAudio.currentTime = INTRO_START; } catch { /* metadane jeszcze nie wczytane */ }
+    if (sound.on) startTrack(introAudio);
   }
 
   if (introAudio && ambientAudio) {
@@ -397,6 +498,7 @@
   // Wstep jak w kinie: linijki pojawiaja sie kolejno na tle miasta, potem
   // tytul. "Pomin" przeskakuje od razu do tytulu.
   function showOpening() {
+    setChapter(null);
     swap("opening", () => {
       const o = data.opening;
       const view = el("section", "dylemat__opening");
@@ -449,17 +551,26 @@
       if (index > 0) actions.push(button("Wstecz", () => showScene(index - 1, true)));
       actions.push(button(last ? "Do decyzji" : "Dalej", () => (last ? showDecision() : showScene(index + 1)), "button button--primary"));
       swap(s.id, () => scene({
-        image: s.image, tag: s.tag, title: s.title, text: s.text, actions,
+        id: s.id, image: s.image, focus: s.focus, tag: s.tag, title: s.title, text: s.text, actions,
         next: last ? data.decision.image : data.scenes[index + 1].image
       }));
     };
     if (back) { setChapter(s.chapter); chapterShown = s.chapter; go(); } else enterChapter(s.chapter, go);
   }
 
+  // Ocena trudnosci zaraz po wyborze, na tym samym obrazie.
+  function askDifficulty(field, image, then) {
+    const d = data.difficulty;
+    swap(field, () => scene({
+      id: field, image, title: d.question,
+      extra: [scale(d, (value) => { state[field] = value; then(); })]
+    }));
+  }
+
   function showDecision() {
     const d = data.decision;
     enterChapter(d.chapter, () => swap("decision", () => scene({
-      image: d.image, tag: data.chapterWord + " " + d.chapter, title: d.title,
+      id: "decision", image: d.image, tag: data.chapterWord + " " + d.chapter, title: d.title, text: d.text,
       extra: [choices(d.options, "decision", pickPath), hint()],
       next: data.returnChoice.image
     })));
@@ -468,54 +579,54 @@
   function pickPath(value) {
     state.path = value;
     state.decisionMs = Math.round(performance.now() - state.decisionStart);
-    const d = data.difficulty;
-    swap("difficulty", () => scene({
-      image: data.decision.image, tag: data.chapterWord + " " + data.decision.chapter, title: d.question,
-      extra: [scale(d, pickDifficulty)]
-    }));
-  }
-
-  function pickDifficulty(value) {
-    state.difficulty = value;
-    if (state.path === "stabilizacja") { state.finalPath = "stabilizacja"; showConsequence(); return; }
-    const r = data.returnChoice;
-    enterChapter(r.chapter, () => swap("return", () => scene({
-      image: r.image, title: r.title, text: [r.lead],
-      extra: [choices(r.options, "return", pickReturn)], next: data.lucja.image
-    })));
+    askDifficulty("difficulty", data.decision.image, () => {
+      if (state.path === "stabilizacja") { state.finalPath = "stabilizacja"; showConsequence(); return; }
+      const r = data.returnChoice;
+      enterChapter(r.chapter, () => swap("return", () => scene({
+        id: "return", image: r.image, title: r.title, text: r.text,
+        extra: [choices(r.options, "return", pickReturn)], next: data.lucja.image
+      })));
+    });
   }
 
   function pickReturn(value) {
     state.returnMode = value;
-    if (value === "oddanie") { state.finalPath = "stabilizacja"; showConsequence(); return; }
-    const l = data.lucja;
-    const options = [
-      { value: "prawda", label: l.truth[state.path], info: l.truthInfo },
-      { value: "zatajenie", label: l.lie, info: l.lieInfo }
-    ];
-    enterChapter(l.chapter, () => swap("lucja", () => scene({
-      image: l.image, title: l.title, text: [l.lead], extra: [choices(options, "lucja", pickLucja)]
-    })));
+    askDifficulty("difficultyReturn", data.returnChoice.image, () => {
+      if (value === "oddanie") { state.finalPath = "stabilizacja"; showConsequence(); return; }
+      const l = data.lucja;
+      const options = [
+        { value: "prawda", label: l.truth[state.path], info: l.truthInfo },
+        { value: "zatajenie", label: l.lie, info: l.lieInfo }
+      ];
+      enterChapter(l.chapter, () => swap("lucja", () => scene({
+        id: "lucja", image: l.image, title: l.title, text: [...l.text, l.stakes[state.path]],
+        extra: [choices(options, "lucja", pickLucja)]
+      })));
+    });
   }
 
   function pickLucja(value) {
     state.lucja = value;
-    if (value === "prawda" && state.path !== "tomasz") {
-      const o = data.objection;
-      swap("objection", () => scene({
-        image: o.image, title: o.title, text: [o.text[state.path]],
-        extra: [choices(o.options, "objection", pickObjection)]
-      }));
-      return;
-    }
-    state.finalPath = state.path;
-    showConsequence();
+    askDifficulty("difficultyLucja", data.lucja.image, () => {
+      if (value === "prawda" && state.path !== "tomasz") {
+        const o = data.objection;
+        swap("objection", () => scene({
+          id: "objection", image: o.image, title: o.title, text: [o.text[state.path], o.close],
+          extra: [choices(o.options, "objection", pickObjection)]
+        }));
+        return;
+      }
+      state.finalPath = state.path;
+      showConsequence();
+    });
   }
 
   function pickObjection(value) {
     state.objection = value;
-    state.finalPath = value === "rezygnacja" ? "stabilizacja" : state.path;
-    showConsequence();
+    askDifficulty("difficultyObjection", data.objection.image, () => {
+      state.finalPath = value === "rezygnacja" ? "stabilizacja" : state.path;
+      showConsequence();
+    });
   }
 
   // Konsekwencja wlasnej drogi i dopiski z dalszych wyborow.
@@ -538,8 +649,12 @@
 
   function showConsequence() {
     const c = data.consequences[state.finalPath];
+    let text = c.text;
+    // Stabilizacja po zaplaconej cenie: pytanie "nie wziales od nikogo" nie
+    // pasuje, wiec ostatni akapit mowi o zmarnowanym materiale.
+    if (state.finalPath === "stabilizacja" && state.path !== "stabilizacja") text = [...c.text.slice(0, -1), c.wasted];
     enterChapter("VI", () => swap("consequence", () => scene({
-      image: c.image, title: c.title, text: c.text, extra: consequenceNotes(),
+      id: "consequence", image: c.image, title: c.title, text, extra: consequenceNotes(),
       actions: [button("Dalej", showQuestions, "button button--primary")]
     })));
   }
@@ -627,7 +742,7 @@
     });
 
     // Bez obrazu: dlugi formularz rozciagalby kadr i ucinal ilustracje.
-    swap("questions", () => scene({ tag: q.title, title: q.lead, extra: [form] }));
+    swap("questions", () => scene({ id: "questions", tag: q.title, title: q.lead, extra: [form] }));
   }
 
   function collect(form) {
@@ -656,8 +771,10 @@
     status.textContent = "Wysyłam...";
     track("questions");
     const payload = {
-      version: data.version, path: state.path, difficulty: state.difficulty, returnMode: state.returnMode,
-      lucja: state.lucja, objection: state.objection, finalPath: state.finalPath,
+      version: data.version, path: state.path, returnMode: state.returnMode, lucja: state.lucja,
+      objection: state.objection, finalPath: state.finalPath,
+      difficulty: state.difficulty, difficultyReturn: state.difficultyReturn,
+      difficultyLucja: state.difficultyLucja, difficultyObjection: state.difficultyObjection,
       decisionMs: state.decisionMs, timings: state.timings, infoOpens: state.infoOpens,
       client: window.matchMedia("(max-width: 700px)").matches ? "mobile" : "desktop",
       answers: collect(form)
@@ -680,12 +797,16 @@
 
   function chronicle() {
     const c = data.chronicle;
-    const lines = [c.path[state.path], fill(c.difficulty, { n: state.difficulty })];
-    if (state.returnMode) lines.push(c.returnMode[state.returnMode]);
-    if (state.lucja) lines.push(c.lucja[state.lucja]);
-    if (state.objection) lines.push(c.objection[state.objection]);
+    const lines = [[c.path[state.path], state.difficulty]];
+    if (state.returnMode) lines.push([c.returnMode[state.returnMode], state.difficultyReturn]);
+    if (state.lucja) lines.push([c.lucja[state.lucja], state.difficultyLucja]);
+    if (state.objection) lines.push([c.objection[state.objection], state.difficultyObjection]);
     const list = el("ol", "dylemat__chronicle");
-    lines.forEach((line) => list.append(el("li", "", line)));
+    lines.forEach(([line, level]) => {
+      const item = el("li", "", line + " ");
+      if (level) item.append(el("span", "dylemat__chronicle-level", fill(c.difficulty, { n: level })));
+      list.append(item);
+    });
     return list;
   }
 
@@ -718,12 +839,21 @@
       box.append(bars);
       const facts = [fill(e.count, { n: stats.n })];
       if (stats.difficulty) facts.push(fill(e.avgDifficulty, { d: stats.difficulty.toFixed(1).replace(".", ",") }));
-      const told = (stats.truth.prawda || 0) + (stats.truth.zatajenie || 0);
-      if (told) facts.push(fill(e.truthShare, { p: Math.round((stats.truth.prawda / told) * 100) }));
+      const returned = (stats.truth.prawda || 0) + (stats.truth.zatajenie || 0);
+      if (returned) facts.push(fill(e.truthShare, { p: Math.round(((stats.truth.prawda || 0) / returned) * 100) }));
       facts.forEach((text) => box.append(el("p", "dylemat__fact", text)));
     } catch {
       status.textContent = e.first;
     }
+  }
+
+  // "Jeszcze raz" zaczyna od wstepu, z muzyka od poczatku.
+  function restart() {
+    state = fresh();
+    chapterShown = null;
+    told.clear();
+    rewindSound();
+    showOpening();
   }
 
   function showEnd() {
@@ -731,15 +861,11 @@
     setChapter(null);
     swap("end", () => {
       const box = el("section", "dylemat__others");
-      const again = button(e.again, () => {
-        state = fresh();
-        chapterShown = null;
-        enterChapter("I", () => showScene(0));
-      });
       const slogan = el("p", "dylemat__slogan", e.slogan);
       slogan.lang = "en";
       const view = scene({
-        title: e.title, extra: [chronicle(), slogan, box, el("p", "dylemat__note", e.thanks)], actions: [again]
+        id: "end", title: e.title, extra: [chronicle(), slogan, box, el("p", "dylemat__note", e.thanks)],
+        actions: [button(e.again, restart)]
       });
       others(box);
       return view;

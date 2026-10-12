@@ -13,7 +13,8 @@ const LUCJA = ["prawda", "zatajenie"];
 const OBJECTION = ["mimo_sprzeciwu", "rezygnacja"];
 const CLIENTS = ["mobile", "desktop"];
 const SCREENS = ["gate", "opening", "chapters", "A", "B", "C", "D", "E", "F", "G", "H", "decision", "difficulty",
-  "return", "lucja", "objection", "consequence", "questions"];
+  "return", "difficultyReturn", "lucja", "difficultyLucja", "objection", "difficultyObjection", "consequence",
+  "questions"];
 // Grupy przypomnien (ikona i) i wartosci, ktore moga w nich wystapic.
 const INFO = {
   decision: PATHS,
@@ -74,6 +75,14 @@ function branchOk(p) {
   return none(p.objection) && p.finalPath === p.path;
 }
 
+// Kazdy wybor, ktory gracz faktycznie podjal, ma swoja ocene trudnosci 1-5;
+// wybor, do ktorego nie doszedl, nie moze jej miec.
+function difficultyOk(p) {
+  const pairs = [[p.path, p.difficulty], [p.returnMode, p.difficultyReturn], [p.lucja, p.difficultyLucja],
+    [p.objection, p.difficultyObjection]];
+  return pairs.every(([choice, level]) => (none(choice) ? none(level) : step(level)));
+}
+
 function record(value, accept) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const out = {};
@@ -89,7 +98,7 @@ function record(value, accept) {
 function validate(p) {
   if (!p || typeof p !== "object") return null;
   if (typeof p.version !== "string" || !/^\d+\.\d+$/.test(p.version)) return null;
-  if (!oneOf(p.client, CLIENTS) || !step(p.difficulty) || !count(p.decisionMs) || !branchOk(p)) return null;
+  if (!oneOf(p.client, CLIENTS) || !count(p.decisionMs) || !branchOk(p) || !difficultyOk(p)) return null;
   const timings = record(p.timings, (key, value) => SCREENS.includes(key) && count(value));
   const infoOpens = record(p.infoOpens, (key, value) => {
     const [group, option] = key.split(":");
@@ -107,7 +116,8 @@ function validate(p) {
 
   return [
     new Date().toISOString(), p.version, p.client, p.path, p.difficulty, p.returnMode ?? null, p.lucja ?? null,
-    p.objection ?? null, p.finalPath, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
+    p.objection ?? null, p.finalPath, p.difficultyReturn ?? null, p.difficultyLucja ?? null,
+    p.difficultyObjection ?? null, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
     text(a.paid) || null, a.value || null, a.veyr ?? null, a.more || null, who.length ? who.join(",") : null,
     a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null
   ];
@@ -128,8 +138,9 @@ async function saveResponse(request, env, url) {
   // samej bazy.
   await env.DYLEMAT_DB.prepare(
     `INSERT INTO dylemat_responses (created_at, version, client, path, difficulty, return_mode, lucja, objection,
-       final_path, decision_ms, timings, info_opens, paid, value, veyr, more, who, clarity, comment, age, games, host)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       final_path, difficulty_return, difficulty_lucja, difficulty_objection, decision_ms, timings, info_opens,
+       paid, value, veyr, more, who, clarity, comment, age, games, host)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
   return json({ ok: true }, 201);
 }

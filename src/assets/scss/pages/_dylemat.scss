@@ -377,18 +377,78 @@ $wide: 860px;
     font: 500 1.5rem / 1.2 var(--font-display);
   }
 
+  // Narracja: akapity skladaja sie ze zdan, ktore wchodza po kolei, jak
+  // linijki wstepu. Wyroznienia niosa dramaturgie sceny.
+  &__prose {
+    display: grid;
+    gap: 0.95rem;
+  }
+
   &__text {
     margin: 0;
     font: 400 clamp(1.14rem, 1.7vw, 1.32rem) / 1.6 var(--font-display);
 
     strong {
-      color: #f3e5c3;
+      color: #f7e8c6;
       font-weight: 600;
+      text-shadow: 0 0 1.4rem rgba(150, 40, 40, 0.55);
     }
 
     em {
       color: #e9c9a5;
     }
+  }
+
+  &__sentence {
+    opacity: 0;
+    filter: blur(3px);
+    transition: opacity 1300ms ease, filter 1300ms ease;
+
+    &.is-on {
+      opacity: 1;
+      filter: none;
+    }
+  }
+
+  // Wybory i przyciski czekaja, az opowiesc dobiegnie konca; ukryte nie
+  // przyjmuja klikniec ani fokusu klawiatury.
+  &__after {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 900ms ease, transform 900ms ease, visibility 0s 900ms;
+
+    &.is-on {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition: opacity 900ms ease, transform 900ms ease, visibility 0s;
+    }
+  }
+
+  &__skiphint {
+    display: none;
+    margin: -0.6rem 0 0;
+    color: var(--color-text-muted);
+    font: italic 400 0.92rem / 1.4 var(--font-display);
+    opacity: 0.7;
+  }
+
+  &__scene.is-telling {
+    cursor: pointer;
+
+    .dylemat__skiphint {
+      display: block;
+    }
+  }
+
+  &__chronicle-level {
+    color: var(--color-text-muted);
+    font: italic 400 0.95em / 1 var(--font-display);
+    white-space: nowrap;
   }
 
   &__note {
@@ -858,7 +918,9 @@ $wide: 860px;
 
     &__opening-line,
     &__titlecard > *,
-    &__lines {
+    &__lines,
+    &__sentence,
+    &__after {
       transition: none;
     }
   }
