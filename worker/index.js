@@ -138,8 +138,9 @@ const VALUE_LABELS = {
 };
 const quote = (value) => "„" + String(value).replace(/\s+/g, " ").slice(0, 300) + "”";
 
+// Zwraca krotki opis wyniku, uzywany tylko przez diagnostyke na podgladzie.
 async function notify(env, url, row, p) {
-  if (!env.DISCORD_DILEMMA_WEBHOOK) return;
+  if (!env.DISCORD_DILEMMA_WEBHOOK) return "no_secret";
   const a = p.answers && typeof p.answers === "object" ? p.answers : {};
   const entry = (label, choice, level) => (choice ? `${label}: ${LABELS[choice]}${level ? ` (trudność ${level}/5)` : ""}` : null);
   const { results } = await env.DYLEMAT_DB.prepare(
@@ -165,7 +166,10 @@ async function notify(env, url, row, p) {
     headers: { "Content-Type": "application/json", "User-Agent": "AnatomyOfMercy-Web (https://anatomyofmercy.com, 1.0)" },
     body: JSON.stringify({ content: lines.join("\n").slice(0, 1900), allowed_mentions: { parse: [] } })
   });
-  if (!response.ok) console.error("discord", response.status, (await response.text()).slice(0, 200));
+  if (response.ok) return "discord " + response.status;
+  const detail = "discord " + response.status + " " + (await response.text()).slice(0, 200);
+  console.error(detail);
+  return detail;
 }
 
 async function saveResponse(request, env, url, ctx) {
@@ -187,7 +191,16 @@ async function saveResponse(request, env, url, ctx) {
        paid, value, veyr, more, who, clarity, comment, age, games, host)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
-  ctx.waitUntil(notify(env, url, row, payload).catch((error) => console.error("notify", error && error.message)));
+  const sending = notify(env, url, row, payload).catch((error) => {
+    console.error("notify", error && error.message);
+    return "error " + (error && error.message);
+  });
+  // Diagnostyka tylko poza produkcja: z naglowkiem X-Debug-Notify odpowiedz
+  // czeka na Discorda i podaje jego wynik (bez adresu webhooka).
+  if (url.host !== PRODUCTION_HOST && request.headers.get("X-Debug-Notify") === "1") {
+    return json({ ok: true, notify: await sending }, 201);
+  }
+  ctx.waitUntil(sending);
   return json({ ok: true }, 201);
 }
 
