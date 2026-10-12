@@ -64,6 +64,30 @@ bone and was refused by the generator under its rules on violence. The disease
 is now shown through what it leaves behind rather than through remains, which
 is also what the brief asks for in its section on the violence threshold.
 
+## Interactive dilemma
+
+Used only on the hidden page `/pl/dylemat/`. The three portraits were generated
+from the world brief on 2026-10-12 for the dilemma. Until the remaining
+artwork for that page exists, its other screens borrow the images listed above;
+`src/_data/dylemat.js` swaps each one for its own file as soon as that file is
+added under `assets/images/dylemat/`.
+
+| Website asset | Source filename | Size | Purpose |
+|---|---|---|---|
+| `assets/images/dylemat/tomasz.webp` | `AoM-web-dylemat-tomasz.png` | 800 x 1000 | Brother Tomasz, the second path |
+| `assets/images/dylemat/veyr.webp` | `AoM-web-dylemat-veyr.png` | 800 x 1000 | Captain Veyr, the third path |
+| `assets/images/dylemat/seweryn.webp` | `AoM-web-dylemat-seweryn.png` | 800 x 1000 | Brother Seweryn, the fourth path |
+
+The music on the same page was generated with ElevenLabs Music on 2026-10-12
+under a paid Starter plan. That plan allows online use such as this website.
+It does not cover use in the game itself, so these tracks must not be copied
+into the game repository.
+
+| Website asset | Length | Purpose |
+|---|---|---|
+| `assets/audio/dylemat-intro.mp3` | 0:55 | Opening of the dilemma, played once after the visitor chooses sound |
+| `assets/audio/dylemat-ambient.mp3` | 2:30 | Background loop for the rest of the dilemma |
+
 ## Social
 
 | Website asset | Source filename | Size | Purpose |

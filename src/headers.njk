@@ -33,13 +33,13 @@ eleventyExcludeFromCollections: true
   X-Robots-Tag: noindex, nofollow
 {%- endif %}
 
-# Interaktywna proba dylematu. Strona ukryta: nigdy do wyszukiwarek, takze w
+# Interaktywny dylemat. Strona ukryta: nigdy do wyszukiwarek, takze w
 # produkcji. Polityka bezpieczenstwa jest odlaczona i zastapiona wlasna, bo
 # jedyna roznica jest media-src dla opcjonalnej muzyki w tle; dwie polityki
 # naraz dzialalyby jak czesc wspolna, czyli dzwiek dalej bylby zablokowany.
 # Permissions-Policy dopuszcza odtwarzanie z wlasnego zrodla, uruchamiane
 # wylacznie kliknieciem gracza.
-/proba/*
+/pl/dylemat/*
   ! Content-Security-Policy
   ! Permissions-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests

@@ -1,5 +1,6 @@
--- Wyniki interaktywnej proby dylematu (/proba/). Jeden wiersz na ukonczona
--- probe. Bez danych osobowych: brak IP, ciasteczek i naglowkow przegladarki.
+-- Wyniki pierwszej wersji proby dylematu (adres /proba/, zastapiony przez
+-- /pl/dylemat/ i tabele z 0002). Jeden wiersz na ukonczona probe. Bez danych
+-- osobowych: brak IP, ciasteczek i naglowkow przegladarki.
 -- host odroznia produkcje od podgladow galezi, ktore pisza do tej samej bazy.
 CREATE TABLE IF NOT EXISTS responses (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

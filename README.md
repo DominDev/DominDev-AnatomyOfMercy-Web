@@ -170,7 +170,19 @@ Production output is written to `dist/`. That directory is generated and must ne
 
 **Deployment**
 
-The site is served by a Cloudflare Worker with Static Assets and no Worker code, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push.
+The site is served by a Cloudflare Worker with Static Assets, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push. The Worker code in `worker/index.js` runs only for `/api/*`, which stores and summarises the anonymous answers of the hidden interactive dilemma at `/pl/dylemat/`; every other address goes straight to the static assets.
+
+**Database**
+
+The dilemma writes to the D1 database `aom-proba-dylematu` (binding `DYLEMAT_DB`). Production and branch previews share it and are told apart by the `host` column. The schema lives in `migrations/`, and every statement there is idempotent.
+
+Migrations are not applied by the deployment. A change that needs a new table or column must be applied to the remote database before the pull request is merged, otherwise the Worker on `main` will fail to write:
+
+```bash
+npx wrangler d1 migrations apply aom-proba-dylematu --remote
+```
+
+For local testing, apply the same migrations with `--local` and start `npx wrangler dev --local` after a build.
 
 The canonical address is the production domain. A build that Workers Builds runs from any branch other than `main` is recognised through the `WORKERS_CI` and `WORKERS_CI_BRANCH` variables that Cloudflare sets itself: its `robots.txt` switches to `Disallow: /` and it sends `X-Robots-Tag: noindex`, so a preview deployment can never be indexed alongside the real site. `SITE_URL` remains available as an override for checking a build under a different address. Build validation enforces both halves of that rule.
 

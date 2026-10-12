@@ -307,7 +307,7 @@ if (fs.existsSync(headersPath)) {
   // wtedy, gdy robot go przeczyta, wiec podglad zabezpieczamy takze naglowkiem.
   // Rozjazd tych dwoch jest cichy w obie strony: podglad zaproszony do indeksu
   // albo produkcja wyciszona bez sladu w tresci strony.
-  // Liczy sie blok calej strony (/*). Ukryta podstrona /proba/ ma wlasny blok z
+  // Liczy sie blok calej strony (/*). Ukryta podstrona /pl/dylemat/ ma wlasny blok z
   // noindex rowniez w produkcji i sprawdzamy ja osobno nizej.
   const headerBlock = (pattern) => {
     const lines = headers.split(/\r?\n/);
@@ -318,13 +318,14 @@ if (fs.existsSync(headersPath)) {
     return (end === -1 ? rest : rest.slice(0, end)).join("\n");
   };
   const noindex = /X-Robots-Tag:\s*noindex/i.test(headerBlock("/*"));
-  const probaHeaders = headerBlock("/proba/*");
-  assertions.push([/X-Robots-Tag:\s*noindex/i.test(probaHeaders), "The hidden /proba/ page must always send X-Robots-Tag noindex."]);
-  assertions.push([/media-src 'self'/.test(probaHeaders) && /^\s*! Content-Security-Policy/m.test(probaHeaders),
-    "The /proba/ block must detach the site CSP and allow media-src 'self' for its optional audio."]);
-  const probaPage = fs.existsSync(path.resolve("dist/proba/index.html")) ? fs.readFileSync(path.resolve("dist/proba/index.html"), "utf8") : "";
-  assertions.push([probaPage.includes('<meta name="robots" content="noindex, nofollow">'), "The hidden /proba/ page is missing its noindex meta tag."]);
-  assertions.push([!fs.readFileSync(path.resolve("dist/sitemap.xml"), "utf8").includes("/proba"), "The hidden /proba/ page must not appear in the sitemap."]);
+  const dilemmaHeaders = headerBlock("/pl/dylemat/*");
+  assertions.push([/X-Robots-Tag:\s*noindex/i.test(dilemmaHeaders), "The hidden /pl/dylemat/ page must always send X-Robots-Tag noindex."]);
+  assertions.push([/media-src 'self'/.test(dilemmaHeaders) && /^\s*! Content-Security-Policy/m.test(dilemmaHeaders),
+    "The /pl/dylemat/ block must detach the site CSP and allow media-src 'self' for its optional audio."]);
+  const dilemmaFile = path.resolve("dist/pl/dylemat/index.html");
+  const dilemmaPage = fs.existsSync(dilemmaFile) ? fs.readFileSync(dilemmaFile, "utf8") : "";
+  assertions.push([dilemmaPage.includes('<meta name="robots" content="noindex, nofollow">'), "The hidden /pl/dylemat/ page is missing its noindex meta tag."]);
+  assertions.push([!fs.readFileSync(path.resolve("dist/sitemap.xml"), "utf8").includes("/dylemat"), "The hidden /pl/dylemat/ page must not appear in the sitemap."]);
   assertions.push([
     noindex !== site.isProduction,
     site.isProduction

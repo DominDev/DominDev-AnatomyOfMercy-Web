@@ -1,20 +1,34 @@
 // Worker strony. Wszystko poza /api/* obsluguja statyczne zasoby bez udzialu
-// tego kodu (assets.run_worker_first w wrangler.jsonc). Jedynym punktem API
-// jest zapis anonimowego wyniku interaktywnej proby dylematu (/proba/).
+// tego kodu (assets.run_worker_first w wrangler.jsonc). API ma dwa punkty
+// interaktywnego dylematu (/pl/dylemat/): zapis anonimowego wyniku i
+// zbiorcze statystyki wyborow.
 //
 // Zapisujemy tylko to, co wysyla strona i co przejdzie walidacje ponizej:
-// wybory z zamknietych list, czasy na kartach, krotkie odpowiedzi tekstowe.
-// Bez adresu IP, ciasteczek i naglowkow przegladarki.
+// wybory z zamknietych list, skale 1-5, czasy na ekranach i krotkie
+// odpowiedzi tekstowe. Bez adresu IP, ciasteczek i naglowkow przegladarki.
 
 const PATHS = ["stabilizacja", "tomasz", "veyr_zywy", "veyr_zabity", "seweryn"];
 const RETURNS = ["oddanie", "przemkniecie", "przebicie"];
 const LUCJA = ["prawda", "zatajenie"];
 const OBJECTION = ["mimo_sprzeciwu", "rezygnacja"];
 const CLIENTS = ["mobile", "desktop"];
-const SCREENS = ["intro", "A", "B", "C", "D", "E", "F", "G", "H", "decision", "overview", "return", "lucja",
-  "objection", "consequence", "questions", "end"];
+const SCREENS = ["gate", "opening", "chapters", "A", "B", "C", "D", "E", "F", "G", "H", "decision", "difficulty",
+  "return", "lucja", "objection", "consequence", "questions"];
+// Grupy przypomnien (ikona i) i wartosci, ktore moga w nich wystapic.
+const INFO = {
+  decision: PATHS,
+  return: RETURNS,
+  lucja: LUCJA,
+  objection: OBJECTION
+};
+const VALUES = ["", "zycie_lucji", "wola_lucji", "miasto", "dzieci", "nikogo_wiecej", "prawda", "inne"];
+const MORE = ["", "tak", "nie"];
+const WHO = ["lucja", "tomasz", "veyr", "agata", "seweryn", "dzieci", "julian"];
 const AGES = ["", "poniżej 18", "18-24", "25-34", "35-44", "45-54", "55 i więcej"];
 const GAMES = ["", "tak, często", "czasem", "rzadko albo wcale"];
+// Statystyki licza tylko odpowiedzi do tej samej glownej wersji tresci.
+const STATS_VERSION = "2.%";
+const MIN_STATS = 3;
 const MAX_BODY = 20000;
 const MAX_TEXT = 2000;
 const MAX_MS = 6 * 60 * 60 * 1000;
@@ -31,32 +45,71 @@ function json(body, status) {
   });
 }
 
-const oneOf = (value, list, optional) => (optional && (value === null || value === undefined)) || list.includes(value);
+const none = (value) => value === null || value === undefined;
+const oneOf = (value, list) => list.includes(value);
 const count = (value) => Number.isInteger(value) && value >= 0 && value <= MAX_MS;
+const step = (value) => Number.isInteger(value) && value >= 1 && value <= 5;
 const text = (value) => (typeof value === "string" ? value.trim().slice(0, MAX_TEXT) : "");
 
+// Spojnosc galezi, dokladnie jak w skrypcie strony:
+// - stabilizacja od razu albo oddanie materialu przy bramie: bez rozmowy z
+//   Lucja, droga koncowa to stabilizacja;
+// - po powrocie z materialem wybor wobec Lucji jest obowiazkowy;
+// - prawda o drodze innej niz Tomasz wywoluje sprzeciw, a rezygnacja konczy
+//   sie stabilizacja; w pozostalych przypadkach sprzeciwu nie ma.
+function branchOk(p) {
+  if (!oneOf(p.path, PATHS) || !oneOf(p.finalPath, PATHS)) return false;
+  if (p.path === "stabilizacja") {
+    return none(p.returnMode) && none(p.lucja) && none(p.objection) && p.finalPath === "stabilizacja";
+  }
+  if (!oneOf(p.returnMode, RETURNS)) return false;
+  if (p.returnMode === "oddanie") {
+    return none(p.lucja) && none(p.objection) && p.finalPath === "stabilizacja";
+  }
+  if (!oneOf(p.lucja, LUCJA)) return false;
+  if (p.lucja === "prawda" && p.path !== "tomasz") {
+    if (!oneOf(p.objection, OBJECTION)) return false;
+    return p.finalPath === (p.objection === "rezygnacja" ? "stabilizacja" : p.path);
+  }
+  return none(p.objection) && p.finalPath === p.path;
+}
+
+function record(value, accept) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const out = {};
+  for (const [key, item] of Object.entries(value)) {
+    if (!accept(key, item)) return null;
+    out[key] = item;
+  }
+  return out;
+}
+
 // Zwraca wiersz do zapisu albo null, gdy cokolwiek odbiega od tego, co strona
-// moze wyslac. Spojnosc galezi sprawdzamy tak samo jak w skrypcie strony.
+// moze wyslac.
 function validate(p) {
   if (!p || typeof p !== "object") return null;
-  if (typeof p.version !== "string" || p.version.length > 10) return null;
-  if (!oneOf(p.path, PATHS) || !oneOf(p.finalPath, PATHS) || !oneOf(p.client, CLIENTS)) return null;
-  if (!oneOf(p.returnMode, RETURNS, true) || !oneOf(p.lucja, LUCJA, true) || !oneOf(p.objection, OBJECTION, true)) return null;
-  const donor = p.path !== "stabilizacja";
-  if (donor !== (p.returnMode !== null && p.returnMode !== undefined)) return null;
-  if (!count(p.decisionMs) || !Number.isInteger(p.rereads) || p.rereads < 0 || p.rereads > 100) return null;
-  if (!p.timings || typeof p.timings !== "object") return null;
-  const timings = {};
-  for (const [key, value] of Object.entries(p.timings)) {
-    if (!SCREENS.includes(key) || !count(value)) return null;
-    timings[key] = value;
-  }
+  if (typeof p.version !== "string" || !/^\d+\.\d+$/.test(p.version)) return null;
+  if (!oneOf(p.client, CLIENTS) || !step(p.difficulty) || !count(p.decisionMs) || !branchOk(p)) return null;
+  const timings = record(p.timings, (key, value) => SCREENS.includes(key) && count(value));
+  const infoOpens = record(p.infoOpens, (key, value) => {
+    const [group, option] = key.split(":");
+    return Object.hasOwn(INFO, group) && INFO[group].includes(option) && Number.isInteger(value) && value >= 1 && value <= 100;
+  });
+  if (!timings || !infoOpens) return null;
+
   const a = p.answers && typeof p.answers === "object" ? p.answers : {};
-  if (!AGES.includes(a.age ?? "") || !GAMES.includes(a.games ?? "")) return null;
+  const scaleOrNone = (value) => none(value) || step(value);
+  if (!oneOf(a.value ?? "", VALUES) || !oneOf(a.more ?? "", MORE) || !oneOf(a.age ?? "", AGES) || !oneOf(a.games ?? "", GAMES)) return null;
+  if (!scaleOrNone(a.veyr) || !scaleOrNone(a.clarity)) return null;
+  const who = a.who ?? [];
+  if (!Array.isArray(who) || who.some((w) => !WHO.includes(w)) || new Set(who).size !== who.length) return null;
+  if (who.length && a.more !== "tak") return null;
+
   return [
-    new Date().toISOString(), p.version, p.client, p.path, p.returnMode ?? null, p.lucja ?? null,
-    p.objection ?? null, p.finalPath, p.decisionMs, p.rereads, JSON.stringify(timings),
-    text(a.q1), text(a.q2), text(a.q3), text(a.q4), text(a.q5), a.age || null, a.games || null
+    new Date().toISOString(), p.version, p.client, p.path, p.difficulty, p.returnMode ?? null, p.lucja ?? null,
+    p.objection ?? null, p.finalPath, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
+    text(a.paid) || null, a.value || null, a.veyr ?? null, a.more || null, who.length ? who.join(",") : null,
+    a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null
   ];
 }
 
@@ -73,18 +126,42 @@ async function saveResponse(request, env, url) {
   if (!row) return json({ error: "invalid" }, 400);
   // Host odroznia wydanie produkcyjne od podgladow galezi, ktore pisza do tej
   // samej bazy.
-  await env.PROBA_DB.prepare(
-    `INSERT INTO responses (created_at, version, client, path, return_mode, lucja, objection, final_path,
-       decision_ms, rereads, timings, q1, q2, q3, q4, q5, age, games, host)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  await env.DYLEMAT_DB.prepare(
+    `INSERT INTO dylemat_responses (created_at, version, client, path, difficulty, return_mode, lucja, objection,
+       final_path, decision_ms, timings, info_opens, paid, value, veyr, more, who, clarity, comment, age, games, host)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
   return json({ ok: true }, 201);
+}
+
+// Zbiorcze liczby dla ekranu "Jak wybrali inni": tylko ten sam adres strony
+// i ta sama glowna wersja tresci. Ponizej trzech odpowiedzi nic nie
+// zdradzamy, zeby pierwsze osoby nie widzialy wyborow konkretnych znajomych.
+async function stats(request, env, url) {
+  if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
+  const where = "WHERE host = ?1 AND version LIKE ?2";
+  const [paths, summary, truth] = await env.DYLEMAT_DB.batch([
+    env.DYLEMAT_DB.prepare(`SELECT path, COUNT(*) AS n FROM dylemat_responses ${where} GROUP BY path`).bind(url.host, STATS_VERSION),
+    env.DYLEMAT_DB.prepare(`SELECT COUNT(*) AS n, AVG(difficulty) AS difficulty FROM dylemat_responses ${where}`).bind(url.host, STATS_VERSION),
+    env.DYLEMAT_DB.prepare(`SELECT lucja, COUNT(*) AS n FROM dylemat_responses ${where} AND lucja IS NOT NULL GROUP BY lucja`).bind(url.host, STATS_VERSION)
+  ]);
+  const n = summary.results[0]?.n ?? 0;
+  if (n < MIN_STATS) return json({ enough: false }, 200);
+  const byKey = (rows, key) => Object.fromEntries(rows.map((row) => [row[key], row.n]));
+  return json({
+    enough: true,
+    n,
+    paths: byKey(paths.results, "path"),
+    difficulty: Math.round(summary.results[0].difficulty * 10) / 10,
+    truth: byKey(truth.results, "lucja")
+  }, 200);
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/api/proba") return saveResponse(request, env, url);
+    if (url.pathname === "/api/dylemat") return saveResponse(request, env, url);
+    if (url.pathname === "/api/dylemat/stats") return stats(request, env, url);
     if (url.pathname.startsWith("/api/")) return json({ error: "not_found" }, 404);
     return env.ASSETS.fetch(request);
   }
