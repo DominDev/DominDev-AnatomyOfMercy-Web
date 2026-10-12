@@ -184,6 +184,24 @@ npx wrangler d1 migrations apply aom-proba-dylematu --remote
 
 For local testing, apply the same migrations with `--local` and start `npx wrangler dev --local` after a build.
 
+The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly.
+
+**Notifications**
+
+Every saved answer posts a short summary to the Discord channel #web through a webhook. Its address is the Worker secret `DISCORD_DILEMMA_WEBHOOK`, never a file in this repository; without it the Worker simply skips the message, and a Discord failure never affects the saved answer. Answers from branch previews are labelled with their host.
+
+Set or replace the secret with `npx wrangler versions secret put DISCORD_DILEMMA_WEBHOOK`. Do not use `wrangler secret put`: it deploys the latest uploaded version immediately, and the latest version is usually a branch preview, which would put unmerged code on the production domain. The versioned command only creates a new version; later uploads and the next deployment from `main` keep the secret.
+
+**Narration**
+
+The dilemma can be read aloud by a narrator (ElevenLabs, voice "David - Deep Documentary Narrator", model `eleven_v3`). `scripts/generate-narration.mjs` creates one recording per screen in `src/static/assets/audio/lektor/pl/` and writes `narration/pl.json` with the start time of every sentence, so the page reveals each sentence as the narrator begins it. Each screen has its own recording, and the page silences the narrator on every screen change, so it never reads a card that is no longer visible.
+
+```bash
+node scripts/generate-narration.mjs --dry
+```
+
+The dry run lists the recordings that would be generated. Without `--dry` the script needs `ELEVENLABS_API_KEY` in the environment and regenerates only recordings whose text or settings changed; `--force` and recording ids narrow or override that. After a content change in `src/_data/dylemat.js`, run it again, otherwise the screens whose sentences no longer match their recording fall back to silent, timed text.
+
 The canonical address is the production domain. A build that Workers Builds runs from any branch other than `main` is recognised through the `WORKERS_CI` and `WORKERS_CI_BRANCH` variables that Cloudflare sets itself: its `robots.txt` switches to `Disallow: /` and it sends `X-Robots-Tag: noindex`, so a preview deployment can never be indexed alongside the real site. `SITE_URL` remains available as an override for checking a build under a different address. Build validation enforces both halves of that rule.
 
 **Contributing and content rules**

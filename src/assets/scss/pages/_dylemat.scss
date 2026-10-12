@@ -879,6 +879,20 @@ $wide: 860px;
     }
   }
 
+  // Przelaczniki lektora i muzyki obok siebie; na waskim ekranie ustepuje im
+  // nazwa projektu.
+  &__toggles {
+    display: flex;
+    gap: 0.45rem;
+    margin-left: auto;
+  }
+
+  &__brand {
+    @media (max-width: 460px) {
+      display: none;
+    }
+  }
+
   &__sound {
     padding: 0.35rem 0.7rem;
     border: 1px solid var(--color-line);

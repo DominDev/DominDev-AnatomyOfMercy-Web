@@ -123,7 +123,51 @@ function validate(p) {
   ];
 }
 
-async function saveResponse(request, env, url) {
+// Powiadomienie na Discord (#web) o kazdej zapisanej odpowiedzi. Adres
+// webhooka jest sekretem Workera DISCORD_DILEMMA_WEBHOOK; bez niego Worker
+// po prostu niczego nie wysyla. Blad Discorda nigdy nie psuje zapisu.
+const PRODUCTION_HOST = "anatomyofmercy.com";
+const LABELS = {
+  stabilizacja: "metoda Agaty", tomasz: "dar Tomasza", veyr_zywy: "Veyr siłą, przeżył", veyr_zabity: "śmierć Veyra",
+  seweryn: "rdzeń Seweryna", oddanie: "oddał materiał", przemkniecie: "przemknął", przebicie: "przebił się siłą",
+  prawda: "prawda", zatajenie: "zatajenie", mimo_sprzeciwu: "leczył mimo sprzeciwu", rezygnacja: "uszanował odmowę"
+};
+const VALUE_LABELS = {
+  zycie_lucji: "życie i zdrowie Łucji", wola_lucji: "wola Łucji", miasto: "ludzie za kordonem", dzieci: "dzieci z aneksu",
+  nikogo_wiecej: "nie skrzywdzić nikogo więcej", prawda: "prawda", inne: "coś innego"
+};
+const quote = (value) => "„" + String(value).replace(/\s+/g, " ").slice(0, 300) + "”";
+
+async function notify(env, url, row, p) {
+  if (!env.DISCORD_DILEMMA_WEBHOOK) return;
+  const a = p.answers && typeof p.answers === "object" ? p.answers : {};
+  const entry = (label, choice, level) => (choice ? `${label}: ${LABELS[choice]}${level ? ` (trudność ${level}/5)` : ""}` : null);
+  const { results } = await env.DYLEMAT_DB.prepare(
+    "SELECT COUNT(*) AS n FROM dylemat_responses WHERE host = ?1 AND version LIKE ?2"
+  ).bind(url.host, STATS_VERSION).all();
+  const lines = [
+    url.host === PRODUCTION_HOST ? "**Nowa odpowiedź w dylemacie**" : `**Nowa odpowiedź w dylemacie** (podgląd: ${url.host})`,
+    entry("Droga", p.path, p.difficulty),
+    entry("Brama", p.returnMode, p.difficultyReturn),
+    entry("Łucja", p.lucja, p.difficultyLucja),
+    entry("Sprzeciw", p.objection, p.difficultyObjection),
+    `Koniec: ${LABELS[p.finalPath]}`,
+    text(a.paid) ? `Kto zapłacił: ${quote(text(a.paid))}` : null,
+    a.value ? `Najważniejsze: ${VALUE_LABELS[a.value]}` : null,
+    a.veyr ? `Racje Veyra: ${a.veyr}/5` : null,
+    a.clarity ? `Zrozumiałość: ${a.clarity}/5` : null,
+    text(a.comment) ? `Komentarz: ${quote(text(a.comment))}` : null,
+    `Urządzenie: ${p.client === "mobile" ? "telefon" : "komputer"}, wersja ${row[1]}. Odpowiedzi na tym adresie: ${results[0]?.n ?? "?"}.`
+  ].filter(Boolean);
+  // Bez wzmianek: tekst od uzytkownika nie moze nikogo oznaczyc.
+  await fetch(env.DISCORD_DILEMMA_WEBHOOK, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: lines.join("\n").slice(0, 1900), allowed_mentions: { parse: [] } })
+  });
+}
+
+async function saveResponse(request, env, url, ctx) {
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   // Tylko z naszej wlasnej strony: przegladarka zawsze wysyla Origin przy POST.
   if (request.headers.get("Origin") !== url.origin) return json({ error: "forbidden" }, 403);
@@ -142,6 +186,7 @@ async function saveResponse(request, env, url) {
        paid, value, veyr, more, who, clarity, comment, age, games, host)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
+  ctx.waitUntil(notify(env, url, row, payload).catch(() => {}));
   return json({ ok: true }, 201);
 }
 
@@ -169,9 +214,9 @@ async function stats(request, env, url) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === "/api/dylemat") return saveResponse(request, env, url);
+    if (url.pathname === "/api/dylemat") return saveResponse(request, env, url, ctx);
     if (url.pathname === "/api/dylemat/stats") return stats(request, env, url);
     if (url.pathname.startsWith("/api/")) return json({ error: "not_found" }, 404);
     return env.ASSETS.fetch(request);

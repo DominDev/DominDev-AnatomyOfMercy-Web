@@ -13,6 +13,8 @@
   const soundButton = document.querySelector("[data-sound]");
   const introAudio = document.querySelector("[data-audio-intro]");
   const ambientAudio = document.querySelector("[data-audio-ambient]");
+  const voice = document.querySelector("[data-audio-voice]");
+  const narratorButton = document.querySelector("[data-narrator]");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const DONE_KEY = "aom-dylemat-done";
 
@@ -87,6 +89,9 @@
     busy = true;
     keyHandler = null;
     clearTimers();
+    // Lektor milknie przy kazdej zmianie ekranu: nigdy nie czyta karty, ktorej
+    // juz nie widac.
+    hush();
     const old = stage.firstElementChild;
     const delay = old && old.tagName !== "NOSCRIPT" && !reduced.matches ? 320 : 0;
     if (old) old.classList.add("is-leaving");
@@ -125,7 +130,11 @@
       view.lastChild.dataset.focus = "";
       view.addEventListener("click", () => { if (!busy) go(); });
       later(() => { keyHandler = () => go(); }, 50);
-      later(go, reduced.matches ? 1600 : 3000);
+      // Z lektorem plansza czeka, az przeczyta nazwe rozdzialu.
+      view.narrate = () => {
+        const spoken = say([{ id: "chapter-" + roman }], { done: () => later(go, 700) });
+        later(go, spoken ? 9000 : reduced.matches ? 1600 : 3000);
+      };
       return view;
     });
   }
@@ -156,14 +165,17 @@
 
   const plain = (node) => node.textContent.length;
 
-  // Tempo czytania: krotkie zdanie niecala sekunde, dlugie najwyzej dwie.
-  // Nowy akapit i zdanie z wyroznieniem dostaja krotka dodatkowa pauze.
-  // Tekst wyprzedza czytelnika tylko o krok, wiec nie trzeba na niego czekac.
-  function narrate(view, id, sentences, after, keys) {
+  // Bez lektora tempo czytania: krotkie zdanie niecala sekunde, dlugie
+  // najwyzej dwie, z krotka pauza przed akapitem i wyroznieniem; tekst
+  // wyprzedza czytelnika tylko o krok. Z lektorem kazde zdanie wchodzi w chwili,
+  // gdy lektor je zaczyna, wedlug znacznikow czasu z manifestu nagran.
+  function narrate(view, id, sentences, after, keys, voiceIds, voiceAfter) {
     let finished = false;
+    let skippable = false;
     const finish = () => {
       if (finished) return;
       finished = true;
+      if (currentFinish === finish) currentFinish = null;
       clearTimers();
       sentences.forEach((s) => s.classList.add("is-on"));
       after.classList.add("is-on");
@@ -171,27 +183,58 @@
       told.add(id);
       keyHandler = keys || null;
     };
-    if (!sentences.length || reduced.matches || told.has(id)) { finish(); return; }
-    view.classList.add("is-telling");
-    let at = 500;
-    let paragraph = null;
-    sentences.forEach((s) => {
-      if (paragraph && s.parentNode !== paragraph) at += 350;
-      if (s.querySelector("strong")) at += 300;
-      paragraph = s.parentNode;
-      later(() => s.classList.add("is-on"), at);
-      at += Math.min(1900, Math.max(800, 350 + plain(s) * 14));
-    });
-    later(finish, at);
-    view.addEventListener("click", (event) => {
-      if (!finished && !event.target.closest("button")) finish();
-    });
-    keyHandler = (event) => {
-      if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
-        event.preventDefault();
-        finish();
-      }
+    currentFinish = finish;
+    const allowSkip = () => {
+      if (skippable) return;
+      skippable = true;
+      view.classList.add("is-telling");
+      view.addEventListener("click", (event) => {
+        if (!finished && !event.target.closest("button")) finish();
+      });
+      keyHandler = (event) => {
+        if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
+          event.preventDefault();
+          finish();
+        }
+      };
     };
+    const timed = () => {
+      if (finished) return;
+      if (!sentences.length || reduced.matches) { finish(); return; }
+      allowSkip();
+      let at = 500;
+      let paragraph = null;
+      sentences.forEach((s) => {
+        if (paragraph && s.parentNode !== paragraph) at += 350;
+        if (s.querySelector("strong")) at += 300;
+        paragraph = s.parentNode;
+        later(() => s.classList.add("is-on"), at);
+        at += Math.min(1900, Math.max(800, 350 + plain(s) * 14));
+      });
+      later(finish, at);
+    };
+    if (told.has(id)) { finish(); return; }
+
+    // Nagrania musza pokrywac dokladnie te zdania, ktore sa na ekranie;
+    // inaczej ekran idzie bez lektora, zamiast czytac cos innego niz widac.
+    if (narrator.on && voiceIds && voiceIds.length) {
+      const items = [];
+      let offset = 0;
+      for (const voiceId of voiceIds) {
+        const clip = clipOf(voiceId);
+        if (!clip) { items.length = 0; break; }
+        const base = offset;
+        items.push({ id: voiceId, onMark: (i) => { if (sentences[base + i]) sentences[base + i].classList.add("is-on"); } });
+        offset += clip.marks.length;
+      }
+      if (items.length && offset === sentences.length) {
+        items[items.length - 1].onEnd = finish;
+        (voiceAfter || []).forEach((voiceId) => items.push({ id: voiceId }));
+        allowSkip();
+        if (say(items, { fail: timed })) return;
+      }
+    }
+    timed();
   }
 
   // Scena: obraz z powolnym najazdem kamery, tytul i tekst odslaniany zdanie
@@ -238,7 +281,7 @@
     body.append(after);
     view.append(body);
     const keys = extra.map((node) => node.keys).find(Boolean);
-    view.narrate = () => narrate(view, opts.id, sentences, after, keys);
+    view.narrate = () => narrate(view, opts.id, sentences, after, keys, opts.voice, opts.voiceAfter);
     preload(opts.next);
     return view;
   }
@@ -344,7 +387,7 @@
   function soundFailed() {
     sound.on = false;
     if (soundButton) {
-      soundButton.textContent = "Dźwięk niedostępny";
+      soundButton.textContent = "Muzyka niedostępna";
       soundButton.disabled = true;
       soundButton.setAttribute("aria-pressed", "false");
     }
@@ -358,7 +401,16 @@
     }
     const playing = audio.play();
     if (playing && playing.catch) playing.catch(soundFailed);
-    fade(audio, VOLUME.get(audio), FADE_IN.get(audio));
+    fade(audio, level(audio), FADE_IN.get(audio));
+  }
+
+  // Pod glosem lektora muzyka schodzi do okolo jednej trzeciej.
+  const level = (audio) => VOLUME.get(audio) * (narrator.speaking ? 0.35 : 1);
+
+  function duck(speaking) {
+    if (narrator.speaking === speaking) return;
+    narrator.speaking = speaking;
+    if (sound.on && sound.track && !sound.track.paused) fade(sound.track, level(sound.track), 700);
   }
 
   function stopTrack(audio, ms) {
@@ -370,7 +422,7 @@
     sound.on = on;
     soundButton.hidden = false;
     soundButton.setAttribute("aria-pressed", String(on));
-    soundButton.textContent = on ? "Dźwięk: włączony" : "Dźwięk: wyłączony";
+    soundButton.textContent = on ? "Muzyka: wł." : "Muzyka: wył.";
     if (on) startTrack(sound.track);
     else stopTrack(sound.track, 800);
   }
@@ -396,12 +448,114 @@
     soundButton.addEventListener("click", () => setSound(!sound.on));
   }
 
-  // Karta w tle: muzyka milknie, a po powrocie gra dalej.
+  // Karta w tle: muzyka i lektor milkna, a po powrocie graja dalej.
   document.addEventListener("visibilitychange", () => {
+    if (voice && narrator.on && narrator.current) {
+      if (document.hidden) voice.pause();
+      else voice.play().catch(() => {});
+    }
     if (!sound.on || !sound.track) return;
     if (document.hidden) sound.track.pause();
     else startTrack(sound.track);
   });
+
+  // ----------------------------------------------------------------- Lektor
+
+  // Lektor czyta nagrania przypisane do biezacego ekranu, jedno po drugim.
+  // Kazda zmiana ekranu zwieksza "token", wiec spoznione zdarzenia starego
+  // nagrania nic juz nie robia. Jeden element <audio>, odblokowany kliknieciem
+  // w bramie, sluzy wszystkim nagraniom (wymog Safari na iOS).
+  const narrator = { on: false, token: 0, speaking: false, current: null };
+  const clips = (data.narration && data.narration.clips) || {};
+  const clipOf = (id) => clips[id] || null;
+  let currentFinish = null;
+
+  function hush() {
+    narrator.token += 1;
+    narrator.current = null;
+    if (voice) {
+      voice.onended = null;
+      voice.onerror = null;
+      voice.onplaying = null;
+      voice.pause();
+    }
+    duck(false);
+  }
+
+  // items: [{ id, onMark(i), onEnd() }]; opts.done po ostatnim, opts.fail gdy
+  // odtworzenie sie nie uda. Zwraca false, gdy lektor jest wylaczony albo
+  // brak nagran, i wtedy ekran idzie swoim tempem.
+  function say(items, opts) {
+    hush();
+    const options = opts || {};
+    if (!narrator.on || !voice) return false;
+    const list = items.filter((item) => clipOf(item.id));
+    if (!list.length) return false;
+    const token = narrator.token;
+    let index = 0;
+    const alive = () => token === narrator.token;
+    const next = () => {
+      if (!alive()) return;
+      if (index >= list.length) {
+        narrator.current = null;
+        duck(false);
+        if (options.done) options.done();
+        return;
+      }
+      const item = list[index++];
+      const clip = clipOf(item.id);
+      let fired = 0;
+      const marks = item.onMark ? clip.marks : [];
+      const tick = () => {
+        if (!alive() || narrator.current !== item) return;
+        while (fired < marks.length && marks[fired] <= voice.currentTime + 0.08) item.onMark(fired++);
+        if (!voice.paused && !voice.ended) requestAnimationFrame(tick);
+      };
+      narrator.current = item;
+      voice.muted = false;
+      voice.src = clip.src;
+      voice.onplaying = () => { if (alive()) { duck(true); requestAnimationFrame(tick); } };
+      voice.onended = () => {
+        if (!alive()) return;
+        while (fired < marks.length) item.onMark(fired++);
+        if (item.onEnd) item.onEnd();
+        next();
+      };
+      voice.onerror = () => { if (alive()) { hush(); if (options.fail) options.fail(); } };
+      const playing = voice.play();
+      if (playing && playing.catch) playing.catch(() => { if (alive()) { hush(); if (options.fail) options.fail(); } });
+    };
+    next();
+    return true;
+  }
+
+  // Klikniecie w bramie odblokowuje element audio, zeby pozniejsze nagrania
+  // mogly grac bez kolejnego gestu.
+  function unlockVoice() {
+    if (!voice || !clipOf("opening-lines")) return;
+    const token = narrator.token;
+    voice.muted = true;
+    voice.src = clipOf("opening-lines").src;
+    const playing = voice.play();
+    const release = () => { if (token === narrator.token) { voice.pause(); voice.currentTime = 0; } voice.muted = false; };
+    if (playing && playing.then) playing.then(release, () => { voice.muted = false; });
+  }
+
+  function setNarrator(on) {
+    if (!narratorButton) return;
+    narrator.on = on;
+    narratorButton.hidden = false;
+    narratorButton.setAttribute("aria-pressed", String(on));
+    narratorButton.textContent = on ? "Lektor: wł." : "Lektor: wył.";
+    if (!on) {
+      hush();
+      if (currentFinish) currentFinish();
+    }
+  }
+
+  if (narratorButton) {
+    narratorButton.addEventListener("click", () => setNarrator(!narrator.on));
+  }
 
   // ----------------------------------------------------------------- Popiol
 
@@ -484,9 +638,20 @@
       if (practice) view.append(el("p", "dylemat__gate-note dylemat__gate-note--strong", w.practice));
       w.notes.forEach((note) => view.append(el("p", "dylemat__gate-note", note)));
       const actions = el("div", "dylemat__actions dylemat__actions--center");
-      const go = (on) => { setSound(on); showOpening(); };
-      if (soundButton && sound.track) {
-        actions.append(button(w.soundOn, () => go(true), "button button--primary"), button(w.soundOff, () => go(false)));
+      const go = (music, voiceOn) => {
+        setNarrator(voiceOn);
+        if (voiceOn) unlockVoice();
+        setSound(music);
+        showOpening();
+      };
+      if (soundButton && sound.track && narratorButton && clipOf("opening-lines")) {
+        actions.append(
+          button(w.withVoice, () => go(true, true), "button button--primary"),
+          button(w.musicOnly, () => go(true, false)),
+          button(w.soundOff, () => go(false, false))
+        );
+      } else if (soundButton && sound.track) {
+        actions.append(button(w.soundOn, () => go(true, false), "button button--primary"), button(w.soundOff, () => go(false, false)));
       } else {
         actions.append(button("Dalej", () => showOpening(), "button button--primary"));
       }
@@ -518,24 +683,34 @@
       view.append(backdrop, lines, titleCard, skip);
 
       const lineNodes = [...lines.children];
+      const showLine = (i) => {
+        lineNodes.forEach((other, j) => other.classList.toggle("is-past", j < i));
+        if (lineNodes[i]) lineNodes[i].classList.add("is-on");
+      };
+      let titled = false;
       const showTitle = () => {
+        if (titled) return;
+        titled = true;
         clearTimers();
         view.classList.add("is-titled");
         skip.hidden = true;
         lines.setAttribute("aria-hidden", "true");
         start.focus({ preventScroll: true });
         keyHandler = null;
+        // Lektor czyta tytul, haslo i zapowiedz, kiedy pojawia sie na ekranie.
+        say([{ id: "opening-title" }]);
       };
-      if (reduced.matches) {
-        later(showTitle, 0);
-      } else {
+      const timed = () => {
+        if (reduced.matches) { later(showTitle, 0); return; }
         const STEP = 2600;
-        lineNodes.forEach((node, i) => later(() => {
-          lineNodes.forEach((other, j) => other.classList.toggle("is-past", j < i));
-          node.classList.add("is-on");
-        }, 700 + i * STEP));
+        lineNodes.forEach((node, i) => later(() => showLine(i), 700 + i * STEP));
         later(showTitle, 700 + lineNodes.length * STEP + 1200);
-      }
+      };
+      // Z lektorem linijki wchodza razem z jego glosem.
+      view.narrate = () => {
+        const spoken = say([{ id: "opening-lines", onMark: showLine, onEnd: () => later(showTitle, 900) }], { fail: timed });
+        if (!spoken) timed();
+      };
       skip.dataset.focus = "";
       return view;
     });
@@ -553,6 +728,7 @@
       actions.push(button(last ? "Do decyzji" : "Dalej", () => (last ? showDecision() : showScene(index + 1)), "button button--primary"));
       swap(s.id, () => scene({
         id: s.id, image: s.image, focus: s.focus, tag: s.tag, title: s.title, text: s.text, actions,
+        voice: ["scene-" + s.id],
         next: last ? data.decision.image : data.scenes[index + 1].image
       }));
     };
@@ -572,6 +748,7 @@
     const d = data.decision;
     enterChapter(d.chapter, () => swap("decision", () => scene({
       id: "decision", image: d.image, tag: data.chapterWord + " " + d.chapter, title: d.title, text: d.text,
+      voice: ["decision"],
       extra: [choices(d.options, "decision", pickPath), hint()],
       next: data.returnChoice.image
     })));
@@ -584,7 +761,7 @@
       if (state.path === "stabilizacja") { state.finalPath = "stabilizacja"; showConsequence(); return; }
       const r = data.returnChoice;
       enterChapter(r.chapter, () => swap("return", () => scene({
-        id: "return", image: r.image, title: r.title, text: r.text,
+        id: "return", image: r.image, title: r.title, text: r.text, voice: ["return"],
         extra: [choices(r.options, "return", pickReturn)], next: data.lucja.image
       })));
     });
@@ -601,6 +778,7 @@
       ];
       enterChapter(l.chapter, () => swap("lucja", () => scene({
         id: "lucja", image: l.image, title: l.title, text: [...l.text, l.stakes[state.path]],
+        voice: ["lucja", "lucja-stakes-" + state.path],
         extra: [choices(options, "lucja", pickLucja)]
       })));
     });
@@ -613,6 +791,7 @@
         const o = data.objection;
         swap("objection", () => scene({
           id: "objection", image: o.image, title: o.title, text: [o.text[state.path], o.close],
+          voice: ["objection-" + state.path],
           extra: [choices(o.options, "objection", pickObjection)]
         }));
         return;
@@ -631,32 +810,40 @@
   }
 
   // Konsekwencja wlasnej drogi i dopiski z dalszych wyborow.
-  function consequenceNotes() {
-    const n = data.notes;
-    const extra = [];
-    if (state.returnMode === "oddanie") extra.push(n.oddanie);
-    if (state.objection === "rezygnacja") extra.push(n["rezygnacja_" + state.path]);
-    if (state.objection === "mimo_sprzeciwu") extra.push(n.mimo_sprzeciwu);
+  // Klucze dopiskow z dalszych wyborow, w kolejnosci wyswietlania; ten sam
+  // klucz wskazuje tekst i nagranie lektora.
+  function noteKeys() {
+    const keys = [];
+    if (state.returnMode === "oddanie") keys.push("oddanie");
+    if (state.objection === "rezygnacja") keys.push("rezygnacja_" + state.path);
+    if (state.objection === "mimo_sprzeciwu") keys.push("mimo_sprzeciwu");
     if (state.finalPath !== "stabilizacja") {
       if (state.lucja === "zatajenie") {
-        extra.push(state.path === "tomasz" ? n.zatajenie_tomasz : n.zatajenie);
-        if (state.path !== "tomasz") extra.push(n.zatajenie_przymus);
+        keys.push(state.path === "tomasz" ? "zatajenie_tomasz" : "zatajenie");
+        if (state.path !== "tomasz") keys.push("zatajenie_przymus");
       }
-      if (state.lucja === "prawda" && state.path === "tomasz") extra.push(n.prawda_tomasz);
+      if (state.lucja === "prawda" && state.path === "tomasz") keys.push("prawda_tomasz");
     }
-    if (state.returnMode === "przemkniecie" || state.returnMode === "przebicie") extra.push(n[state.returnMode]);
-    return extra.map((text) => el("p", "dylemat__note", text));
+    if (state.returnMode === "przemkniecie" || state.returnMode === "przebicie") keys.push(state.returnMode);
+    return keys;
   }
 
   function showConsequence() {
     const c = data.consequences[state.finalPath];
     let text = c.text;
+    let voiceId = "consequence-" + state.finalPath;
     // Stabilizacja po zaplaconej cenie: pytanie "nie wziales od nikogo" nie
     // pasuje, wiec ostatni akapit mowi o zmarnowanym materiale.
-    if (state.finalPath === "stabilizacja" && state.path !== "stabilizacja") text = [...c.text.slice(0, -1), c.wasted];
+    if (state.finalPath === "stabilizacja" && state.path !== "stabilizacja") {
+      text = [...c.text.slice(0, -1), c.wasted];
+      voiceId += "-wasted";
+    }
+    const notes = noteKeys();
     enterChapter("VI", () => swap("consequence", () => scene({
-      id: "consequence", image: c.image, title: c.title, text, extra: consequenceNotes(),
-      actions: [button("Dalej", showQuestions, "button button--primary")]
+      id: "consequence", image: c.image, title: c.title, text,
+      extra: notes.map((key) => el("p", "dylemat__note", data.notes[key])),
+      actions: [button("Dalej", showQuestions, "button button--primary")],
+      voice: [voiceId], voiceAfter: notes.map((key) => "note-" + key)
     })));
   }
 
@@ -853,6 +1040,7 @@
     state = fresh();
     chapterShown = null;
     told.clear();
+    hush();
     rewindSound();
     showOpening();
   }

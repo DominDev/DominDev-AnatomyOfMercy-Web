@@ -87,6 +87,7 @@ into the game repository.
 |---|---|---|
 | `assets/audio/dylemat-intro.mp3` | 0:55 | Opening of the dilemma, played once after the visitor chooses sound |
 | `assets/audio/dylemat-ambient.mp3` | 2:30 | Background loop for the rest of the dilemma |
+| `assets/audio/lektor/pl/*.mp3` | about 15:00 in total | Optional narrator, one recording per screen, generated with ElevenLabs text to speech (voice "David - Deep Documentary Narrator", model `eleven_v3`) on 2026-10-13 under the same Starter plan; recipe in `scripts/generate-narration.mjs` |
 
 ## Social
 

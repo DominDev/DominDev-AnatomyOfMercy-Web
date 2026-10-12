@@ -30,6 +30,18 @@ const audio = (name) => {
   return exists(file) ? file : null;
 };
 
+// Nagrania lektora (scripts/generate-narration.mjs): jedno na ekran, z
+// momentem wejscia kazdego zdania. Strona bierze tylko te, ktorych plik
+// istnieje; ekran bez nagrania dziala jak bez lektora.
+const narration = (() => {
+  const file = path.resolve("narration/pl.json");
+  if (!fs.existsSync(file)) return null;
+  const clips = Object.entries(JSON.parse(fs.readFileSync(file, "utf8")).clips)
+    .filter(([, clip]) => exists(clip.src))
+    .map(([id, clip]) => [id, { src: clip.src, marks: clip.marks }]);
+  return clips.length ? { clips: Object.fromEntries(clips) } : null;
+})();
+
 // Kto jest na ktorej grafice: Julian to postac w ptasiej masce z latarnia
 // (grafika hero), Veyr to inkwizytor w bialej porcelanowej masce (winieta 1 i
 // portret dylematu). Nie zamieniac.
@@ -56,6 +68,7 @@ const img = {
 export default {
   version,
   audio: { intro: audio("dylemat-intro"), ambient: audio("dylemat-ambient") },
+  narration,
 
   opening: {
     image: img.title,
@@ -80,6 +93,8 @@ export default {
       "Odpowiedzi są anonimowe. Zapisujemy twoje wybory, czas spędzony na scenach i odpowiedzi z końcowych pytań. Bez imion, adresów e-mail, adresów IP i ciasteczek. Kontakt: contact@anatomyofmercy.com."
     ],
     soundOn: "Z dźwiękiem",
+    withVoice: "Z lektorem i muzyką",
+    musicOnly: "Tylko muzyka",
     soundOff: "Bez dźwięku",
     start: "Wejdź do lazaretu",
     practice: "Twoje odpowiedzi są już zapisane. Możesz przejść tę drogę jeszcze raz, tym razem bez zapisu."

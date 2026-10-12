@@ -1,0 +1,379 @@
+{
+  "voice": "jvcMcno3QtjOzGtfpjoI",
+  "model": "eleven_v3",
+  "language": "pl",
+  "clips": {
+    "opening-lines": {
+      "src": "/assets/audio/lektor/pl/opening-lines.mp3",
+      "duration": 22.56,
+      "marks": [
+        0,
+        4.34,
+        9.56,
+        15.64,
+        19.1
+      ],
+      "hash": "406b8afcd970"
+    },
+    "opening-title": {
+      "src": "/assets/audio/lektor/pl/opening-title.mp3",
+      "duration": 19.12,
+      "marks": [],
+      "hash": "69e2b08ce3be"
+    },
+    "chapter-I": {
+      "src": "/assets/audio/lektor/pl/chapter-I.mp3",
+      "duration": 3.12,
+      "marks": [],
+      "hash": "c1ea9698792c"
+    },
+    "chapter-II": {
+      "src": "/assets/audio/lektor/pl/chapter-II.mp3",
+      "duration": 3.52,
+      "marks": [],
+      "hash": "148972c21d5d"
+    },
+    "chapter-III": {
+      "src": "/assets/audio/lektor/pl/chapter-III.mp3",
+      "duration": 2.88,
+      "marks": [],
+      "hash": "0f0221f7c0f8"
+    },
+    "chapter-IV": {
+      "src": "/assets/audio/lektor/pl/chapter-IV.mp3",
+      "duration": 3.44,
+      "marks": [],
+      "hash": "7d3b100c0545"
+    },
+    "chapter-V": {
+      "src": "/assets/audio/lektor/pl/chapter-V.mp3",
+      "duration": 3.2,
+      "marks": [],
+      "hash": "c20d691d9a29"
+    },
+    "chapter-VI": {
+      "src": "/assets/audio/lektor/pl/chapter-VI.mp3",
+      "duration": 3.28,
+      "marks": [],
+      "hash": "08cc44fc9400"
+    },
+    "scene-A": {
+      "src": "/assets/audio/lektor/pl/scene-A.mp3",
+      "duration": 78,
+      "marks": [
+        1.98,
+        4.62,
+        11.25,
+        16.64,
+        23.95,
+        26.9,
+        33.72,
+        37.76,
+        43.46,
+        47.1,
+        51.52,
+        53.74,
+        57.4,
+        59.07,
+        62.54,
+        65.12,
+        72.48
+      ],
+      "hash": "3ac90c8b9772"
+    },
+    "scene-B": {
+      "src": "/assets/audio/lektor/pl/scene-B.mp3",
+      "duration": 47.84,
+      "marks": [
+        1.81,
+        4.77,
+        12.35,
+        17,
+        19.92,
+        29.22,
+        31.16,
+        35.16,
+        39.08,
+        41.44,
+        45.68
+      ],
+      "hash": "c3b37e75064d"
+    },
+    "scene-C": {
+      "src": "/assets/audio/lektor/pl/scene-C.mp3",
+      "duration": 49.36,
+      "marks": [
+        1.56,
+        8.6,
+        13.24,
+        18.08,
+        21.24,
+        25.17,
+        31.22,
+        33.18,
+        35.4,
+        39.48,
+        42.9,
+        46.84
+      ],
+      "hash": "00c1230000e9"
+    },
+    "scene-D": {
+      "src": "/assets/audio/lektor/pl/scene-D.mp3",
+      "duration": 31.84,
+      "marks": [
+        2.56,
+        4.98,
+        10.52,
+        15.09,
+        19.36,
+        27,
+        30.52
+      ],
+      "hash": "4c06fbc0fe12"
+    },
+    "scene-E": {
+      "src": "/assets/audio/lektor/pl/scene-E.mp3",
+      "duration": 44,
+      "marks": [
+        2.43,
+        5.4,
+        9.47,
+        12.29,
+        15.32,
+        20.24,
+        22.48,
+        27.4,
+        32.22,
+        37.48
+      ],
+      "hash": "f161969d652e"
+    },
+    "scene-F": {
+      "src": "/assets/audio/lektor/pl/scene-F.mp3",
+      "duration": 65.2,
+      "marks": [
+        1.96,
+        4.03,
+        11.12,
+        14.77,
+        20.28,
+        24.37,
+        31.95,
+        36.72,
+        39.71,
+        46.32,
+        50.21,
+        53.08,
+        59.36,
+        62.03
+      ],
+      "hash": "3fc433cec661"
+    },
+    "scene-G": {
+      "src": "/assets/audio/lektor/pl/scene-G.mp3",
+      "duration": 63.84,
+      "marks": [
+        2.54,
+        6.04,
+        9.23,
+        12.56,
+        17.42,
+        20.34,
+        21.64,
+        23.44,
+        29.36,
+        32.99,
+        38.64,
+        46.22,
+        49.25,
+        52.12,
+        60.4
+      ],
+      "hash": "7f549ade8413"
+    },
+    "scene-H": {
+      "src": "/assets/audio/lektor/pl/scene-H.mp3",
+      "duration": 33.04,
+      "marks": [
+        1.84,
+        9.72,
+        19.39,
+        26.52,
+        31.17
+      ],
+      "hash": "7d329e99c43b"
+    },
+    "decision": {
+      "src": "/assets/audio/lektor/pl/decision.mp3",
+      "duration": 22.24,
+      "marks": [
+        0,
+        1.55,
+        5.6,
+        12.52,
+        14.26
+      ],
+      "hash": "aeff8f8a70c7"
+    },
+    "return": {
+      "src": "/assets/audio/lektor/pl/return.mp3",
+      "duration": 46.16,
+      "marks": [
+        2.44,
+        5.68,
+        10.27,
+        14.24,
+        16.35,
+        25.16,
+        27.88,
+        30.59,
+        37.86,
+        42.7
+      ],
+      "hash": "32b1e24a0821"
+    },
+    "lucja": {
+      "src": "/assets/audio/lektor/pl/lucja.mp3",
+      "duration": 26.08,
+      "marks": [
+        0,
+        3.36,
+        9.26,
+        11.84,
+        13.82,
+        16.36,
+        19.08,
+        22.04,
+        23.32
+      ],
+      "hash": "fbccfac497a0"
+    },
+    "lucja-stakes-tomasz": {
+      "src": "/assets/audio/lektor/pl/lucja-stakes-tomasz.mp3",
+      "duration": 10.72,
+      "marks": [
+        0,
+        4.85,
+        9.68
+      ],
+      "hash": "aeb044785237"
+    },
+    "lucja-stakes-veyr_zywy": {
+      "src": "/assets/audio/lektor/pl/lucja-stakes-veyr_zywy.mp3",
+      "duration": 10,
+      "marks": [
+        0,
+        3.71
+      ],
+      "hash": "189afc6e95db"
+    },
+    "lucja-stakes-veyr_zabity": {
+      "src": "/assets/audio/lektor/pl/lucja-stakes-veyr_zabity.mp3",
+      "duration": 10.4,
+      "marks": [
+        0,
+        3.6
+      ],
+      "hash": "448913b8c0b5"
+    },
+    "lucja-stakes-seweryn": {
+      "src": "/assets/audio/lektor/pl/lucja-stakes-seweryn.mp3",
+      "duration": 11.92,
+      "marks": [
+        0,
+        4.08
+      ],
+      "hash": "448913b8c0b5"
+    },
+    "objection-veyr_zywy": {
+      "src": "/assets/audio/lektor/pl/objection-veyr_zywy.mp3",
+      "duration": 16.8,
+      "marks": [
+        0,
+        2.12,
+        3.53,
+        6.68,
+        9.64,
+        10.89,
+        12.82,
+        14.46
+      ],
+      "hash": "91a2a1255b3e"
+    },
+    "objection-veyr_zabity": {
+      "src": "/assets/audio/lektor/pl/objection-veyr_zabity.mp3",
+      "duration": 21.12,
+      "marks": [
+        0,
+        5.48,
+        7,
+        10.16,
+        12.88,
+        16.76,
+        18.82
+      ],
+      "hash": "dfa8ad174407"
+    },
+    "objection-seweryn": {
+      "src": "/assets/audio/lektor/pl/objection-seweryn.mp3",
+      "duration": 17.04,
+      "marks": [
+        0,
+        2.32,
+        4.72,
+        7.06,
+        8.68,
+        13,
+        15
+      ],
+      "hash": "df069143f392"
+    },
+    "consequence-stabilizacja": {
+      "src": "/assets/audio/lektor/pl/consequence-stabilizacja.mp3",
+      "duration": 35.28,
+      "marks": [
+        2.4,
+        5.92,
+        7.44,
+        10.24,
+        15.04,
+        17.33,
+        20.48,
+        27.79,
+        32.16
+      ],
+      "hash": "b5dbd5e09e96"
+    },
+    "consequence-stabilizacja-wasted": {
+      "src": "/assets/audio/lektor/pl/consequence-stabilizacja-wasted.mp3",
+      "duration": 34.64,
+      "marks": [
+        2.3,
+        6.48,
+        8.27,
+        11.88,
+        16.8,
+        19.07,
+        23.28,
+        28.04,
+        29.76
+      ],
+      "hash": "896376a4f42c"
+    },
+    "consequence-tomasz": {
+      "src": "/assets/audio/lektor/pl/consequence-tomasz.mp3",
+      "duration": 28.48,
+      "marks": [
+        2.08,
+        5.01,
+        7.64,
+        11.62,
+        16.12,
+        24.19,
+        26.88
+      ],
+      "hash": "cea6bc2fc440"
+    }
+  }
+}
