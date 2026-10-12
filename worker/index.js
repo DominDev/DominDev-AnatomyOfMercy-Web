@@ -160,11 +160,12 @@ async function notify(env, url, row, p) {
     `Urządzenie: ${p.client === "mobile" ? "telefon" : "komputer"}, wersja ${row[1]}. Odpowiedzi na tym adresie: ${results[0]?.n ?? "?"}.`
   ].filter(Boolean);
   // Bez wzmianek: tekst od uzytkownika nie moze nikogo oznaczyc.
-  await fetch(env.DISCORD_DILEMMA_WEBHOOK, {
+  const response = await fetch(env.DISCORD_DILEMMA_WEBHOOK, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "User-Agent": "AnatomyOfMercy-Web (https://anatomyofmercy.com, 1.0)" },
     body: JSON.stringify({ content: lines.join("\n").slice(0, 1900), allowed_mentions: { parse: [] } })
   });
+  if (!response.ok) console.error("discord", response.status, (await response.text()).slice(0, 200));
 }
 
 async function saveResponse(request, env, url, ctx) {
@@ -186,7 +187,7 @@ async function saveResponse(request, env, url, ctx) {
        paid, value, veyr, more, who, clarity, comment, age, games, host)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
-  ctx.waitUntil(notify(env, url, row, payload).catch(() => {}));
+  ctx.waitUntil(notify(env, url, row, payload).catch((error) => console.error("notify", error && error.message)));
   return json({ ok: true }, 201);
 }
 
