@@ -192,8 +192,10 @@ async function saveResponse(request, env, url, ctx) {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
   const sending = notify(env, url, row, payload).catch((error) => {
-    console.error("notify", error && error.message);
-    return "error " + (error && error.message);
+    // Komunikat bledu fetch moze zawierac adres webhooka, czyli sekret.
+    const message = String((error && error.message) || error).replace(/https?:\/\/\S+/g, "[adres]");
+    console.error("notify", message);
+    return "error " + message;
   });
   // Diagnostyka tylko poza produkcja: z naglowkiem X-Debug-Notify odpowiedz
   // czeka na Discorda i podaje jego wynik (bez adresu webhooka).
