@@ -3,6 +3,10 @@
   // takim ukladzie opcjonalne, zgodnie z dokumentacja Wranglera.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "anatomyofmercy-web",
+  // Kod Workera obsluguje wylacznie /api/* (zapis wynikow interaktywnej proby
+  // dylematu). Pozostale adresy ida prosto do statycznych zasobow, bez
+  // uruchamiania tego kodu, dzieki `run_worker_first` nizej.
+  "main": "worker/index.js",
   "compatibility_date": "2026-09-11",
   // Domena jest podpieta, wiec adres roboczy `workers.dev` zostaje wylaczony.
   // Zostawiony trzymalby te sama tresc pod drugim adresem, a adres kanoniczny
@@ -25,11 +29,25 @@
   "assets": {
     // Katalog budowany przez `npm run build`. Nie jest w repozytorium.
     "directory": "./dist",
+    // Wiazanie, przez ktore Worker oddaje zasoby, gdy zapytanie nie dotyczy API.
+    "binding": "ASSETS",
+    // Tylko te sciezki uruchamiaja kod Workera przed zasobami.
+    "run_worker_first": ["/api/*"],
     // Adresy stron sa katalogowe: / oraz /pl/. Ta wartosc utrzymuje koncowy
     // ukosnik i zapobiega rozjazdowi z adresem kanonicznym.
     "html_handling": "auto-trailing-slash",
     // Brak dopasowania oddaje wlasna, ostylowana i dwujezyczna strone 404
     // wraz z kodem 404, zamiast pustej odpowiedzi krawedzi.
     "not_found_handling": "404-page"
-  }
+  },
+  // Baza wynikow interaktywnej proby dylematu (/proba/). Schemat: migrations/.
+  // Podglady galezi pisza do tej samej bazy; kolumna host je odroznia.
+  "d1_databases": [
+    {
+      "binding": "PROBA_DB",
+      "database_name": "aom-proba-dylematu",
+      "database_id": "afd9fd49-3467-4bb5-aef4-4c43ec34cf29",
+      "migrations_dir": "migrations"
+    }
+  ]
 }
