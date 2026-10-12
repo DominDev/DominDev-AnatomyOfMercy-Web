@@ -156,8 +156,9 @@
 
   const plain = (node) => node.textContent.length;
 
-  // Tempo czytania: krotkie zdanie okolo poltorej sekundy, dlugie najwyzej trzy.
-  // Nowy akapit i zdanie z wyroznieniem dostaja dodatkowa pauze.
+  // Tempo czytania: krotkie zdanie niecala sekunde, dlugie najwyzej dwie.
+  // Nowy akapit i zdanie z wyroznieniem dostaja krotka dodatkowa pauze.
+  // Tekst wyprzedza czytelnika tylko o krok, wiec nie trzeba na niego czekac.
   function narrate(view, id, sentences, after, keys) {
     let finished = false;
     const finish = () => {
@@ -172,16 +173,16 @@
     };
     if (!sentences.length || reduced.matches || told.has(id)) { finish(); return; }
     view.classList.add("is-telling");
-    let at = 700;
+    let at = 500;
     let paragraph = null;
     sentences.forEach((s) => {
-      if (paragraph && s.parentNode !== paragraph) at += 600;
-      if (s.querySelector("strong")) at += 450;
+      if (paragraph && s.parentNode !== paragraph) at += 350;
+      if (s.querySelector("strong")) at += 300;
       paragraph = s.parentNode;
       later(() => s.classList.add("is-on"), at);
-      at += Math.min(3000, Math.max(1300, 700 + plain(s) * 26));
+      at += Math.min(1900, Math.max(800, 350 + plain(s) * 14));
     });
-    later(finish, at - 600);
+    later(finish, at);
     view.addEventListener("click", (event) => {
       if (!finished && !event.target.closest("button")) finish();
     });

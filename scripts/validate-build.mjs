@@ -325,6 +325,14 @@ if (fs.existsSync(headersPath)) {
   const dilemmaFile = path.resolve("dist/pl/dylemat/index.html");
   const dilemmaPage = fs.existsSync(dilemmaFile) ? fs.readFileSync(dilemmaFile, "utf8") : "";
   assertions.push([dilemmaPage.includes('<meta name="robots" content="noindex, nofollow">'), "The hidden /pl/dylemat/ page is missing its noindex meta tag."]);
+  // Tresc dylematu jest osadzona jako JSON w elemencie script. Kazde "<" musi
+  // byc zapisane jako <, a po odczytaniu tekst ma wrocic nietkniety:
+  // pojedynczy ukosnik w szablonie Nunjucks gubi sie i psuje znaczniki cicho.
+  const dilemmaJson = (dilemmaPage.match(/<script type="application\/json" id="dylemat-data">([\s\S]*?)<\/script>/) || [])[1] || "";
+  let dilemmaData = null;
+  try { dilemmaData = JSON.parse(dilemmaJson); } catch { /* sprawdzone nizej */ }
+  assertions.push([Boolean(dilemmaData) && !dilemmaJson.includes("<") && JSON.stringify(dilemmaData).includes("<strong>"),
+    "The embedded dilemma JSON must parse, contain no raw '<' and still decode to the original <strong> markup."]);
   assertions.push([!fs.readFileSync(path.resolve("dist/sitemap.xml"), "utf8").includes("/dylemat"), "The hidden /pl/dylemat/ page must not appear in the sitemap."]);
   assertions.push([
     noindex !== site.isProduction,

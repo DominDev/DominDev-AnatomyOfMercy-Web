@@ -10,7 +10,8 @@ eleventyExcludeFromCollections: true
     Samodzielna jak strona 404: bez naglowka, stopki i sekwencji wejscia
     strony glownej, zeby nic nie odciagalo od opowiesci. Tresc siedzi w
     src/_data/dylemat.js; ponizszy JSON nie jest wykonywany, wiec polityka
-    bezpieczenstwa go nie dotyczy. -#}
+    bezpieczenstwa go nie dotyczy. Kazde "<" jest zapisane jako <, zeby
+    zaden tekst nie mogl zamknac elementu script przed czasem. -#}
 <!doctype html>
 <html lang="pl">
   <head>
@@ -52,6 +53,6 @@ eleventyExcludeFromCollections: true
     {%- if dylemat.audio.ambient %}
     <audio data-audio-ambient src="{{ dylemat.audio.ambient }}" loop preload="none"></audio>
     {%- endif %}
-    <script type="application/json" id="dylemat-data">{{ dylemat | dump | safe }}</script>
+    <script type="application/json" id="dylemat-data">{{ dylemat | dump | replace("<", "\\u003c") | safe }}</script>
   </body>
 </html>

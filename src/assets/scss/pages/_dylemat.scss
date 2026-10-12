@@ -388,10 +388,12 @@ $wide: 860px;
     margin: 0;
     font: 400 clamp(1.14rem, 1.7vw, 1.32rem) / 1.6 var(--font-display);
 
+    // Wyroznienie musi byc widoczne na pierwszy rzut oka: cieply odcien
+    // akcentu, pelna grubosc i czerwona poswiata pod literami.
     strong {
-      color: #f7e8c6;
-      font-weight: 600;
-      text-shadow: 0 0 1.4rem rgba(150, 40, 40, 0.55);
+      color: #f0b98f;
+      font-weight: 700;
+      text-shadow: 0 0 0.9rem rgba(160, 36, 36, 0.85), 0 0 0.2rem rgba(0, 0, 0, 0.9);
     }
 
     em {
@@ -402,7 +404,7 @@ $wide: 860px;
   &__sentence {
     opacity: 0;
     filter: blur(3px);
-    transition: opacity 1300ms ease, filter 1300ms ease;
+    transition: opacity 900ms ease, filter 900ms ease;
 
     &.is-on {
       opacity: 1;
