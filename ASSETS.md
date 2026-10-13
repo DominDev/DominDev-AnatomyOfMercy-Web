@@ -64,6 +64,42 @@ bone and was refused by the generator under its rules on violence. The disease
 is now shown through what it leaves behind rather than through remains, which
 is also what the brief asks for in its section on the violence threshold.
 
+## Interactive dilemma
+
+Used only on the hidden page `/pl/dylemat/`. The three portraits were generated
+from the world brief on 2026-10-12 for the dilemma, the other scenes on 2026-10-13. Until the remaining
+artwork for that page exists, its other screens borrow the images listed above;
+`src/_data/dylemat.js` swaps each one for its own file as soon as that file is
+added under `assets/images/dylemat/`.
+
+| Website asset | Source filename | Size | Purpose |
+|---|---|---|---|
+| `assets/images/dylemat/tomasz.webp` | `AoM-web-dylemat-tomasz.png` | 800 x 1000 | Brother Tomasz, the second path |
+| `assets/images/dylemat/veyr.webp` | `AoM-web-dylemat-veyr.png` | 800 x 1000 | Captain Veyr, the third path |
+| `assets/images/dylemat/seweryn.webp` | `AoM-web-dylemat-seweryn.png` | 800 x 1000 | Brother Seweryn, the fourth path |
+| `assets/images/dylemat/droga.webp` | `AoM-web-dylemat-droga.png` | 800 x 1000 | Card H, the way back across the cordon |
+| `assets/images/dylemat/decyzja.webp` | `AoM-web-dylemat-decyzja.png` | 800 x 1000 | Chapter III, the choice of path |
+| `assets/images/dylemat/brama.webp` | `AoM-web-dylemat-brama.png` | 800 x 1000 | Chapter IV, the cordon gate at night |
+| `assets/images/dylemat/lucja.webp` | `AoM-web-dylemat-lucja.png` | 800 x 1000 | Chapter V, Łucja asks where the cure came from |
+| `assets/images/dylemat/sprzeciw.webp` | `AoM-web-dylemat-sprzeciw.png` | 800 x 1000 | Chapter V, Łucja's refusal (prompt softened by the generator's rules on depicting children) |
+| `assets/images/dylemat/skutek-stabilizacja.webp` | `AoM-web-dylemat-skutek-stabilizacja.png` | 800 x 1000 | Consequence: Agata's method |
+| `assets/images/dylemat/skutek-zmarnowane.webp` | `AoM-web-dylemat-skutek-zmarnowane.png` | 800 x 1000 | Consequence: stabilisation after a price already paid |
+| `assets/images/dylemat/skutek-tomasz.webp` | `AoM-web-dylemat-skutek-tomasz.png` | 800 x 1000 | Consequence: Tomasz's gift |
+| `assets/images/dylemat/skutek-veyr-zywy.webp` | `AoM-web-dylemat-skutek-veyr-zywy.png` | 800 x 1000 | Consequence: Veyr taken by force |
+| `assets/images/dylemat/skutek-veyr-zabity.webp` | `AoM-web-dylemat-skutek-veyr-zabity.png` | 800 x 1000 | Consequence: Veyr's death and his deputy |
+| `assets/images/dylemat/skutek-seweryn.webp` | `AoM-web-dylemat-skutek-seweryn.png` | 800 x 1000 | Consequence: Seweryn's core |
+
+The music on the same page was generated with ElevenLabs Music on 2026-10-12
+under a paid Starter plan. That plan allows online use such as this website.
+It does not cover use in the game itself, so these tracks must not be copied
+into the game repository.
+
+| Website asset | Length | Purpose |
+|---|---|---|
+| `assets/audio/dylemat-intro.mp3` | 0:55 | Opening of the dilemma, played once after the visitor chooses sound |
+| `assets/audio/dylemat-ambient.mp3` | 2:30 | Background loop for the rest of the dilemma |
+| `assets/audio/lektor/pl/*.mp3` | about 15:00 in total | Optional narrator, one recording per screen, generated with ElevenLabs text to speech (voice "David - Deep Documentary Narrator", model `eleven_v3`) on 2026-10-13 under the same Starter plan; recipe in `scripts/generate-narration.mjs` |
+
 ## Social
 
 | Website asset | Source filename | Size | Purpose |

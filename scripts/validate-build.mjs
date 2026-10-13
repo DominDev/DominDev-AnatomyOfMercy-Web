@@ -5,6 +5,7 @@ import path from "node:path";
 // Ten sam modul, z ktorego korzysta budowanie, wiec kontrola sprawdza adres
 // faktycznie uzyty w wydaniu, a nie zaszyta na sztywno domene produkcyjna.
 import site from "../src/_data/site.js";
+import dilemmaContent, { narrationFor } from "../src/_data/dylemat.js";
 
 const requiredFiles = [
   "dist/index.html",
@@ -307,7 +308,33 @@ if (fs.existsSync(headersPath)) {
   // wtedy, gdy robot go przeczyta, wiec podglad zabezpieczamy takze naglowkiem.
   // Rozjazd tych dwoch jest cichy w obie strony: podglad zaproszony do indeksu
   // albo produkcja wyciszona bez sladu w tresci strony.
-  const noindex = /X-Robots-Tag:\s*noindex/i.test(headers);
+  // Liczy sie blok calej strony (/*). Ukryta podstrona /pl/dylemat/ ma wlasny blok z
+  // noindex rowniez w produkcji i sprawdzamy ja osobno nizej.
+  const headerBlock = (pattern) => {
+    const lines = headers.split(/\r?\n/);
+    const start = lines.findIndex((line) => line.trim() === pattern && !/^\s/.test(line));
+    if (start === -1) return "";
+    const rest = lines.slice(start + 1);
+    const end = rest.findIndex((line) => line.trim() !== "" && !/^\s/.test(line) && !line.startsWith("#"));
+    return (end === -1 ? rest : rest.slice(0, end)).join("\n");
+  };
+  const noindex = /X-Robots-Tag:\s*noindex/i.test(headerBlock("/*"));
+  const dilemmaHeaders = headerBlock("/pl/dylemat/*");
+  assertions.push([/X-Robots-Tag:\s*noindex/i.test(dilemmaHeaders), "The hidden /pl/dylemat/ page must always send X-Robots-Tag noindex."]);
+  assertions.push([/media-src 'self'/.test(dilemmaHeaders) && /^\s*! Content-Security-Policy/m.test(dilemmaHeaders),
+    "The /pl/dylemat/ block must detach the site CSP and allow media-src 'self' for its optional audio."]);
+  const dilemmaFile = path.resolve("dist/pl/dylemat/index.html");
+  const dilemmaPage = fs.existsSync(dilemmaFile) ? fs.readFileSync(dilemmaFile, "utf8") : "";
+  assertions.push([dilemmaPage.includes('<meta name="robots" content="noindex, nofollow">'), "The hidden /pl/dylemat/ page is missing its noindex meta tag."]);
+  // Tresc dylematu jest osadzona jako JSON w elemencie script. Kazde "<" musi
+  // byc zapisane jako <, a po odczytaniu tekst ma wrocic nietkniety:
+  // pojedynczy ukosnik w szablonie Nunjucks gubi sie i psuje znaczniki cicho.
+  const dilemmaJson = (dilemmaPage.match(/<script type="application\/json" id="dylemat-data">([\s\S]*?)<\/script>/) || [])[1] || "";
+  let dilemmaData = null;
+  try { dilemmaData = JSON.parse(dilemmaJson); } catch { /* sprawdzone nizej */ }
+  assertions.push([Boolean(dilemmaData) && !dilemmaJson.includes("<") && JSON.stringify(dilemmaData).includes("<strong>"),
+    "The embedded dilemma JSON must parse, contain no raw '<' and still decode to the original <strong> markup."]);
+  assertions.push([!fs.readFileSync(path.resolve("dist/sitemap.xml"), "utf8").includes("/dylemat"), "The hidden /pl/dylemat/ page must not appear in the sitemap."]);
   assertions.push([
     noindex !== site.isProduction,
     site.isProduction
@@ -737,4 +764,11 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+// Nagrania lektora, ktorych tekst nie zgadza sie juz z trescia dylematu, nie
+// trafiaja na strone (ekran idzie bez lektora). Nie blokujemy builda, ale
+// mowimy wprost, ktore nagrania trzeba wygenerowac ponownie.
+const staleNarration = narrationFor(dilemmaContent).stale;
+if (staleNarration.length) {
+  console.warn(`Narration out of date, these screens play without the narrator until regenerated: ${staleNarration.join(", ")}. Run node scripts/generate-narration.mjs.`);
+}
 console.log(`Build validation passed for ${requiredFiles.length} required files.`);

@@ -170,7 +170,37 @@ Production output is written to `dist/`. That directory is generated and must ne
 
 **Deployment**
 
-The site is served by a Cloudflare Worker with Static Assets and no Worker code, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push.
+The site is served by a Cloudflare Worker with Static Assets, configured in `wrangler.jsonc`. Cloudflare Workers Builds runs `npm run build` and then `npx wrangler deploy` on every push. The Worker code in `worker/index.js` runs only for `/api/*`, which stores and summarises the anonymous answers of the hidden interactive dilemma at `/pl/dylemat/`; every other address goes straight to the static assets.
+
+**Database**
+
+The dilemma writes to the D1 database `aom-proba-dylematu` (binding `DYLEMAT_DB`). Production and branch previews share it and are told apart by the `host` column. The schema lives in `migrations/`, and every statement there is idempotent.
+
+Migrations are not applied by the deployment. A change that needs a new table or column must be applied to the remote database before the pull request is merged, otherwise the Worker on `main` will fail to write:
+
+```bash
+npx wrangler d1 migrations apply aom-proba-dylematu --remote
+```
+
+For local testing, apply the same migrations with `--local` and start `npx wrangler dev --local` after a build.
+
+The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly.
+
+**Notifications**
+
+Every saved answer posts a short summary to the Discord channel #web through a webhook. Its address is the Worker secret `DISCORD_DILEMMA_WEBHOOK`, never a file in this repository; without it the Worker simply skips the message, and a Discord failure never affects the saved answer. Answers from branch previews are labelled with their host.
+
+Set or replace the secret with `npx wrangler versions secret put DISCORD_DILEMMA_WEBHOOK`. Do not use `wrangler secret put`: it deploys the latest uploaded version immediately, and the latest version is usually a branch preview, which would put unmerged code on the production domain. The versioned command only creates a new version; later uploads and the next deployment from `main` keep the secret.
+
+**Narration**
+
+The dilemma can be read aloud by a narrator (ElevenLabs, voice "David - Deep Documentary Narrator", model `eleven_v3`). `scripts/generate-narration.mjs` creates one recording per screen in `src/static/assets/audio/lektor/pl/` and writes `narration/pl.json` with the start time of every sentence, so the page reveals each sentence as the narrator begins it. Each screen has its own recording, and the page silences the narrator on every screen change, so it never reads a card that is no longer visible. Switching the narrator off only pauses it and lets the text continue at its own pace; switching it back on resumes the current recording from the first sentence that is not yet on screen.
+
+```bash
+node scripts/generate-narration.mjs --dry
+```
+
+The dry run lists the recordings that would be generated; `--texts` prints the exact text of every recording as JSON, which is how the recordings were checked word by word against a speech to text transcript. Without `--dry` the script needs `ELEVENLABS_API_KEY` in the environment and regenerates only recordings whose text or settings changed; `--force` and recording ids narrow or override that. After any content change in `src/_data/dylemat.js`, run it again. The page uses a recording only when the hash of its text in `narration/pl.json` matches the current content (`scripts/narration-clips.mjs` computes both), so a reworded screen plays without the narrator rather than reading the old recording over new text. Build validation lists such out of date recordings as a warning.
 
 The canonical address is the production domain. A build that Workers Builds runs from any branch other than `main` is recognised through the `WORKERS_CI` and `WORKERS_CI_BRANCH` variables that Cloudflare sets itself: its `robots.txt` switches to `Disallow: /` and it sends `X-Robots-Tag: noindex`, so a preview deployment can never be indexed alongside the real site. `SITE_URL` remains available as an override for checking a build under a different address. Build validation enforces both halves of that rule.
 
