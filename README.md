@@ -184,7 +184,9 @@ npx wrangler d1 migrations apply aom-proba-dylematu --remote
 
 For local testing, apply the same migrations with `--local` and start `npx wrangler dev --local` after a build.
 
-The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly.
+The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly. The same goes for `attempt` (added 2026-10-13, default 1).
+
+Every completed run is saved, including repeats from the same browser. `attempt` holds the run number that browser reports (1 for the first run); the page statistics and the response count on Discord include every run, and repeats are labelled as such. To evaluate only first decisions, filter on `attempt = 1`.
 
 **Notifications**
 

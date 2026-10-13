@@ -91,7 +91,7 @@ const content = {
     musicOnly: "Tylko muzyka",
     soundOff: "Bez dźwięku",
     start: "Wejdź do lazaretu",
-    practice: "Twoje odpowiedzi są już zapisane. Możesz przejść tę drogę jeszcze raz, tym razem bez zapisu."
+    practice: "Twoje pierwsze odpowiedzi są już zapisane. Możesz przejść tę drogę jeszcze raz; zapiszemy ją jako powtórkę."
   },
 
   chapterWord: "Rozdział",
@@ -403,8 +403,8 @@ const content = {
     first: "Jesteś jedną z pierwszych osób, które przeszły tę próbę. Wyniki innych pokażemy, gdy będzie ich więcej.",
     thanks: "Dziękujemy. Prosimy, nie zdradzaj szczegółów osobom, którym przekażesz link.",
     // Ekran konca pojawia sie dopiero po zapisie wyniku, wiec napis nie moze
-    // sugerowac, ze cokolwiek przepadlo. Ze kolejne przejscie juz sie nie
-    // zapisuje, mowi notka na bramie przy ponownym wejsciu.
+    // sugerowac, ze cokolwiek przepadlo. Kolejne przejscie tez sie zapisuje,
+    // jako powtorka (notka na bramie przy ponownym wejsciu).
     again: "Wypełnij ponownie",
     home: "Poznaj Anatomy of Mercy",
     homeUrl: "/pl/"
