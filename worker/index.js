@@ -14,7 +14,7 @@ const OBJECTION = ["mimo_sprzeciwu", "rezygnacja"];
 const CLIENTS = ["mobile", "desktop"];
 const SCREENS = ["gate", "opening", "chapters", "A", "B", "C", "D", "E", "F", "G", "H", "decision", "difficulty",
   "return", "difficultyReturn", "lucja", "difficultyLucja", "objection", "difficultyObjection", "consequence",
-  "questions"];
+  "questions", "end"];
 // Grupy przypomnien (ikona i) i wartosci, ktore moga w nich wystapic.
 const INFO = {
   decision: PATHS,
@@ -93,37 +93,45 @@ function record(value, accept) {
   return out;
 }
 
-// Zwraca wiersz do zapisu albo null, gdy cokolwiek odbiega od tego, co strona
-// moze wyslac.
+// Zwraca { row } do zapisu albo { reason }, gdy cokolwiek odbiega od tego, co
+// strona moze wyslac. Przyczyna trafia do logow Workera i do odpowiedzi; nie
+// zawiera tresci odpowiedzi, tylko nazwe nieudanej kontroli.
 function validate(p) {
-  if (!p || typeof p !== "object") return null;
-  if (typeof p.version !== "string" || !/^\d+\.\d+$/.test(p.version)) return null;
-  if (!oneOf(p.client, CLIENTS) || !count(p.decisionMs) || !branchOk(p) || !difficultyOk(p)) return null;
+  const fail = (reason) => ({ reason });
+  if (!p || typeof p !== "object") return fail("payload");
+  if (typeof p.version !== "string" || !/^\d+\.\d+$/.test(p.version)) return fail("version");
+  if (!oneOf(p.client, CLIENTS)) return fail("client");
+  if (!count(p.decisionMs)) return fail("decisionMs");
+  if (!branchOk(p)) return fail("branch");
+  if (!difficultyOk(p)) return fail("difficulty");
+  const unknownScreen = p.timings && typeof p.timings === "object" ? Object.keys(p.timings).find((key) => !SCREENS.includes(key)) : null;
+  if (unknownScreen) return fail("timings:" + String(unknownScreen).slice(0, 30));
   const timings = record(p.timings, (key, value) => SCREENS.includes(key) && count(value));
   const infoOpens = record(p.infoOpens, (key, value) => {
     const [group, option] = key.split(":");
     return Object.hasOwn(INFO, group) && INFO[group].includes(option) && Number.isInteger(value) && value >= 1 && value <= 100;
   });
-  if (!timings || !infoOpens) return null;
+  if (!timings) return fail("timings");
+  if (!infoOpens) return fail("infoOpens");
 
   const a = p.answers && typeof p.answers === "object" ? p.answers : {};
   const scaleOrNone = (value) => none(value) || step(value);
-  if (!oneOf(a.value ?? "", VALUES) || !oneOf(a.more ?? "", MORE) || !oneOf(a.age ?? "", AGES) || !oneOf(a.games ?? "", GAMES)) return null;
-  if (!scaleOrNone(a.veyr) || !scaleOrNone(a.clarity)) return null;
+  if (!oneOf(a.value ?? "", VALUES) || !oneOf(a.more ?? "", MORE) || !oneOf(a.age ?? "", AGES) || !oneOf(a.games ?? "", GAMES)) return fail("answers");
+  if (!scaleOrNone(a.veyr) || !scaleOrNone(a.clarity)) return fail("scales");
   const who = a.who ?? [];
-  if (!Array.isArray(who) || who.some((w) => !WHO.includes(w)) || new Set(who).size !== who.length) return null;
-  if (who.length && a.more !== "tak") return null;
+  if (!Array.isArray(who) || who.some((w) => !WHO.includes(w)) || new Set(who).size !== who.length) return fail("who");
+  if (who.length && a.more !== "tak") return fail("who");
   // Numer podejscia z tej samej przegladarki; brak oznacza pierwsze.
   const attempt = p.attempt ?? 1;
-  if (!Number.isInteger(attempt) || attempt < 1 || attempt > 99) return null;
+  if (!Number.isInteger(attempt) || attempt < 1 || attempt > 99) return fail("attempt");
 
-  return [
+  return { row: [
     new Date().toISOString(), p.version, p.client, p.path, p.difficulty, p.returnMode ?? null, p.lucja ?? null,
     p.objection ?? null, p.finalPath, p.difficultyReturn ?? null, p.difficultyLucja ?? null,
     p.difficultyObjection ?? null, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
     text(a.paid) || null, a.value || null, a.veyr ?? null, a.more || null, who.length ? who.join(",") : null,
     a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null, attempt
-  ];
+  ] };
 }
 
 // Powiadomienie na Discord (#web) o kazdej zapisanej odpowiedzi. Adres
@@ -202,8 +210,12 @@ async function saveResponse(request, env, url, ctx) {
   if (raw.length > MAX_BODY) return json({ error: "too_large" }, 413);
   let payload;
   try { payload = JSON.parse(raw); } catch { return json({ error: "bad_json" }, 400); }
-  const row = validate(payload);
-  if (!row) return json({ error: "invalid" }, 400);
+  const checked = validate(payload);
+  if (checked.reason) {
+    console.warn("dylemat invalid", checked.reason, "version", String(payload && payload.version).slice(0, 10));
+    return json({ error: "invalid", reason: checked.reason }, 400);
+  }
+  const row = checked.row;
   // Host odroznia wydanie produkcyjne od podgladow galezi, ktore pisza do tej
   // samej bazy.
   await env.DYLEMAT_DB.prepare(

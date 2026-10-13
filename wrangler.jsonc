@@ -8,6 +8,10 @@
   // uruchamiania tego kodu, dzieki `run_worker_first` nizej.
   "main": "worker/index.js",
   "compatibility_date": "2026-09-11",
+  // Logi Workera w panelu Cloudflare (Workers > anatomyofmercy-web > Logs).
+  // Kod loguje tylko przyczyny odrzucenia i bledy powiadomien, bez tresci
+  // odpowiedzi ani adresow IP.
+  "observability": { "enabled": true },
   // Domena jest podpieta, wiec adres roboczy `workers.dev` zostaje wylaczony.
   // Zostawiony trzymalby te sama tresc pod drugim adresem, a adres kanoniczny
   // wskazuje juz tylko domene. Wpisane jawnie, zeby ta decyzja byla widoczna
