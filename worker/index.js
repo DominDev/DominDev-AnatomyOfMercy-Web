@@ -155,6 +155,10 @@ const WHO_LABELS = {
 };
 const SOUND_LABELS = { lektor: "z lektorem", muzyka: "sama muzyka", cisza: "bez dźwięku" };
 const SCENE_KEYS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const SCREEN_LABELS = {
+  gate: "wejście", opening: "intro", chapters: "plansze rozdziałów", decision: "wybór drogi", return: "brama",
+  lucja: "rozmowa z Łucją", objection: "sprzeciw", consequence: "konsekwencja", questions: "ankieta", end: "koniec"
+};
 
 // Czas w czytelnej postaci: "48 s" albo "5 min 18 s".
 function duration(ms) {
@@ -180,9 +184,9 @@ function behaviour(row, p) {
     return `${LABELS[option] || option}${n > 1 ? ` ×${n}` : ""}`;
   });
   // Pojedynczy ekran powyzej 10 minut to raczej przerwa niz czytanie.
-  const idle = Object.entries(t).filter(([, ms]) => ms > 600000).map(([key]) => key);
+  const idle = Object.entries(t).filter(([, ms]) => ms > 600000).map(([key]) => SCREEN_LABELS[key] || `karta ${key}`);
   return [
-    `⏱️ Całość: **${duration(total)}** · czytanie kart A-H: ${duration(reading)} (średnio ${duration(perCard)} na kartę)${perCard && perCard < 5000 ? " · ⚡ **przeklikane**" : ""}`,
+    `⏱️ Całość: **${duration(total)}**${idle.length ? " (z przerwą)" : ""} · czytanie kart A-H: ${duration(reading)} (średnio ${duration(perCard)} na kartę)${perCard && perCard < 5000 ? " · ⚡ **przeklikane**" : ""}`,
     `🧭 Decyzja o drodze: **${duration(row[12])}** (od karty D do wyboru) · ekrany wyborów: ${choices.join(", ")}`,
     `📋 Ankieta: ${duration(t.questions)}${idle.length ? ` · ⏸️ dłuższa przerwa na ekranie: ${idle.join(", ")}` : ""}`,
     `ℹ️ Przypomnienia „i”: ${opened.length ? opened.join(", ") : "żadnych"}`
