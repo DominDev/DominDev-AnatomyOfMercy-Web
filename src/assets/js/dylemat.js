@@ -1132,6 +1132,8 @@
 
   // "Jeszcze raz" zaczyna od wstepu, z muzyka od poczatku.
   function restart() {
+    // Czas na ekranie konca poprzedniego przejscia nie nalezy do nowego.
+    current = null;
     state = fresh();
     chapterShown = null;
     told.clear();
