@@ -832,15 +832,17 @@
     const c = data.consequences[state.finalPath];
     let text = c.text;
     let voiceId = "consequence-" + state.finalPath;
+    let image = c.image;
     // Stabilizacja po zaplaconej cenie: pytanie "nie wziales od nikogo" nie
     // pasuje, wiec ostatni akapit mowi o zmarnowanym materiale.
     if (state.finalPath === "stabilizacja" && state.path !== "stabilizacja") {
       text = [...c.text.slice(0, -1), c.wasted];
       voiceId += "-wasted";
+      image = c.wastedImage || c.image;
     }
     const notes = noteKeys();
     enterChapter("VI", () => swap("consequence", () => scene({
-      id: "consequence", image: c.image, title: c.title, text,
+      id: "consequence", image, title: c.title, text,
       extra: notes.map((key) => el("p", "dylemat__note", data.notes[key])),
       actions: [button("Dalej", showQuestions, "button button--primary")],
       voice: [voiceId], voiceAfter: notes.map((key) => "note-" + key)

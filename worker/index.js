@@ -138,33 +138,46 @@ const VALUE_LABELS = {
 };
 const quote = (value) => "„" + String(value).replace(/\s+/g, " ").slice(0, 300) + "”";
 
+// Wiadomosc w stylu pozostalych powiadomien serwera (#github, #tablica):
+// nadawca "Web • Dylemat • Anatomy of Mercy", embed z emoji w tytule,
+// linkiem, kolorem projektu i znacznikiem czasu.
+const EMBED_COLOR = 13936975;
+const SENDER = "Web • Dylemat • Anatomy of Mercy";
+
 // Zwraca krotki opis wyniku, uzywany tylko przez diagnostyke na podgladzie.
 async function notify(env, url, row, p) {
   if (!env.DISCORD_DILEMMA_WEBHOOK) return "no_secret";
   const a = p.answers && typeof p.answers === "object" ? p.answers : {};
-  const entry = (label, choice, level) => (choice ? `${label}: ${LABELS[choice]}${level ? ` (trudność ${level}/5)` : ""}` : null);
+  const preview = url.host !== PRODUCTION_HOST;
+  const entry = (icon, label, choice, level) =>
+    (choice ? `${icon} ${label}: **${LABELS[choice]}**${level ? ` · trudność ${level}/5` : ""}` : null);
   const { results } = await env.DYLEMAT_DB.prepare(
     "SELECT COUNT(*) AS n FROM dylemat_responses WHERE host = ?1 AND version LIKE ?2"
   ).bind(url.host, STATS_VERSION).all();
   const lines = [
-    url.host === PRODUCTION_HOST ? "**Nowa odpowiedź w dylemacie**" : `**Nowa odpowiedź w dylemacie** (podgląd: ${url.host})`,
-    entry("Droga", p.path, p.difficulty),
-    entry("Brama", p.returnMode, p.difficultyReturn),
-    entry("Łucja", p.lucja, p.difficultyLucja),
-    entry("Sprzeciw", p.objection, p.difficultyObjection),
-    `Koniec: ${LABELS[p.finalPath]}`,
-    text(a.paid) ? `Kto zapłacił: ${quote(text(a.paid))}` : null,
-    a.value ? `Najważniejsze: ${VALUE_LABELS[a.value]}` : null,
-    a.veyr ? `Racje Veyra: ${a.veyr}/5` : null,
-    a.clarity ? `Zrozumiałość: ${a.clarity}/5` : null,
-    text(a.comment) ? `Komentarz: ${quote(text(a.comment))}` : null,
-    `Urządzenie: ${p.client === "mobile" ? "telefon" : "komputer"}, wersja ${row[1]}. Odpowiedzi na tym adresie: ${results[0]?.n ?? "?"}.`
+    entry("🩸", "Droga", p.path, p.difficulty),
+    entry("🚪", "Brama", p.returnMode, p.difficultyReturn),
+    entry("🕯️", "Łucja", p.lucja, p.difficultyLucja),
+    entry("✋", "Sprzeciw", p.objection, p.difficultyObjection),
+    `⚖️ Koniec: **${LABELS[p.finalPath]}**`,
+    text(a.paid) ? `💬 Kto zapłacił: ${quote(text(a.paid))}` : null,
+    a.value ? `🎯 Najważniejsze: ${VALUE_LABELS[a.value]}` : null,
+    a.veyr || a.clarity ? `📊 Racje Veyra: ${a.veyr ?? "-"}/5 · zrozumiałość: ${a.clarity ?? "-"}/5` : null,
+    text(a.comment) ? `📝 Komentarz: ${quote(text(a.comment))}` : null
   ].filter(Boolean);
+  const embed = {
+    title: `${preview ? "🧪" : "🕯️"} Nowa odpowiedź #${results[0]?.n ?? "?"}${preview ? " (podgląd)" : ""}`,
+    url: url.origin + "/pl/dylemat/",
+    description: lines.join("\n").slice(0, 3800),
+    color: EMBED_COLOR,
+    footer: { text: `${p.client === "mobile" ? "telefon" : "komputer"} · wersja ${row[1]}${preview ? " · " + url.host : ""}` },
+    timestamp: row[0]
+  };
   // Bez wzmianek: tekst od uzytkownika nie moze nikogo oznaczyc.
   const response = await fetch(env.DISCORD_DILEMMA_WEBHOOK, {
     method: "POST",
     headers: { "Content-Type": "application/json", "User-Agent": "AnatomyOfMercy-Web (https://anatomyofmercy.com, 1.0)" },
-    body: JSON.stringify({ content: lines.join("\n").slice(0, 1900), allowed_mentions: { parse: [] } })
+    body: JSON.stringify({ username: SENDER, embeds: [embed], allowed_mentions: { parse: [] } })
   });
   if (response.ok) return "discord " + response.status;
   const detail = "discord " + response.status + " " + (await response.text()).slice(0, 200);

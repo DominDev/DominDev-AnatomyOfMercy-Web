@@ -54,11 +54,13 @@ const img = {
   tomasz: art("tomasz", "/assets/images/stories/the-volunteer.webp"),
   veyr: art("veyr", "/assets/images/mood/scene-1.webp"),
   seweryn: art("seweryn", "/assets/images/world/plague.webp"),
-  way: "/assets/images/world/vespera.webp",
-  road: art("powrot", "/assets/images/world/city.webp"),
+  way: art("droga", "/assets/images/world/vespera.webp"),
+  road: art("brama", "/assets/images/world/city.webp"),
   decision: art("decyzja", "/assets/images/world/plague.webp"),
   ask: art("lucja", "/assets/images/mood/scene-2.webp"),
+  refuse: art("sprzeciw", art("lucja", "/assets/images/mood/scene-2.webp")),
   endStab: art("skutek-stabilizacja", "/assets/images/mood/scene-3.webp"),
+  endWasted: art("skutek-zmarnowane", art("skutek-stabilizacja", "/assets/images/mood/scene-3.webp")),
   endTomasz: art("skutek-tomasz", art("tomasz", "/assets/images/stories/the-volunteer.webp")),
   endVeyr: art("skutek-veyr-zywy", art("veyr", "/assets/images/mood/scene-1.webp")),
   endDeputy: art("skutek-veyr-zabity", "/assets/images/world/church.webp"),
@@ -266,7 +268,7 @@ export default {
   },
 
   objection: {
-    chapter: "V", title: "Sprzeciw", image: img.ask,
+    chapter: "V", title: "Sprzeciw", image: img.refuse,
     text: {
       veyr_zywy: "Łucja odsuwa twoją rękę. <strong>„Mówiłam ci. Nie chcę niczego, co komuś zabrano siłą.”</strong> Głos jej drży, ale się nie łamie. „Nie rób tego. Proszę.”",
       veyr_zabity: "Łucja zaciska palce na twoim rękawie, aż bieleją jej knykcie. <strong>„Mówiłam ci. Nie chcę, żeby ktoś umarł przeze mnie.”</strong> Odwraca głowę do ściany. „A on umarł.”",
@@ -291,6 +293,7 @@ export default {
       ],
       // Ostatni akapit, gdy ktos juz zaplacil, a material nie zostal uzyty
       // (oddanie przy bramie albo uszanowana odmowa Lucji).
+      wastedImage: img.endWasted,
       wasted: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. <strong>Ktoś zapłacił, a Łucja i tak została chora.</strong>"
     },
     tomasz: {

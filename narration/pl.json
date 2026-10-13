@@ -374,6 +374,115 @@
         26.88
       ],
       "hash": "cea6bc2fc440"
+    },
+    "consequence-veyr_zywy": {
+      "src": "/assets/audio/lektor/pl/consequence-veyr_zywy.mp3",
+      "duration": 21.44,
+      "marks": [
+        1.89,
+        4.04,
+        8.53,
+        12.56,
+        16.72,
+        20.18
+      ],
+      "hash": "263615778881"
+    },
+    "consequence-veyr_zabity": {
+      "src": "/assets/audio/lektor/pl/consequence-veyr_zabity.mp3",
+      "duration": 20.88,
+      "marks": [
+        1.92,
+        4.38,
+        7.41,
+        11.73,
+        15.24,
+        18.08
+      ],
+      "hash": "a3eded31b5da"
+    },
+    "consequence-seweryn": {
+      "src": "/assets/audio/lektor/pl/consequence-seweryn.mp3",
+      "duration": 40,
+      "marks": [
+        2.36,
+        5.21,
+        7.14,
+        10.92,
+        18.61,
+        21.24,
+        23.2,
+        28.7,
+        30.53,
+        34.54
+      ],
+      "hash": "ba12be61ff2c"
+    },
+    "note-zatajenie": {
+      "src": "/assets/audio/lektor/pl/note-zatajenie.mp3",
+      "duration": 4.64,
+      "marks": [],
+      "hash": "7a1f7ab58907"
+    },
+    "note-zatajenie_tomasz": {
+      "src": "/assets/audio/lektor/pl/note-zatajenie_tomasz.mp3",
+      "duration": 8.48,
+      "marks": [],
+      "hash": "36b41e56279d"
+    },
+    "note-zatajenie_przymus": {
+      "src": "/assets/audio/lektor/pl/note-zatajenie_przymus.mp3",
+      "duration": 6.56,
+      "marks": [],
+      "hash": "b1637715e8da"
+    },
+    "note-prawda_tomasz": {
+      "src": "/assets/audio/lektor/pl/note-prawda_tomasz.mp3",
+      "duration": 6.32,
+      "marks": [],
+      "hash": "bc4c04a0097c"
+    },
+    "note-mimo_sprzeciwu": {
+      "src": "/assets/audio/lektor/pl/note-mimo_sprzeciwu.mp3",
+      "duration": 6.08,
+      "marks": [],
+      "hash": "e991525a9667"
+    },
+    "note-rezygnacja_veyr_zywy": {
+      "src": "/assets/audio/lektor/pl/note-rezygnacja_veyr_zywy.mp3",
+      "duration": 7.92,
+      "marks": [],
+      "hash": "a9eaec9a9638"
+    },
+    "note-rezygnacja_veyr_zabity": {
+      "src": "/assets/audio/lektor/pl/note-rezygnacja_veyr_zabity.mp3",
+      "duration": 7.04,
+      "marks": [],
+      "hash": "f75f9e091f04"
+    },
+    "note-rezygnacja_seweryn": {
+      "src": "/assets/audio/lektor/pl/note-rezygnacja_seweryn.mp3",
+      "duration": 5.52,
+      "marks": [],
+      "hash": "16544a3c50fc"
+    },
+    "note-oddanie": {
+      "src": "/assets/audio/lektor/pl/note-oddanie.mp3",
+      "duration": 4.72,
+      "marks": [],
+      "hash": "12e55584dbb3"
+    },
+    "note-przemkniecie": {
+      "src": "/assets/audio/lektor/pl/note-przemkniecie.mp3",
+      "duration": 7.76,
+      "marks": [],
+      "hash": "6693fda16ece"
+    },
+    "note-przebicie": {
+      "src": "/assets/audio/lektor/pl/note-przebicie.mp3",
+      "duration": 12.64,
+      "marks": [],
+      "hash": "a9e791e0daeb"
     }
   }
 }
