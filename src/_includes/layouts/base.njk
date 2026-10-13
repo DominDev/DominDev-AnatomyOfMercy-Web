@@ -58,6 +58,9 @@
     <script>{% include "partials/intro-bootstrap.js" %}</script>
     <link rel="stylesheet" href="/assets/css/main.css">
     <script src="/assets/js/main.js" defer></script>
+    {#- Popiol w tle (issue #12): osobny plik, zeby strona dzialala bez niego i
+        zeby nie dotykal glownego skryptu; startuje dopiero po zaladowaniu. #}
+    <script src="/assets/js/ash.js" defer></script>
     <title>{{ metaTitle }}</title>
   </head>
   <body class="page">

@@ -16,6 +16,7 @@ const requiredFiles = [
   "dist/404.html",
   "dist/assets/css/main.css",
   "dist/assets/js/main.js",
+  "dist/assets/js/ash.js",
   "dist/robots.txt"
 ];
 
