@@ -184,13 +184,13 @@ npx wrangler d1 migrations apply aom-proba-dylematu --remote
 
 For local testing, apply the same migrations with `--local` and start `npx wrangler dev --local` after a build.
 
-The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly. The same goes for `attempt` (added 2026-10-13, default 1).
+The remote table already exists. The three `difficulty_*` columns of `dylemat_responses` were added to it with `ALTER TABLE` while the branch was in review; a fresh database gets them from `0002_dylemat.sql` directly. The same goes for `attempt` (added 2026-10-13, default 1) and `sound` (the listening mode when the answer was sent: `lektor`, `muzyka` or `cisza`; empty for earlier answers).
 
 Every completed run is saved, including repeats from the same browser. `attempt` holds the run number that browser reports (1 for the first run); the page statistics and the response count on Discord include every run, and repeats are labelled as such. To evaluate only first decisions, filter on `attempt = 1`.
 
 **Notifications**
 
-Every saved answer posts a short summary to the Discord channel #web through a webhook. Its address is the Worker secret `DISCORD_DILEMMA_WEBHOOK`, never a file in this repository; without it the Worker simply skips the message, and a Discord failure never affects the saved answer. Answers from branch previews are labelled with their host.
+Every saved answer posts a summary to the Discord channel #web through a webhook: the choices with their difficulty, the survey answers, and the tester's behaviour (total time, reading time per card with a flag for click-through, time to decide, time on each choice screen, long pauses, opened reminders, listening mode). Its address is the Worker secret `DISCORD_DILEMMA_WEBHOOK`, never a file in this repository; without it the Worker simply skips the message, and a Discord failure never affects the saved answer. Answers from branch previews are labelled with their host.
 
 Set or replace the secret with `npx wrangler versions secret put DISCORD_DILEMMA_WEBHOOK`. Do not use `wrangler secret put`: it deploys the latest uploaded version immediately, and the latest version is usually a branch preview, which would put unmerged code on the production domain. The versioned command only creates a new version; later uploads and the next deployment from `main` keep the secret.
 
