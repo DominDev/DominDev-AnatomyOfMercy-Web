@@ -5,6 +5,8 @@
 // ekran nigdy nie czyta starego nagrania nad nowym tekstem; idzie wtedy bez
 // lektora, dopoki nagranie nie zostanie wygenerowane ponownie.
 import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 
 export const LANG = "pl";
 export const VOICE = "jvcMcno3QtjOzGtfpjoI"; // David - Deep Documentary Narrator
@@ -70,3 +72,23 @@ export function compose(parts) {
 // Odcisk tekstu i ustawien nagrania; zmiana ktoregokolwiek uniewaznia nagranie.
 export const clipHash = (text) =>
   crypto.createHash("sha1").update(JSON.stringify([text, MODEL, VOICE, SETTINGS, FORMAT])).digest("hex").slice(0, 12);
+
+// Nagrania do osadzenia na stronie: plik istnieje, a odcisk w manifescie
+// zgadza sie z obecnym tekstem. "stale" to nagrania do ponownego
+// wygenerowania (zglaszane przez walidacje buildu).
+export function narrationFor(content) {
+  const file = path.resolve(`narration/${LANG}.json`);
+  if (!fs.existsSync(file)) return { clips: null, stale: [] };
+  const manifest = JSON.parse(fs.readFileSync(file, "utf8")).clips;
+  const current = Object.fromEntries(clips(content).map((clip) => [clip.id, clipHash(compose(clip.parts).text)]));
+  const stale = [];
+  const usable = Object.entries(manifest).filter(([id, clip]) => {
+    if (!fs.existsSync(path.resolve("src/static" + clip.src))) return false;
+    if (current[id] !== clip.hash) { stale.push(id); return false; }
+    return true;
+  });
+  return {
+    clips: usable.length ? Object.fromEntries(usable.map(([id, clip]) => [id, { src: clip.src, marks: clip.marks }])) : null,
+    stale
+  };
+}
