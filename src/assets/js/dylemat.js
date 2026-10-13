@@ -1059,6 +1059,8 @@
       difficultyLucja: state.difficultyLucja, difficultyObjection: state.difficultyObjection,
       decisionMs: state.decisionMs, timings: state.timings, infoOpens: state.infoOpens,
       attempt: attempts + 1,
+      // Jak tester sluchal w chwili wyslania: z lektorem, sama muzyka czy w ciszy.
+      sound: narrator.on ? "lektor" : sound.on ? "muzyka" : "cisza",
       client: window.matchMedia("(max-width: 700px)").matches ? "mobile" : "desktop",
       answers: collect(form)
     };

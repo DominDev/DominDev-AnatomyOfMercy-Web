@@ -24,6 +24,7 @@ const INFO = {
 };
 const VALUES = ["", "zycie_lucji", "wola_lucji", "miasto", "dzieci", "nikogo_wiecej", "prawda", "inne"];
 const MORE = ["", "tak", "nie"];
+const SOUNDS = ["lektor", "muzyka", "cisza"];
 const WHO = ["lucja", "tomasz", "veyr", "agata", "seweryn", "dzieci", "julian"];
 const AGES = ["", "poniżej 18", "18-24", "25-34", "35-44", "45-54", "55 i więcej"];
 const GAMES = ["", "tak, często", "czasem", "rzadko albo wcale"];
@@ -124,13 +125,14 @@ function validate(p) {
   // Numer podejscia z tej samej przegladarki; brak oznacza pierwsze.
   const attempt = p.attempt ?? 1;
   if (!Number.isInteger(attempt) || attempt < 1 || attempt > 99) return fail("attempt");
+  if (!none(p.sound) && !oneOf(p.sound, SOUNDS)) return fail("sound");
 
   return { row: [
     new Date().toISOString(), p.version, p.client, p.path, p.difficulty, p.returnMode ?? null, p.lucja ?? null,
     p.objection ?? null, p.finalPath, p.difficultyReturn ?? null, p.difficultyLucja ?? null,
     p.difficultyObjection ?? null, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
     text(a.paid) || null, a.value || null, a.veyr ?? null, a.more || null, who.length ? who.join(",") : null,
-    a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null, attempt
+    a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null, attempt, p.sound ?? null
   ] };
 }
 
@@ -148,6 +150,44 @@ const VALUE_LABELS = {
   nikogo_wiecej: "nie skrzywdzić nikogo więcej", prawda: "prawda", inne: "coś innego"
 };
 const quote = (value) => "„" + String(value).replace(/\s+/g, " ").slice(0, 300) + "”";
+const WHO_LABELS = {
+  lucja: "Łucja", tomasz: "Tomasz", veyr: "Veyr", agata: "Agata", seweryn: "Seweryn", dzieci: "dzieci z aneksu", julian: "Julian"
+};
+const SOUND_LABELS = { lektor: "z lektorem", muzyka: "sama muzyka", cisza: "bez dźwięku" };
+const SCENE_KEYS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+// Czas w czytelnej postaci: "48 s" albo "5 min 18 s".
+function duration(ms) {
+  if (!Number.isFinite(ms)) return "-";
+  const s = Math.round(ms / 1000);
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${s % 60} s`;
+}
+
+// Czasy i zachowanie testera: ile czytal, jak dlugo decydowal, czy
+// przeklikal karty i ktore przypomnienia otwieral.
+function behaviour(row, p) {
+  const t = JSON.parse(row[13]);
+  const info = JSON.parse(row[14]);
+  const sum = (keys) => keys.reduce((total, key) => total + (t[key] || 0), 0);
+  const total = Object.values(t).reduce((acc, ms) => acc + ms, 0);
+  const scenes = SCENE_KEYS.filter((key) => key in t);
+  const reading = sum(scenes);
+  const perCard = scenes.length ? reading / scenes.length : 0;
+  const choices = [["decision", "droga"], ["return", "brama"], ["lucja", "Łucja"], ["objection", "sprzeciw"]]
+    .filter(([key]) => key in t).map(([key, label]) => `${label} ${duration(t[key])}`);
+  const opened = Object.entries(info).map(([key, n]) => {
+    const option = key.split(":")[1];
+    return `${LABELS[option] || option}${n > 1 ? ` ×${n}` : ""}`;
+  });
+  // Pojedynczy ekran powyzej 10 minut to raczej przerwa niz czytanie.
+  const idle = Object.entries(t).filter(([, ms]) => ms > 600000).map(([key]) => key);
+  return [
+    `⏱️ Całość: **${duration(total)}** · czytanie kart A-H: ${duration(reading)} (średnio ${duration(perCard)} na kartę)${perCard && perCard < 5000 ? " · ⚡ **przeklikane**" : ""}`,
+    `🧭 Decyzja o drodze: **${duration(row[12])}** (od karty D do wyboru) · ekrany wyborów: ${choices.join(", ")}`,
+    `📋 Ankieta: ${duration(t.questions)}${idle.length ? ` · ⏸️ dłuższa przerwa na ekranie: ${idle.join(", ")}` : ""}`,
+    `ℹ️ Przypomnienia „i”: ${opened.length ? opened.join(", ") : "żadnych"}`
+  ];
+}
 
 // Wiadomosc w stylu pozostalych powiadomien serwera (#github, #tablica):
 // nadawca "Web • Dylemat • Anatomy of Mercy", embed z emoji w tytule,
@@ -176,8 +216,12 @@ async function notify(env, url, row, p) {
     text(a.paid) ? `💬 Kto zapłacił: ${quote(text(a.paid))}` : null,
     a.value ? `🎯 Najważniejsze: ${VALUE_LABELS[a.value]}` : null,
     a.veyr || a.clarity ? `📊 Racje Veyra: ${a.veyr ?? "-"}/5 · zrozumiałość: ${a.clarity ?? "-"}/5` : null,
-    text(a.comment) ? `📝 Komentarz: ${quote(text(a.comment))}` : null
-  ].filter(Boolean);
+    a.more ? `🔭 Chce wiedzieć, co dalej: ${a.more}${row[19] ? ` (${row[19].split(",").map((w) => WHO_LABELS[w] || w).join(", ")})` : ""}` : null,
+    text(a.comment) ? `📝 Komentarz: ${quote(text(a.comment))}` : null,
+    "",
+    ...behaviour(row, p),
+    `👤 ${a.age ? `wiek ${a.age}` : "wiek -"} · gry fabularne: ${a.games || "-"} · ${row[25] ? SOUND_LABELS[row[25]] : "dźwięk nieznany"}`
+  ].filter((line) => line !== null);
   const embed = {
     // Numer liczy wszystkie wypelnienia; powtorka ma wlasna ikone i numer
     // podejscia z tej samej przegladarki.
@@ -221,8 +265,8 @@ async function saveResponse(request, env, url, ctx) {
   await env.DYLEMAT_DB.prepare(
     `INSERT INTO dylemat_responses (created_at, version, client, path, difficulty, return_mode, lucja, objection,
        final_path, difficulty_return, difficulty_lucja, difficulty_objection, decision_ms, timings, info_opens,
-       paid, value, veyr, more, who, clarity, comment, age, games, attempt, host)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       paid, value, veyr, more, who, clarity, comment, age, games, attempt, sound, host)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
   const sending = notify(env, url, row, payload).catch((error) => {
     // Komunikat bledu fetch moze zawierac adres webhooka, czyli sekret.

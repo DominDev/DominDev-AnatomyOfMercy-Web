@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS dylemat_responses (
   age TEXT,
   games TEXT,
   attempt INTEGER NOT NULL DEFAULT 1,
+  sound TEXT,
   host TEXT NOT NULL
 );
 
