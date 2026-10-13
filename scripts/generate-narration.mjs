@@ -2,7 +2,7 @@
 // ElevenLabs i zapisuje manifest z momentem wejscia kazdego zdania.
 //
 // Uruchomienie (klucz tylko w zmiennej srodowiskowej, nigdy w repozytorium):
-//   ELEVENLABS_API_KEY=... node scripts/generate-narration.mjs [--dry] [--force] [id ...]
+//   ELEVENLABS_API_KEY=... node scripts/generate-narration.mjs [--dry] [--texts] [--force] [id ...]
 //
 // Kazdy ekran ma wlasne nagranie, wiec strona moze przerwac lektora przy
 // zmianie karty i nigdy nie czyta tekstu z innego ekranu. Nagranie, ktorego
@@ -92,8 +92,14 @@ async function speak(text) {
 }
 
 async function main() {
-  if (!process.env.ELEVENLABS_API_KEY && !process.argv.includes("--dry")) throw new Error("Brak ELEVENLABS_API_KEY w srodowisku.");
+  if (!process.env.ELEVENLABS_API_KEY && !process.argv.includes("--dry") && !process.argv.includes("--texts")) throw new Error("Brak ELEVENLABS_API_KEY w srodowisku.");
   const args = process.argv.slice(2);
+  // --texts wypisuje tekst kazdego nagrania jako JSON, np. do porownania z
+  // transkrypcja nagran.
+  if (args.includes("--texts")) {
+    console.log(JSON.stringify(Object.fromEntries(clips().map((clip) => [clip.id, compose(clip.parts).text])), null, 2));
+    return;
+  }
   const force = args.includes("--force");
   const dry = args.includes("--dry");
   const only = args.filter((a) => !a.startsWith("--"));

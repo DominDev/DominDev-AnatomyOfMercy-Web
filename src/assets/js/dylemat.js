@@ -48,6 +48,17 @@
   function later(fn, ms) {
     const id = setTimeout(() => { timers.delete(id); fn(); }, ms);
     timers.add(id);
+    return id;
+  }
+
+  // Grupa minutnikow jednego ekranu, ktora mozna anulowac osobno (np. tempo
+  // tekstu po wylaczeniu lektora). Zmiana ekranu i tak czysci wszystkie.
+  function timerGroup() {
+    const ids = new Set();
+    return {
+      add: (fn, ms) => { ids.add(later(fn, ms)); },
+      stop: () => { ids.forEach((id) => { clearTimeout(id); timers.delete(id); }); ids.clear(); }
+    };
   }
 
   function clearTimers() {
@@ -132,7 +143,7 @@
       later(() => { keyHandler = () => go(); }, 50);
       // Z lektorem plansza czeka, az przeczyta nazwe rozdzialu.
       view.narrate = () => {
-        const spoken = say([{ id: "chapter-" + roman }], { done: () => later(go, 700) });
+        const spoken = say([{ id: "chapter-" + roman }], { done: () => later(go, 700), onPause: () => later(go, 1200) });
         later(go, spoken ? 9000 : reduced.matches ? 1600 : 3000);
       };
       return view;
@@ -172,16 +183,23 @@
   function narrate(view, id, sentences, after, keys, voiceIds, voiceAfter) {
     let finished = false;
     let skippable = false;
-    const finish = () => {
+    const pace = timerGroup();
+    const firstHidden = () => sentences.findIndex((s) => !s.classList.contains("is-on"));
+    // Po naturalnym koncu przyciski czekaja chwile, zeby ostatnie zdanie
+    // wybrzmialo; po pominieciu pojawiaja sie od razu.
+    const finish = (natural) => {
       if (finished) return;
       finished = true;
       if (currentFinish === finish) currentFinish = null;
-      clearTimers();
+      pace.stop();
       sentences.forEach((s) => s.classList.add("is-on"));
-      after.classList.add("is-on");
       view.classList.remove("is-telling");
       told.add(id);
-      keyHandler = keys || null;
+      keyHandler = null;
+      later(() => {
+        after.classList.add("is-on");
+        keyHandler = keys || null;
+      }, natural === true && sentences.length ? 1500 : 250);
     };
     currentFinish = finish;
     const allowSkip = () => {
@@ -189,31 +207,35 @@
       skippable = true;
       view.classList.add("is-telling");
       view.addEventListener("click", (event) => {
-        if (!finished && !event.target.closest("button")) finish();
+        if (!finished && !event.target.closest("button")) finish(false);
       });
       keyHandler = (event) => {
         if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
           event.preventDefault();
-          finish();
+          finish(false);
         }
       };
     };
+    // Tempo bez lektora, od pierwszego nieodslonietego zdania: tak samo na
+    // starcie i po wylaczeniu lektora w polowie ekranu.
     const timed = () => {
       if (finished) return;
-      if (!sentences.length || reduced.matches) { finish(); return; }
+      pace.stop();
+      const from = firstHidden();
+      if (from === -1 || (reduced.matches && from === 0)) { finish(true); return; }
       allowSkip();
       let at = 500;
       let paragraph = null;
-      sentences.forEach((s) => {
+      sentences.slice(from).forEach((s) => {
         if (paragraph && s.parentNode !== paragraph) at += 350;
         if (s.querySelector("strong")) at += 300;
         paragraph = s.parentNode;
-        later(() => s.classList.add("is-on"), at);
+        pace.add(() => s.classList.add("is-on"), at);
         at += Math.min(1900, Math.max(800, 350 + plain(s) * 14));
       });
-      later(finish, at);
+      pace.add(() => finish(true), at);
     };
-    if (told.has(id)) { finish(); return; }
+    if (told.has(id)) { finish(false); return; }
 
     // Nagrania musza pokrywac dokladnie te zdania, ktore sa na ekranie;
     // inaczej ekran idzie bez lektora, zamiast czytac cos innego niz widac.
@@ -224,14 +246,24 @@
         const clip = clipOf(voiceId);
         if (!clip) { items.length = 0; break; }
         const base = offset;
-        items.push({ id: voiceId, onMark: (i) => { if (sentences[base + i]) sentences[base + i].classList.add("is-on"); } });
+        items.push({ id: voiceId, base, onMark: (i) => { if (sentences[base + i]) sentences[base + i].classList.add("is-on"); } });
         offset += clip.marks.length;
       }
       if (items.length && offset === sentences.length) {
-        items[items.length - 1].onEnd = finish;
+        items[items.length - 1].onEnd = () => finish(true);
         (voiceAfter || []).forEach((voiceId) => items.push({ id: voiceId }));
         allowSkip();
-        if (say(items, { fail: timed })) return;
+        // Po ponownym wlaczeniu lektor wraca do pierwszego zdania, ktorego
+        // jeszcze nie widac, o ile lezy w biezacym nagraniu.
+        const resume = (session) => {
+          pace.stop();
+          const next = firstHidden();
+          const item = session.item;
+          if (next === -1 || !item || !item.onMark) return;
+          const local = next - item.base;
+          if (local >= 0 && local < clipOf(item.id).marks.length) session.seek(local);
+        };
+        if (say(items, { fail: timed, onPause: timed, onResume: resume })) return;
       }
     }
     timed();
@@ -450,7 +482,7 @@
 
   // Karta w tle: muzyka i lektor milkna, a po powrocie graja dalej.
   document.addEventListener("visibilitychange", () => {
-    if (voice && narrator.on && narrator.current) {
+    if (voice && narrator.on && narrator.current && !narrator.suspended) {
       if (document.hidden) voice.pause();
       else voice.play().catch(() => {});
     }
@@ -465,7 +497,7 @@
   // Kazda zmiana ekranu zwieksza "token", wiec spoznione zdarzenia starego
   // nagrania nic juz nie robia. Jeden element <audio>, odblokowany kliknieciem
   // w bramie, sluzy wszystkim nagraniom (wymog Safari na iOS).
-  const narrator = { on: false, token: 0, speaking: false, current: null };
+  const narrator = { on: false, token: 0, speaking: false, current: null, session: null, suspended: false };
   const clips = (data.narration && data.narration.clips) || {};
   const clipOf = (id) => clips[id] || null;
   let currentFinish = null;
@@ -473,7 +505,10 @@
   function hush() {
     narrator.token += 1;
     narrator.current = null;
+    narrator.session = null;
+    narrator.suspended = false;
     if (voice) {
+      voice.ontimeupdate = null;
       voice.onended = null;
       voice.onerror = null;
       voice.onplaying = null;
@@ -492,38 +527,53 @@
     const list = items.filter((item) => clipOf(item.id));
     if (!list.length) return false;
     const token = narrator.token;
+    const session = { options, item: null, fired: 0, seek: () => {} };
+    narrator.session = session;
     let index = 0;
     const alive = () => token === narrator.token;
     const next = () => {
       if (!alive()) return;
       if (index >= list.length) {
         narrator.current = null;
+        narrator.session = null;
         duck(false);
         if (options.done) options.done();
         return;
       }
       const item = list[index++];
       const clip = clipOf(item.id);
-      let fired = 0;
       const marks = item.onMark ? clip.marks : [];
-      const tick = () => {
-        if (!alive() || narrator.current !== item) return;
-        while (fired < marks.length && marks[fired] <= voice.currentTime + 0.08) item.onMark(fired++);
-        if (!voice.paused && !voice.ended) requestAnimationFrame(tick);
+      session.item = item;
+      session.fired = 0;
+      session.seek = (i) => {
+        try { voice.currentTime = Math.max(0, clip.marks[i] - 0.15); } catch { /* jeszcze bez metadanych */ }
+        session.fired = i;
       };
+      // Zdania odslaniamy z dwoch zrodel: klatek animacji (plynnie) i zdarzenia
+      // postepu odtwarzania (dziala tez wtedy, gdy przegladarka wstrzymuje
+      // klatki, np. w karcie, ktora nie jest na wierzchu).
+      const sync = () => {
+        if (!alive() || narrator.current !== item) return false;
+        while (session.fired < marks.length && marks[session.fired] <= voice.currentTime + 0.08) item.onMark(session.fired++);
+        return true;
+      };
+      const tick = () => {
+        if (sync() && !voice.paused && !voice.ended) requestAnimationFrame(tick);
+      };
+      voice.ontimeupdate = sync;
       narrator.current = item;
       voice.muted = false;
       voice.src = clip.src;
       voice.onplaying = () => { if (alive()) { duck(true); requestAnimationFrame(tick); } };
       voice.onended = () => {
         if (!alive()) return;
-        while (fired < marks.length) item.onMark(fired++);
+        while (session.fired < marks.length) item.onMark(session.fired++);
         if (item.onEnd) item.onEnd();
         next();
       };
       voice.onerror = () => { if (alive()) { hush(); if (options.fail) options.fail(); } };
       const playing = voice.play();
-      if (playing && playing.catch) playing.catch(() => { if (alive()) { hush(); if (options.fail) options.fail(); } });
+      if (playing && playing.catch) playing.catch(() => { if (alive() && !narrator.suspended) { hush(); if (options.fail) options.fail(); } });
     };
     next();
     return true;
@@ -547,9 +597,20 @@
     narratorButton.hidden = false;
     narratorButton.setAttribute("aria-pressed", String(on));
     narratorButton.textContent = on ? "Lektor: wł." : "Lektor: wył.";
-    if (!on) {
-      hush();
-      if (currentFinish) currentFinish();
+    // Wylaczenie tylko wstrzymuje lektora; tekst idzie dalej wlasnym tempem.
+    // Ponowne wlaczenie wznawia nagranie biezacego ekranu od miejsca, do
+    // ktorego doszedl tekst.
+    const session = narrator.session;
+    if (!session || !voice) return;
+    if (!on && !narrator.suspended) {
+      narrator.suspended = true;
+      voice.pause();
+      duck(false);
+      if (session.options.onPause) session.options.onPause();
+    } else if (on && narrator.suspended) {
+      narrator.suspended = false;
+      if (session.options.onResume) session.options.onResume(session);
+      voice.play().catch(() => {});
     }
   }
 
@@ -683,7 +744,10 @@
       view.append(backdrop, lines, titleCard, skip);
 
       const lineNodes = [...lines.children];
+      const pace = timerGroup();
+      let shown = -1;
       const showLine = (i) => {
+        shown = Math.max(shown, i);
         lineNodes.forEach((other, j) => other.classList.toggle("is-past", j < i));
         if (lineNodes[i]) lineNodes[i].classList.add("is-on");
       };
@@ -691,6 +755,7 @@
       const showTitle = () => {
         if (titled) return;
         titled = true;
+        pace.stop();
         clearTimers();
         view.classList.add("is-titled");
         skip.hidden = true;
@@ -700,15 +765,27 @@
         // Lektor czyta tytul, haslo i zapowiedz, kiedy pojawia sie na ekranie.
         say([{ id: "opening-title" }]);
       };
+      // Linijki bez lektora, od pierwszej jeszcze niewidocznej: na starcie i po
+      // wylaczeniu lektora w trakcie wstepu.
       const timed = () => {
-        if (reduced.matches) { later(showTitle, 0); return; }
+        pace.stop();
+        if (titled) return;
+        if (reduced.matches) { pace.add(showTitle, 0); return; }
         const STEP = 2600;
-        lineNodes.forEach((node, i) => later(() => showLine(i), 700 + i * STEP));
-        later(showTitle, 700 + lineNodes.length * STEP + 1200);
+        const from = shown + 1;
+        lineNodes.slice(from).forEach((node, k) => pace.add(() => showLine(from + k), 700 + k * STEP));
+        pace.add(showTitle, 700 + (lineNodes.length - from) * STEP + 1200);
+      };
+      const resume = (session) => {
+        pace.stop();
+        if (!titled && shown + 1 < lineNodes.length) session.seek(shown + 1);
       };
       // Z lektorem linijki wchodza razem z jego glosem.
       view.narrate = () => {
-        const spoken = say([{ id: "opening-lines", onMark: showLine, onEnd: () => later(showTitle, 900) }], { fail: timed });
+        const spoken = say(
+          [{ id: "opening-lines", onMark: showLine, onEnd: () => pace.add(showTitle, 900) }],
+          { fail: timed, onPause: timed, onResume: resume }
+        );
         if (!spoken) timed();
       };
       skip.dataset.focus = "";

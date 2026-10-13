@@ -194,13 +194,13 @@ Set or replace the secret with `npx wrangler versions secret put DISCORD_DILEMMA
 
 **Narration**
 
-The dilemma can be read aloud by a narrator (ElevenLabs, voice "David - Deep Documentary Narrator", model `eleven_v3`). `scripts/generate-narration.mjs` creates one recording per screen in `src/static/assets/audio/lektor/pl/` and writes `narration/pl.json` with the start time of every sentence, so the page reveals each sentence as the narrator begins it. Each screen has its own recording, and the page silences the narrator on every screen change, so it never reads a card that is no longer visible.
+The dilemma can be read aloud by a narrator (ElevenLabs, voice "David - Deep Documentary Narrator", model `eleven_v3`). `scripts/generate-narration.mjs` creates one recording per screen in `src/static/assets/audio/lektor/pl/` and writes `narration/pl.json` with the start time of every sentence, so the page reveals each sentence as the narrator begins it. Each screen has its own recording, and the page silences the narrator on every screen change, so it never reads a card that is no longer visible. Switching the narrator off only pauses it and lets the text continue at its own pace; switching it back on resumes the current recording from the first sentence that is not yet on screen.
 
 ```bash
 node scripts/generate-narration.mjs --dry
 ```
 
-The dry run lists the recordings that would be generated. Without `--dry` the script needs `ELEVENLABS_API_KEY` in the environment and regenerates only recordings whose text or settings changed; `--force` and recording ids narrow or override that. After a content change in `src/_data/dylemat.js`, run it again, otherwise the screens whose sentences no longer match their recording fall back to silent, timed text.
+The dry run lists the recordings that would be generated; `--texts` prints the exact text of every recording as JSON, which is how the recordings were checked word by word against a speech to text transcript. Without `--dry` the script needs `ELEVENLABS_API_KEY` in the environment and regenerates only recordings whose text or settings changed; `--force` and recording ids narrow or override that. After a content change in `src/_data/dylemat.js`, run it again, otherwise the screens whose sentences no longer match their recording fall back to silent, timed text.
 
 The canonical address is the production domain. A build that Workers Builds runs from any branch other than `main` is recognised through the `WORKERS_CI` and `WORKERS_CI_BRANCH` variables that Cloudflare sets itself: its `robots.txt` switches to `Disallow: /` and it sends `X-Robots-Tag: noindex`, so a preview deployment can never be indexed alongside the real site. `SITE_URL` remains available as an override for checking a build under a different address. Build validation enforces both halves of that rule.
 

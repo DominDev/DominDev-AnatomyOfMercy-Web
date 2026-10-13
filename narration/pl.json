@@ -317,15 +317,15 @@
     },
     "objection-seweryn": {
       "src": "/assets/audio/lektor/pl/objection-seweryn.mp3",
-      "duration": 17.04,
+      "duration": 17.76,
       "marks": [
         0,
-        2.32,
-        4.72,
-        7.06,
-        8.68,
-        13,
-        15
+        2.6,
+        4.88,
+        7.28,
+        9,
+        13.19,
+        15.24
       ],
       "hash": "df069143f392"
     },
