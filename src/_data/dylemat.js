@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { clips, compose, clipHash } from "../../scripts/narration-clips.mjs";
+import { narrationFor } from "../../scripts/narration-clips.mjs";
 
 // Tresc interaktywnego dylematu "Swiatlo pod popiolem" (/pl/dylemat/), Faza 0,
 // ryzyko R-020. Jedno zrodlo: szablon osadza ten obiekt jako JSON, a skrypt
@@ -31,24 +31,10 @@ const audio = (name) => {
   return exists(file) ? file : null;
 };
 
-// Nagrania lektora (scripts/generate-narration.mjs): jedno na ekran, z
-// momentem wejscia kazdego zdania. Strona bierze tylko nagrania, ktorych plik
-// istnieje i ktorych odcisk tekstu zgadza sie z obecna trescia; ekran bez
-// takiego nagrania dziala jak bez lektora.
-export function narrationFor(content) {
-  const file = path.resolve("narration/pl.json");
-  if (!fs.existsSync(file)) return { clips: null, stale: [] };
-  const manifest = JSON.parse(fs.readFileSync(file, "utf8")).clips;
-  const current = Object.fromEntries(clips(content).map((clip) => [clip.id, clipHash(compose(clip.parts).text)]));
-  const stale = [];
-  const usable = Object.entries(manifest).filter(([id, clip]) => {
-    if (!exists(clip.src)) return false;
-    if (current[id] !== clip.hash) { stale.push(id); return false; }
-    return true;
-  });
-  return { clips: usable.length ? Object.fromEntries(usable.map(([id, clip]) => [id, { src: clip.src, marks: clip.marks }])) : null, stale };
-}
-
+// Nagrania lektora: tylko te, ktorych plik istnieje i ktorych odcisk tekstu
+// zgadza sie z obecna trescia (scripts/narration-clips.mjs). Ten plik ma
+// wylacznie eksport domyslny: Eleventy przy nazwanych eksportach przekazuje
+// caly modul ({ default }), a wtedy strona nie dostaje tresci.
 // Kto jest na ktorej grafice: Julian to postac w ptasiej masce z latarnia
 // (grafika hero), Veyr to inkwizytor w bialej porcelanowej masce (winieta 1 i
 // portret dylematu). Nie zamieniac.

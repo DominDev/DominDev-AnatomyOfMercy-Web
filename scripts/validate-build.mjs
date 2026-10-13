@@ -5,7 +5,8 @@ import path from "node:path";
 // Ten sam modul, z ktorego korzysta budowanie, wiec kontrola sprawdza adres
 // faktycznie uzyty w wydaniu, a nie zaszyta na sztywno domene produkcyjna.
 import site from "../src/_data/site.js";
-import dilemmaContent, { narrationFor } from "../src/_data/dylemat.js";
+import dilemmaContent from "../src/_data/dylemat.js";
+import { narrationFor } from "./narration-clips.mjs";
 
 const requiredFiles = [
   "dist/index.html",
@@ -334,6 +335,11 @@ if (fs.existsSync(headersPath)) {
   try { dilemmaData = JSON.parse(dilemmaJson); } catch { /* sprawdzone nizej */ }
   assertions.push([Boolean(dilemmaData) && !dilemmaJson.includes("<") && JSON.stringify(dilemmaData).includes("<strong>"),
     "The embedded dilemma JSON must parse, contain no raw '<' and still decode to the original <strong> markup."]);
+  // Tresc musi lezec na najwyzszym poziomie, tak jak czyta ja skrypt strony.
+  // Nazwany eksport w pliku danych sprawil kiedys, ze Eleventy osadzil
+  // { default: ... } i strona na produkcji byla pusta.
+  assertions.push([Boolean(dilemmaData && dilemmaData.opening && Array.isArray(dilemmaData.opening.lines) && Array.isArray(dilemmaData.scenes)),
+    "The embedded dilemma JSON must expose the content at the top level (opening, scenes); check that src/_data/dylemat.js has only a default export."]);
   assertions.push([!fs.readFileSync(path.resolve("dist/sitemap.xml"), "utf8").includes("/dylemat"), "The hidden /pl/dylemat/ page must not appear in the sitemap."]);
   assertions.push([
     noindex !== site.isProduction,
