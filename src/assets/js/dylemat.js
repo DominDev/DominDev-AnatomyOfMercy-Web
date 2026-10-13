@@ -16,6 +16,10 @@
   const voice = document.querySelector("[data-audio-voice]");
   const narratorButton = document.querySelector("[data-narrator]");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Uklad jednokolumnowy (telefon): tekst rosnie razem z narracja i ekran za
+  // nim podaza. Ta sama granica co $wide w _dylemat.scss.
+  const narrow = window.matchMedia("(max-width: 860px)");
+  const bar = document.querySelector(".dylemat__bar");
   const DONE_KEY = "aom-dylemat-done";
   const ATTEMPTS_KEY = "aom-dylemat-attempts";
 
@@ -201,6 +205,31 @@
     let skippable = false;
     const pace = timerGroup();
     const firstHidden = () => sentences.findIndex((s) => !s.classList.contains("is-on"));
+    // Na telefonie ekran podaza za nowym zdaniem, ale tylko gdy czytelnik
+    // jest przy ostatnim odslonietym; kto przewinal w gore, zostaje tam, gdzie
+    // jest, dopoki sam nie wroci na dol.
+    let front = null;
+    const visibleBottom = () => window.innerHeight - (bar ? bar.offsetHeight : 0) - 16;
+    const atFront = () => {
+      if (!front) return true;
+      const r = front.getBoundingClientRect();
+      return r.bottom > 0 && r.top < visibleBottom();
+    };
+    const bringIntoView = (node, capTop) => {
+      requestAnimationFrame(() => {
+        const r = node.getBoundingClientRect();
+        let delta = r.bottom - visibleBottom();
+        if (capTop) delta = Math.min(delta, r.top - 96);
+        if (delta > 0) window.scrollBy({ top: delta, behavior: reduced.matches ? "auto" : "smooth" });
+      });
+    };
+    const reveal = (s) => {
+      if (!s || s.classList.contains("is-on")) return;
+      const follow = narrow.matches && atFront();
+      s.classList.add("is-on");
+      front = s;
+      if (follow) bringIntoView(s);
+    };
     // Po naturalnym koncu przyciski czekaja chwile, zeby ostatnie zdanie
     // wybrzmialo; po pominieciu pojawiaja sie od razu.
     const finish = (natural) => {
@@ -213,8 +242,10 @@
       told.add(id);
       keyHandler = null;
       later(() => {
+        const follow = narrow.matches && natural === true && atFront();
         after.classList.add("is-on");
         keyHandler = keys || null;
+        if (follow) bringIntoView(after, true);
       }, natural === true && sentences.length ? 1500 : 250);
     };
     currentFinish = finish;
@@ -246,7 +277,7 @@
         if (paragraph && s.parentNode !== paragraph) at += 350;
         if (s.querySelector("strong")) at += 300;
         paragraph = s.parentNode;
-        pace.add(() => s.classList.add("is-on"), at);
+        pace.add(() => reveal(s), at);
         at += Math.min(1900, Math.max(800, 350 + plain(s) * 14));
       });
       pace.add(() => finish(true), at);
@@ -262,7 +293,7 @@
         const clip = clipOf(voiceId);
         if (!clip) { items.length = 0; break; }
         const base = offset;
-        items.push({ id: voiceId, base, onMark: (i) => { if (sentences[base + i]) sentences[base + i].classList.add("is-on"); } });
+        items.push({ id: voiceId, base, onMark: (i) => reveal(sentences[base + i]) });
         offset += clip.marks.length;
       }
       if (items.length && offset === sentences.length) {

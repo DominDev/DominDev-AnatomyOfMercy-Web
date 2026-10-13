@@ -431,6 +431,33 @@ $wide: 860px;
     }
   }
 
+  // Telefon: zdania i przyciski, ktorych jeszcze nie ma, nie zajmuja miejsca,
+  // wiec strona rosnie razem z narracja i nie da sie przewinac w pustke.
+  // Szeroki ekran zostawia pelny uklad, zeby wysrodkowana karta nie skakala.
+  @media (max-width: $wide) {
+    &__sentence {
+      &:not(.is-on) {
+        display: none;
+      }
+
+      &.is-on {
+        animation: dylemat-sentence 900ms ease both;
+      }
+    }
+
+    &__text:not(:has(.dylemat__sentence.is-on)) {
+      display: none;
+    }
+
+    &__after:not(.is-on) {
+      display: none;
+    }
+
+    &__after.is-on {
+      animation: dylemat-rise 700ms ease both;
+    }
+  }
+
   &__skiphint {
     display: none;
     margin: -0.6rem 0 0;
@@ -946,6 +973,11 @@ $wide: 860px;
     &__after {
       transition: none;
     }
+
+    &__sentence.is-on,
+    &__after.is-on {
+      animation: none;
+    }
   }
 }
 
@@ -963,6 +995,18 @@ $wide: 860px;
   to {
     opacity: 0;
     transform: translateY(-0.4rem);
+  }
+}
+
+@keyframes dylemat-sentence {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    filter: none;
   }
 }
 

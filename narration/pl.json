@@ -122,15 +122,15 @@
     },
     "scene-D": {
       "src": "/assets/audio/lektor/pl/scene-D.mp3",
-      "duration": 34.72,
+      "duration": 35.76,
       "marks": [
-        1.92,
-        4.36,
-        10,
-        14.51,
-        22.4,
-        31.02,
-        33.28
+        2.35,
+        5.12,
+        10.88,
+        15.31,
+        23.44,
+        31.98,
+        34.6
       ],
       "hash": "cbfaecef6f48"
     },
@@ -153,22 +153,22 @@
     },
     "scene-F": {
       "src": "/assets/audio/lektor/pl/scene-F.mp3",
-      "duration": 65.2,
+      "duration": 64.4,
       "marks": [
-        1.96,
-        4.03,
-        11.12,
-        14.77,
-        20.28,
-        24.37,
-        31.95,
-        36.72,
-        39.71,
-        46.32,
-        50.21,
-        53.08,
-        59.36,
-        62.03
+        2.44,
+        4.64,
+        12.13,
+        15.95,
+        20.92,
+        24.75,
+        32,
+        36.92,
+        39.89,
+        46.08,
+        49.71,
+        52.2,
+        57.97,
+        61.25
       ],
       "hash": "3fc433cec661"
     },
@@ -264,19 +264,19 @@
     },
     "lucja-stakes-veyr_zywy": {
       "src": "/assets/audio/lektor/pl/lucja-stakes-veyr_zywy.mp3",
-      "duration": 10,
+      "duration": 9.52,
       "marks": [
         0,
-        3.71
+        3.63
       ],
       "hash": "189afc6e95db"
     },
     "lucja-stakes-veyr_zabity": {
       "src": "/assets/audio/lektor/pl/lucja-stakes-veyr_zabity.mp3",
-      "duration": 10.4,
+      "duration": 12.72,
       "marks": [
         0,
-        3.6
+        3.81
       ],
       "hash": "448913b8c0b5"
     },
