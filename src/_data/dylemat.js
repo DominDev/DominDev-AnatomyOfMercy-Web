@@ -123,7 +123,7 @@ const content = {
       id: "B", chapter: "I", title: "Kordon", image: img.cordon,
       text: [
         "Za drzwiami lazaretu zaczyna się kordon. Inkwizycja, zbrojne ramię Kościoła Światła, zamknęła dzielnicę drewnianymi zaporami. Przy bramach stoją strażnicy w białych maskach.",
-        "Zaraza żyje w pyle i w chorej tkance. Dlatego strażnicy przeszukują każdego, kto przechodzi przez bramę, i <strong>palą każdą tkankę wynoszoną ze strefy.</strong>",
+        "Zaraza żyje w pyle i w chorej tkance. Dlatego strażnicy przeszukują każdego, kto przechodzi przez bramę, i <strong>palą każdą tkankę wynoszoną ze strefy.</strong> Nie odróżnią zdrowej od chorej i nie mają prawa robić wyjątków, więc spłonie także dar od zdrowego dawcy.",
         "Nie robią tego z okrucieństwa. Widzieli, co się stało, kiedy kiedyś wypuszczono chorych. Zaraza poszła za nimi na kolejne ulice.",
         "Kordon chroni miasto. <strong>I odcina Łucję od wszystkiego, co mogłoby ją wyleczyć.</strong> To leży po drugiej stronie."
       ]
@@ -135,14 +135,14 @@ const content = {
         "Siostra Agata z Zakonu Latarni prowadzi ten lazaret. Wezwała cię nocą, potajemnie, bo sama nie potrafi Łucji wyleczyć.",
         "Nie ufa twoim metodom. <strong>Potrzebuje ich.</strong>",
         "Wiesz, jak zastąpić chorą kość i szpik zdrowymi. Ale zdrowa tkanka nie bierze się znikąd. <strong>Musi pochodzić od drugiego człowieka.</strong>",
-        "Dziś zdecydujesz, od kogo."
+        "Każdy dzień zwłoki to więcej kryształu w jej kościach. Dziś zdecydujesz, od kogo."
       ]
     },
     {
       id: "D", chapter: "II", tag: "Droga pierwsza", title: "Siostra Agata", image: img.agata,
       text: [
         "Agata zna kościelną metodę. Nie wyleczy nią Łucji, ale może ją uratować przed tym, co najgorsze. Dziewczynka przeżyje kryzys, a ból zelżeje.",
-        "Choroba jednak zostanie w jej kościach. Łucja trafi do kościelnej izolacji, za płótno, do sali, w której nikt nie obiecuje jutra.",
+        "Choroba jednak zostanie w jej kościach, a po kościelnej metodzie drugiej próby leczenia już nie będzie. Łucja trafi do kościelnej izolacji, za płótno, do sali, w której nikt nie obiecuje jutra.",
         "<strong>Nikt inny nie zapłaci.</strong> <strong>Tylko ona.</strong>"
       ]
     },
@@ -171,7 +171,7 @@ const content = {
         "Pod starą kaplicą za kordonem jest piwnica. Ktoś w niej oddycha.",
         "To brat Seweryn, dawny nauczyciel Agaty. Kryształ, który porasta mury piwnicy, porósł także jego. Seweryn zrósł się z nim w jedno. Nie walczy. Odpowiada na głosy.",
         "<strong>To z niego sączy się zakaźny pył,</strong> który niesie zarazę po dzielnicy.",
-        "Przy życiu trzyma go kryształowy rdzeń. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Może wyleczyć Łucję, ale zostawi w niej trwały ślad, którego nikt nie potrafi przewidzieć. <strong>Seweryn umrze.</strong>",
+        "Przy życiu trzyma go kryształowy rdzeń. Rdzeń rezonuje: chore dzieci w lazarecie słyszą go nocą przez posadzkę jak niski dźwięk. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Może wyleczyć Łucję, ale zostawi w niej trwały ślad, którego nikt nie potrafi przewidzieć, i może związać ją z tym dźwiękiem. <strong>Seweryn umrze.</strong>",
         "Rdzeń można też związać i spalić. Seweryn umarłby tak samo, ale pył przestałby się sączyć i dzielnica byłaby bezpieczna. <strong>Tyle że dla Łucji nie zostałoby wtedy nic.</strong>"
       ]
     },
@@ -196,7 +196,7 @@ const content = {
     ],
     options: [
       { value: "stabilizacja", label: "„Zostańmy przy metodzie siostry Agaty.”",
-        info: "Łucja przeżyje, ale zostanie chora i w izolacji. Nikt inny nie zapłaci." },
+        info: "Łucja przeżyje, ale zostanie chora i w izolacji, bez drugiej próby leczenia. Nikt inny nie zapłaci." },
       { value: "tomasz", label: "„Przyjmę dar brata Tomasza.”",
         info: "Łucja wyzdrowieje. Tomasz zostanie kaleką, a dzieci z aneksu stracą jedynego obrońcę." },
       { value: "veyr_zywy", label: "„Obezwładnię Veyra i pobiorę tkankę siłą. Kapitan przeżyje.”",
@@ -204,7 +204,7 @@ const content = {
       { value: "veyr_zabity", label: "„Zabiję Veyra i pobiorę tkankę z jego ciała.”",
         info: "Łucja wyzdrowieje. Dowodzenie przejmie zastępca, który pali od razu. Łucja nie chciała niczyjej śmierci." },
       { value: "seweryn", label: "„Zejdę do piwnicy i wytnę rdzeń Seweryna.”",
-        info: "Eksperyment może wyleczyć Łucję, ale zostawi w niej trwały ślad. Seweryn umrze, a piwnica dalej będzie źródłem pyłu." }
+        info: "Eksperyment może wyleczyć Łucję, ale zostawi w niej trwały ślad i może związać ją z rezonansem rdzenia. Seweryn umrze, a piwnica dalej będzie źródłem pyłu." }
     ]
   },
 
@@ -284,9 +284,14 @@ const content = {
         "Chory chłopiec z sąsiedniego łóżka obraca w palcach guzik, który kiedyś jej przyniósł. Pyta cicho: <strong>„Nie wziąłeś od nikogo.</strong> <strong>Zrobiłeś to dla niej czy dla siebie?”</strong>"
       ],
       // Ostatni akapit, gdy ktos juz zaplacil, a material nie zostal uzyty
-      // (oddanie przy bramie albo uszanowana odmowa Lucji).
+      // (oddanie przy bramie albo uszanowana odmowa Lucji); mowi, kto zaplacil.
       wastedImage: img.endWasted,
-      wasted: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. <strong>Ktoś zapłacił, a Łucja i tak została chora.</strong>"
+      wasted: {
+        tomasz: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. Tomasz już nigdy nie będzie chodził jak dawniej, a dzieci z aneksu straciły obrońcę. <strong>Łucja i tak została chora.</strong>",
+        veyr_zywy: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. Okaleczony Veyr nie poprowadzi już ewakuacji zdrowych. <strong>Łucja i tak została chora.</strong>",
+        veyr_zabity: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. Veyr nie żyje, a jego pieczęć przejął zastępca. <strong>Łucja i tak została chora.</strong>",
+        seweryn: "Agata długo patrzy na puste płótno, na którym miał leżeć materiał. Nic nie mówi. Seweryn nie żyje, a odłamki jego kryształu dalej pylą w piwnicy. <strong>Łucja i tak została chora.</strong>"
+      }
     },
     tomasz: {
       title: "Dar wuja", image: img.endTomasz,

@@ -42,7 +42,9 @@ export function clips(d) {
   Object.entries(d.objection.text).forEach(([key, text]) => add(`objection-${key}`, [{ sync: [text, d.objection.close] }]));
   Object.entries(d.consequences).forEach(([key, c]) => {
     add(`consequence-${key}`, [title(c.title), { sync: c.text }]);
-    if (c.wasted) add(`consequence-${key}-wasted`, [title(c.title), { sync: [...c.text.slice(0, -1), c.wasted] }]);
+    Object.entries(c.wasted || {}).forEach(([path, text]) => {
+      add(`consequence-${key}-wasted-${path}`, [title(c.title), { sync: [...c.text.slice(0, -1), text] }]);
+    });
   });
   Object.entries(d.notes).forEach(([key, text]) => add(`note-${key}`, [{ say: text }]));
   return list;

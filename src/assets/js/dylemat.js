@@ -929,8 +929,8 @@
     // Stabilizacja po zaplaconej cenie: pytanie "nie wziales od nikogo" nie
     // pasuje, wiec ostatni akapit mowi o zmarnowanym materiale.
     if (state.finalPath === "stabilizacja" && state.path !== "stabilizacja") {
-      text = [...c.text.slice(0, -1), c.wasted];
-      voiceId += "-wasted";
+      text = [...c.text.slice(0, -1), c.wasted[state.path]];
+      voiceId += "-wasted-" + state.path;
       image = c.wastedImage || c.image;
     }
     const notes = noteKeys();
