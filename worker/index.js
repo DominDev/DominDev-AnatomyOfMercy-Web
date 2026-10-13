@@ -113,13 +113,16 @@ function validate(p) {
   const who = a.who ?? [];
   if (!Array.isArray(who) || who.some((w) => !WHO.includes(w)) || new Set(who).size !== who.length) return null;
   if (who.length && a.more !== "tak") return null;
+  // Numer podejscia z tej samej przegladarki; brak oznacza pierwsze.
+  const attempt = p.attempt ?? 1;
+  if (!Number.isInteger(attempt) || attempt < 1 || attempt > 99) return null;
 
   return [
     new Date().toISOString(), p.version, p.client, p.path, p.difficulty, p.returnMode ?? null, p.lucja ?? null,
     p.objection ?? null, p.finalPath, p.difficultyReturn ?? null, p.difficultyLucja ?? null,
     p.difficultyObjection ?? null, p.decisionMs, JSON.stringify(timings), JSON.stringify(infoOpens),
     text(a.paid) || null, a.value || null, a.veyr ?? null, a.more || null, who.length ? who.join(",") : null,
-    a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null
+    a.clarity ?? null, text(a.comment) || null, a.age || null, a.games || null, attempt
   ];
 }
 
@@ -149,6 +152,8 @@ async function notify(env, url, row, p) {
   if (!env.DISCORD_DILEMMA_WEBHOOK) return "no_secret";
   const a = p.answers && typeof p.answers === "object" ? p.answers : {};
   const preview = url.host !== PRODUCTION_HOST;
+  const attempt = row[24];
+  const repeat = attempt > 1;
   const entry = (icon, label, choice, level) =>
     (choice ? `${icon} ${label}: **${LABELS[choice]}**${level ? ` · trudność ${level}/5` : ""}` : null);
   const { results } = await env.DYLEMAT_DB.prepare(
@@ -166,11 +171,14 @@ async function notify(env, url, row, p) {
     text(a.comment) ? `📝 Komentarz: ${quote(text(a.comment))}` : null
   ].filter(Boolean);
   const embed = {
-    title: `${preview ? "🧪" : "🕯️"} Nowa odpowiedź #${results[0]?.n ?? "?"}${preview ? " (podgląd)" : ""}`,
+    // Numer liczy wszystkie wypelnienia; powtorka ma wlasna ikone i numer
+    // podejscia z tej samej przegladarki.
+    title: `${preview ? "🧪" : repeat ? "🔁" : "🕯️"} Nowa odpowiedź #${results[0]?.n ?? "?"}`
+      + (repeat ? ` (powtórka, przejście ${attempt})` : "") + (preview ? " (podgląd)" : ""),
     url: url.origin + "/pl/dylemat/",
     description: lines.join("\n").slice(0, 3800),
     color: EMBED_COLOR,
-    footer: { text: `${p.client === "mobile" ? "telefon" : "komputer"} · wersja ${row[1]}${preview ? " · " + url.host : ""}` },
+    footer: { text: `${p.client === "mobile" ? "telefon" : "komputer"} · wersja ${row[1]}${repeat ? " · powtórka" : ""}${preview ? " · " + url.host : ""}` },
     timestamp: row[0]
   };
   // Bez wzmianek: tekst od uzytkownika nie moze nikogo oznaczyc.
@@ -201,8 +209,8 @@ async function saveResponse(request, env, url, ctx) {
   await env.DYLEMAT_DB.prepare(
     `INSERT INTO dylemat_responses (created_at, version, client, path, difficulty, return_mode, lucja, objection,
        final_path, difficulty_return, difficulty_lucja, difficulty_objection, decision_ms, timings, info_opens,
-       paid, value, veyr, more, who, clarity, comment, age, games, host)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       paid, value, veyr, more, who, clarity, comment, age, games, attempt, host)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(...row, url.host).run();
   const sending = notify(env, url, row, payload).catch((error) => {
     // Komunikat bledu fetch moze zawierac adres webhooka, czyli sekret.
@@ -224,6 +232,8 @@ async function saveResponse(request, env, url, ctx) {
 // zdradzamy, zeby pierwsze osoby nie widzialy wyborow konkretnych znajomych.
 async function stats(request, env, url) {
   if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
+  // Wszystkie wypelnienia, takze powtorki; numer podejscia jest w bazie, wiec
+  // pierwsze decyzje mozna policzyc osobno przy ocenie testu.
   const where = "WHERE host = ?1 AND version LIKE ?2";
   const [paths, summary, truth] = await env.DYLEMAT_DB.batch([
     env.DYLEMAT_DB.prepare(`SELECT path, COUNT(*) AS n FROM dylemat_responses ${where} GROUP BY path`).bind(url.host, STATS_VERSION),

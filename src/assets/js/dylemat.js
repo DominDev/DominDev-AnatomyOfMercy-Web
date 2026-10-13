@@ -17,6 +17,7 @@
   const narratorButton = document.querySelector("[data-narrator]");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const DONE_KEY = "aom-dylemat-done";
+  const ATTEMPTS_KEY = "aom-dylemat-attempts";
 
   // Stan jednej proby. Czas liczymy dla kazdego ekranu osobno, a czas decyzji
   // od pierwszej karty drogi do wybrania kwestii. Trudnosc kazdego wyboru
@@ -27,7 +28,10 @@
     timings: {}, infoOpens: {}, decisionStart: null, decisionMs: null
   });
   let state = fresh();
-  let practice = readDone() === data.version;
+  // Ile przejsc tej wersji tresci ta przegladarka juz zapisala. Kazde
+  // kolejne tez trafia do bazy, z numerem podejscia; statystyki i ocena testu
+  // licza tylko pierwsze.
+  let attempts = readAttempts();
   let current = null;
   let shownAt = 0;
   let busy = false;
@@ -41,8 +45,20 @@
     try { return localStorage.getItem(DONE_KEY); } catch { return null; }
   }
 
-  function writeDone() {
-    try { localStorage.setItem(DONE_KEY, data.version); } catch { /* prywatne okno: bez pamieci */ }
+  function readAttempts() {
+    try {
+      const [version, count] = (localStorage.getItem(ATTEMPTS_KEY) || "").split(":");
+      if (version === data.version && Number(count) > 0) return Number(count);
+    } catch { /* prywatne okno: bez pamieci */ }
+    // Wczesniejsza wersja strony zapisywala tylko znacznik pierwszego przejscia.
+    return readDone() === data.version ? 1 : 0;
+  }
+
+  function writeAttempts() {
+    try {
+      localStorage.setItem(ATTEMPTS_KEY, data.version + ":" + attempts);
+      localStorage.setItem(DONE_KEY, data.version);
+    } catch { /* prywatne okno: bez pamieci */ }
   }
 
   function later(fn, ms) {
@@ -696,7 +712,7 @@
       const kicker = el("p", "dylemat__kicker", data.opening.kicker);
       kicker.dataset.focus = "";
       view.append(kicker);
-      if (practice) view.append(el("p", "dylemat__gate-note dylemat__gate-note--strong", w.practice));
+      if (attempts) view.append(el("p", "dylemat__gate-note dylemat__gate-note--strong", w.practice));
       w.notes.forEach((note) => view.append(el("p", "dylemat__gate-note", note)));
       const actions = el("div", "dylemat__actions dylemat__actions--center");
       const go = (music, voiceOn) => {
@@ -1000,7 +1016,7 @@
     );
     const status = el("p", "dylemat__status");
     status.setAttribute("role", "status");
-    const submit = el("button", "button button--primary", practice ? "Zakończ (bez zapisu)" : q.submit);
+    const submit = el("button", "button button--primary", q.submit);
     submit.type = "submit";
     form.append(status, submit);
     form.addEventListener("submit", (event) => {
@@ -1033,7 +1049,6 @@
   }
 
   async function send(form, submit, status) {
-    if (practice) { showEnd(); return; }
     submit.disabled = true;
     status.textContent = "Wysyłam...";
     track("questions");
@@ -1043,6 +1058,7 @@
       difficulty: state.difficulty, difficultyReturn: state.difficultyReturn,
       difficultyLucja: state.difficultyLucja, difficultyObjection: state.difficultyObjection,
       decisionMs: state.decisionMs, timings: state.timings, infoOpens: state.infoOpens,
+      attempt: attempts + 1,
       client: window.matchMedia("(max-width: 700px)").matches ? "mobile" : "desktop",
       answers: collect(form)
     };
@@ -1051,8 +1067,8 @@
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error(String(response.status));
-      writeDone();
-      practice = true;
+      attempts += 1;
+      writeAttempts();
       showEnd();
     } catch {
       submit.disabled = false;
