@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { clips, compose, clipHash } from "../../scripts/narration-clips.mjs";
 
 // Tresc interaktywnego dylematu "Swiatlo pod popiolem" (/pl/dylemat/), Faza 0,
 // ryzyko R-020. Jedno zrodlo: szablon osadza ten obiekt jako JSON, a skrypt
@@ -31,16 +32,22 @@ const audio = (name) => {
 };
 
 // Nagrania lektora (scripts/generate-narration.mjs): jedno na ekran, z
-// momentem wejscia kazdego zdania. Strona bierze tylko te, ktorych plik
-// istnieje; ekran bez nagrania dziala jak bez lektora.
-const narration = (() => {
+// momentem wejscia kazdego zdania. Strona bierze tylko nagrania, ktorych plik
+// istnieje i ktorych odcisk tekstu zgadza sie z obecna trescia; ekran bez
+// takiego nagrania dziala jak bez lektora.
+export function narrationFor(content) {
   const file = path.resolve("narration/pl.json");
-  if (!fs.existsSync(file)) return null;
-  const clips = Object.entries(JSON.parse(fs.readFileSync(file, "utf8")).clips)
-    .filter(([, clip]) => exists(clip.src))
-    .map(([id, clip]) => [id, { src: clip.src, marks: clip.marks }]);
-  return clips.length ? { clips: Object.fromEntries(clips) } : null;
-})();
+  if (!fs.existsSync(file)) return { clips: null, stale: [] };
+  const manifest = JSON.parse(fs.readFileSync(file, "utf8")).clips;
+  const current = Object.fromEntries(clips(content).map((clip) => [clip.id, clipHash(compose(clip.parts).text)]));
+  const stale = [];
+  const usable = Object.entries(manifest).filter(([id, clip]) => {
+    if (!exists(clip.src)) return false;
+    if (current[id] !== clip.hash) { stale.push(id); return false; }
+    return true;
+  });
+  return { clips: usable.length ? Object.fromEntries(usable.map(([id, clip]) => [id, { src: clip.src, marks: clip.marks }])) : null, stale };
+}
 
 // Kto jest na ktorej grafice: Julian to postac w ptasiej masce z latarnia
 // (grafika hero), Veyr to inkwizytor w bialej porcelanowej masce (winieta 1 i
@@ -67,10 +74,9 @@ const img = {
   endSeweryn: art("skutek-seweryn", art("seweryn", "/assets/images/world/plague.webp"))
 };
 
-export default {
+const content = {
   version,
   audio: { intro: audio("dylemat-intro"), ambient: audio("dylemat-ambient") },
-  narration,
 
   opening: {
     image: img.title,
@@ -413,3 +419,8 @@ export default {
     again: "Przejdź jeszcze raz od początku (bez zapisu)"
   }
 };
+
+const narration = narrationFor(content);
+content.narration = narration.clips ? { clips: narration.clips } : null;
+
+export default content;

@@ -5,6 +5,7 @@ import path from "node:path";
 // Ten sam modul, z ktorego korzysta budowanie, wiec kontrola sprawdza adres
 // faktycznie uzyty w wydaniu, a nie zaszyta na sztywno domene produkcyjna.
 import site from "../src/_data/site.js";
+import dilemmaContent, { narrationFor } from "../src/_data/dylemat.js";
 
 const requiredFiles = [
   "dist/index.html",
@@ -763,4 +764,11 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+// Nagrania lektora, ktorych tekst nie zgadza sie juz z trescia dylematu, nie
+// trafiaja na strone (ekran idzie bez lektora). Nie blokujemy builda, ale
+// mowimy wprost, ktore nagrania trzeba wygenerowac ponownie.
+const staleNarration = narrationFor(dilemmaContent).stale;
+if (staleNarration.length) {
+  console.warn(`Narration out of date, these screens play without the narrator until regenerated: ${staleNarration.join(", ")}. Run node scripts/generate-narration.mjs.`);
+}
 console.log(`Build validation passed for ${requiredFiles.length} required files.`);
