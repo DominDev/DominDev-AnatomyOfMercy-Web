@@ -336,6 +336,13 @@ if (fs.existsSync(headersPath)) {
   try { dilemmaData = JSON.parse(dilemmaJson); } catch { /* sprawdzone nizej */ }
   assertions.push([Boolean(dilemmaData) && !dilemmaJson.includes("<") && JSON.stringify(dilemmaData).includes("<strong>"),
     "The embedded dilemma JSON must parse, contain no raw '<' and still decode to the original <strong> markup."]);
+  // Strona odslania tekst zdanie po zdaniu, wiec <strong> i <em> nie moga
+  // obejmowac dwoch zdan: drugie zgubiloby wyroznienie.
+  const spanning = [...JSON.stringify(dilemmaData || {}).matchAll(/<(strong|em)>(.*?)<\/\1>/g)]
+    .filter((match) => /[.!?…]”?\s+[„A-ZĄĆĘŁŃÓŚŹŻ]/.test(match[2]))
+    .map((match) => match[0]);
+  assertions.push([spanning.length === 0,
+    `Dilemma emphasis spans two sentences, split it per sentence: ${spanning.join(" | ")}`]);
   // Tresc musi lezec na najwyzszym poziomie, tak jak czyta ja skrypt strony.
   // Nazwany eksport w pliku danych sprawil kiedys, ze Eleventy osadzil
   // { default: ... } i strona na produkcji byla pusta.
