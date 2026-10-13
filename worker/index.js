@@ -7,7 +7,9 @@
 // wybory z zamknietych list, skale 1-5, czasy na ekranach i krotkie
 // odpowiedzi tekstowe. Bez adresu IP, ciasteczek i naglowkow przegladarki.
 
-const PATHS = ["stabilizacja", "tomasz", "veyr_zywy", "veyr_zabity", "seweryn"];
+const PATHS = ["stabilizacja", "tomasz", "veyr_zywy", "veyr_zabity", "seweryn", "spalenie"];
+// Drogi bez dawcy: bez bramy i rozmowy z Lucja, konsekwencja wprost.
+const NO_DONOR = ["stabilizacja", "spalenie"];
 const RETURNS = ["oddanie", "przemkniecie", "przebicie"];
 const LUCJA = ["prawda", "zatajenie"];
 const OBJECTION = ["mimo_sprzeciwu", "rezygnacja"];
@@ -61,8 +63,8 @@ const text = (value) => (typeof value === "string" ? value.trim().slice(0, MAX_T
 //   sie stabilizacja; w pozostalych przypadkach sprzeciwu nie ma.
 function branchOk(p) {
   if (!oneOf(p.path, PATHS) || !oneOf(p.finalPath, PATHS)) return false;
-  if (p.path === "stabilizacja") {
-    return none(p.returnMode) && none(p.lucja) && none(p.objection) && p.finalPath === "stabilizacja";
+  if (NO_DONOR.includes(p.path)) {
+    return none(p.returnMode) && none(p.lucja) && none(p.objection) && p.finalPath === p.path;
   }
   if (!oneOf(p.returnMode, RETURNS)) return false;
   if (p.returnMode === "oddanie") {
@@ -142,14 +144,18 @@ function validate(p) {
 const PRODUCTION_HOST = "anatomyofmercy.com";
 const LABELS = {
   stabilizacja: "metoda Agaty", tomasz: "dar Tomasza", veyr_zywy: "Veyr siłą, przeżył", veyr_zabity: "śmierć Veyra",
-  seweryn: "rdzeń Seweryna", oddanie: "oddał materiał", przemkniecie: "przemknął", przebicie: "przebił się siłą",
+  seweryn: "rdzeń Seweryna", spalenie: "spalił rdzeń", oddanie: "oddał materiał", przemkniecie: "przemknął", przebicie: "przebił się siłą",
   prawda: "prawda", zatajenie: "zatajenie", mimo_sprzeciwu: "leczył mimo sprzeciwu", rezygnacja: "uszanował odmowę"
 };
 const VALUE_LABELS = {
   zycie_lucji: "życie i zdrowie Łucji", wola_lucji: "wola Łucji", miasto: "ludzie za kordonem", dzieci: "dzieci z aneksu",
   nikogo_wiecej: "nie skrzywdzić nikogo więcej", prawda: "prawda", inne: "coś innego"
 };
-const quote = (value) => "„" + String(value).replace(/\s+/g, " ").slice(0, 300) + "”";
+// Dluzszy tekst ucinamy dopiero przy 900 znakach i zaznaczamy wielokropkiem.
+const quote = (value) => {
+  const flat = String(value).replace(/\s+/g, " ");
+  return "„" + (flat.length > 900 ? flat.slice(0, 900) + "…" : flat) + "”";
+};
 const WHO_LABELS = {
   lucja: "Łucja", tomasz: "Tomasz", veyr: "Veyr", agata: "Agata", seweryn: "Seweryn", dzieci: "dzieci z aneksu", julian: "Julian"
 };

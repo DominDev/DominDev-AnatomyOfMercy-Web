@@ -874,6 +874,8 @@
       id: "decision", image: d.image, tag: data.chapterWord + " " + d.chapter, title: d.title, text: d.text,
       voice: ["decision"],
       extra: [choices(d.options, "decision", pickPath), hint()],
+      // Powrot do kart przed wyborem: ostatnia karta, potem "Wstecz" dalej.
+      actions: [button("Wróć do kart", () => showScene(data.scenes.length - 1, true))],
       next: data.returnChoice.image
     })));
   }
@@ -882,7 +884,7 @@
     state.path = value;
     state.decisionMs = Math.round(performance.now() - state.decisionStart);
     askDifficulty("difficulty", data.decision.image, () => {
-      if (state.path === "stabilizacja") { state.finalPath = "stabilizacja"; showConsequence(); return; }
+      if (state.path === "stabilizacja" || state.path === "spalenie") { state.finalPath = state.path; showConsequence(); return; }
       const r = data.returnChoice;
       enterChapter(r.chapter, () => swap("return", () => scene({
         id: "return", image: r.image, title: r.title, text: r.text, voice: ["return"],

@@ -15,7 +15,7 @@ import { narrationFor } from "../../scripts/narration-clips.mjs";
 //
 // Wersja trafia do kazdego zapisanego wyniku i do statystyk, zeby nie mieszac
 // odpowiedzi do roznych tresci.
-const version = "2.1";
+const version = "2.2";
 
 const exists = (publicPath) => fs.existsSync(path.resolve("src/static" + publicPath));
 
@@ -57,7 +57,8 @@ const img = {
   endTomasz: art("skutek-tomasz", art("tomasz", "/assets/images/stories/the-volunteer.webp")),
   endVeyr: art("skutek-veyr-zywy", art("veyr", "/assets/images/mood/scene-1.webp")),
   endDeputy: art("skutek-veyr-zabity", "/assets/images/world/church.webp"),
-  endSeweryn: art("skutek-seweryn", art("seweryn", "/assets/images/world/plague.webp"))
+  endSeweryn: art("skutek-seweryn", art("seweryn", "/assets/images/world/plague.webp")),
+  endBurned: art("skutek-spalenie", "/assets/images/world/plague.webp")
 };
 
 const content = {
@@ -152,7 +153,8 @@ const content = {
         "Brat Tomasz jest wujem Łucji. Siedzi w progu aneksu za kordonem, z kijem na kolanach. Za nim śpią dzieci, które przygarnął. Jest ich jedynym obrońcą.",
         "Kiedy słyszy, czego potrzebujesz, nie waha się ani chwili. Sam zgłasza się na dawcę. Jego tkanka nie pasuje do Łucji idealnie, ale wystarczy.",
         "Pobierzesz fragment kości z jego miednicy i wyleczysz Łucję. <strong>Ale Tomasz już nigdy nie będzie chodził jak dawniej.</strong>",
-        "A kiedy Inkwizycja zacznie palić zarażone domy, <strong>nie wyprowadzi sam tych dzieci.</strong>"
+        "A kiedy Inkwizycja zacznie palić zarażone domy, <strong>nie wyprowadzi sam tych dzieci.</strong>",
+        "Mówisz mu to wszystko. Słucha do końca, z kijem w dłoniach. Zgadza się pod jednym warunkiem: <strong>„Kiedy przyjdzie ogień, wyprowadzisz je za mnie.”</strong>"
       ]
     },
     {
@@ -162,7 +164,7 @@ const content = {
         "Ma rozkaz spalić zarażone ulice. Wykonuje go, bo kiedyś widział, jak ktoś zrobił to w pośpiechu. Ogień rozniósł pył i <strong>zginęła cała ulica.</strong>",
         "Od tamtej pory Veyr pali powoli, dom po domu, i najpierw każe wyprowadzić zdrowych. Trzyma też w ryzach swojego zastępcę, który chciałby palić od razu.",
         "Dlatego odmawia ci swojej tkanki. Po pobraniu nie byłby już sprawny, a gdyby zginął, dowodzenie przejąłby zastępca. <strong>Veyr wierzy, że bez niego zginie więcej ludzi.</strong> Może mieć rację.",
-        "Wbrew jego woli możesz tylko jedno: obezwładnić go i pobrać tkankę siłą. Przeżyje, ale okaleczony. <strong>Możesz go też zabić i pobrać ją z ciała.</strong>"
+        "Wbrew jego woli zostaje ci przemoc. Możesz go obezwładnić i pobrać tkankę siłą: przeżyje, ale okaleczony. <strong>Możesz też go zabić i pobrać ją z ciała.</strong>"
       ]
     },
     {
@@ -171,8 +173,8 @@ const content = {
         "Pod starą kaplicą za kordonem jest piwnica. Ktoś w niej oddycha.",
         "To brat Seweryn, dawny nauczyciel Agaty. Kryształ, który porasta mury piwnicy, porósł także jego. Seweryn zrósł się z nim w jedno. Nie walczy. Odpowiada na głosy.",
         "<strong>To z niego sączy się zakaźny pył,</strong> który niesie zarazę po dzielnicy.",
-        "Przy życiu trzyma go kryształowy rdzeń. Rdzeń rezonuje: chore dzieci w lazarecie słyszą go nocą przez posadzkę jak niski dźwięk. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Może wyleczyć Łucję, ale zostawi w niej trwały ślad, którego nikt nie potrafi przewidzieć, i może związać ją z tym dźwiękiem. <strong>Seweryn umrze.</strong>",
-        "Rdzeń można też związać i spalić. Seweryn umarłby tak samo, ale pył przestałby się sączyć i dzielnica byłaby bezpieczna. <strong>Tyle że dla Łucji nie zostałoby wtedy nic.</strong>"
+        "Przy życiu trzyma go kryształowy rdzeń. Rdzeń rezonuje: chore dzieci w lazarecie słyszą go nocą przez posadzkę jak niski dźwięk. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Może wyleczyć Łucję, ale zostawi w niej trwały ślad, którego nikt nie potrafi przewidzieć, i może związać ją z tym dźwiękiem. Wycięcie rozbije też kryształ, a jego odłamki zostaną w piwnicy i dalej będą pylić. <strong>Seweryn umrze.</strong>",
+        "Rdzeń możesz też związać i spalić w całości, na miejscu. Seweryn umrze tak samo, ale pył przestanie się sączyć i dzielnica będzie bezpieczna. <strong>Tyle że Łucji zostanie wtedy tylko metoda Agaty.</strong>"
       ]
     },
     {
@@ -198,13 +200,15 @@ const content = {
       { value: "stabilizacja", label: "„Zostańmy przy metodzie siostry Agaty.”",
         info: "Łucja przeżyje, ale zostanie chora i w izolacji, bez drugiej próby leczenia. Nikt inny nie zapłaci." },
       { value: "tomasz", label: "„Przyjmę dar brata Tomasza.”",
-        info: "Łucja wyzdrowieje. Tomasz zostanie kaleką, a dzieci z aneksu stracą jedynego obrońcę." },
+        info: "Łucja wyzdrowieje. Tomasz straci sprawność, a ty obiecasz wyprowadzić jego dzieci, kiedy przyjdzie ogień." },
       { value: "veyr_zywy", label: "„Obezwładnię Veyra i pobiorę tkankę siłą. Kapitan przeżyje.”",
         info: "Łucja wyzdrowieje. Okaleczony Veyr nie poprowadzi ewakuacji zdrowych. Łucja nie chciała niczego zdobytego przymusem." },
       { value: "veyr_zabity", label: "„Zabiję Veyra i pobiorę tkankę z jego ciała.”",
         info: "Łucja wyzdrowieje. Dowodzenie przejmie zastępca, który pali od razu. Łucja nie chciała niczyjej śmierci." },
       { value: "seweryn", label: "„Zejdę do piwnicy i wytnę rdzeń Seweryna.”",
-        info: "Eksperyment może wyleczyć Łucję, ale zostawi w niej trwały ślad i może związać ją z rezonansem rdzenia. Seweryn umrze, a piwnica dalej będzie źródłem pyłu." }
+        info: "Eksperyment może wyleczyć Łucję, ale zostawi w niej trwały ślad i może związać ją z rezonansem rdzenia. Seweryn umrze, a odłamki kryształu dalej będą pylić w piwnicy." },
+      { value: "spalenie", label: "„Zejdę do piwnicy i spalę rdzeń. Ocalę dzielnicę, nie Łucję.”",
+        info: "Seweryn umrze, a pył przestanie się sączyć. Łucji zostanie metoda Agaty: przeżyje, ale bez wyleczenia." }
     ]
   },
 
@@ -226,7 +230,7 @@ const content = {
       { value: "oddanie", label: "Wychodzę z cienia i oddaję zawiniątko strażnikom.",
         info: "Nikogo nie skrzywdzisz i nie złamiesz rozkazu, który chroni miasto. Ale materiał spłonie, cena zapłacona przez dawcę pójdzie na marne, a Łucji zostanie tylko stabilizacja." },
       { value: "przemkniecie", label: "Czekam, aż się odwrócą, i przemykam za beczkami.",
-        info: "Ryzykujesz, że cię zauważą. Jeśli się uda, nikt nie ucierpi, ale wniesiesz za kordon to, co miasto pali dla własnego bezpieczeństwa, i nikt się o tym nie dowie." },
+        info: "Nikt nie ucierpi. Ale wniesiesz za kordon to, co miasto pali dla własnego bezpieczeństwa, i nikt się o tym nie dowie." },
       { value: "przebicie", label: "Wyciągam nóż i przechodzę siłą.",
         info: "Przejdziesz na pewno. Ale strażnicy, którzy wykonują rozkaz chroniący miasto, zostaną ranni albo zginą." }
     ]
@@ -246,17 +250,17 @@ const content = {
       tomasz: "Jeśli powiesz prawdę, będzie wiedziała, ile kosztuje jej zdrowie. Jeśli skłamiesz, oszczędzisz jej tego ciężaru. <strong>Na razie.</strong>",
       veyr_zywy: "Jeśli powiesz prawdę, może odmówić leczenia. <strong>Jeśli skłamiesz, wyzdrowieje dzięki czemuś, na co nigdy by się nie zgodziła.</strong>",
       veyr_zabity: "Jeśli powiesz prawdę, może odmówić leczenia. <strong>Jeśli skłamiesz, wyzdrowieje dzięki czyjejś śmierci i nawet o tym nie będzie wiedziała.</strong>",
-      seweryn: "Jeśli powiesz prawdę, może odmówić leczenia. <strong>Jeśli skłamiesz, wyzdrowieje dzięki czyjejś śmierci i nawet o tym nie będzie wiedziała.</strong>"
+      seweryn: "Jeśli powiesz prawdę, może odmówić leczenia. <strong>Jeśli skłamiesz, poddasz ją eksperymentowi okupionemu czyjąś śmiercią, a ona nawet o tym nie będzie wiedziała.</strong>"
     },
     truth: {
       tomasz: "„Od twojego wuja. Sam chciał. Wiedział, że już nigdy nie będzie chodził jak dawniej.”",
       veyr_zywy: "„Od kapitana Veyra. Nie chciał oddać, więc wziąłem siłą.”",
-      veyr_zabity: "„Od kapitana Veyra. Musiałem go zabić.”",
+      veyr_zabity: "„Od kapitana Veyra. Zabiłem go, żeby to zdobyć.”",
       seweryn: "„Od brata Seweryna z piwnicy. Żeby to zdobyć, musiał umrzeć.”"
     },
-    truthInfo: "Łucja pozna całą prawdę. Wtedy to ona zdecyduje.",
+    truthInfo: "Łucja dowie się, od kogo jest lekarstwo i co go spotkało. Wtedy to ona zdecyduje.",
     lie: "„Nie myśl o tym. Ważne, że wyzdrowiejesz.”",
-    lieInfo: "Łucja wyzdrowieje, nie wiedząc, skąd pochodzi lekarstwo. Ty będziesz wiedział."
+    lieInfo: "Łucja nie dowie się, skąd pochodzi lekarstwo. Ty będziesz wiedział."
   },
 
   objection: {
@@ -269,7 +273,7 @@ const content = {
     close: "Materiał leży na stole. Wystarczy, że po niego sięgniesz.",
     options: [
       { value: "mimo_sprzeciwu", label: "„Wybacz mi. Zrobię to mimo wszystko.”",
-        info: "Wyleczysz ją wbrew jej woli. Będzie wiedziała, że ją słyszałeś i nie posłuchałeś." },
+        info: "Podejmiesz leczenie wbrew jej woli. Będzie wiedziała, że ją słyszałeś i nie posłuchałeś." },
       { value: "rezygnacja", label: "„Dobrze. Nie zrobię tego.”",
         info: "Uszanujesz jej odmowę. Zostanie stabilizacja, a cena zapłacona przez dawcę pójdzie na marne." }
     ]
@@ -281,7 +285,7 @@ const content = {
       text: [
         "Oddycha płyciej niż inne dzieci, ale oddycha. Ból zelżał. Choroba została w jej kościach.",
         "O świcie siostry przenoszą ją za płótno izolacji. Łucja słabo macha ci ręką. Drzwi zamykają się za nią ciężko.",
-        "Chory chłopiec z sąsiedniego łóżka obraca w palcach guzik, który kiedyś jej przyniósł. Pyta cicho: <strong>„Nie wziąłeś od nikogo.</strong> <strong>Zrobiłeś to dla niej czy dla siebie?”</strong>"
+        "Chory chłopiec z sąsiedniego łóżka obraca w palcach guzik, który kiedyś jej przyniósł. Pyta cicho: <strong>„Tam, za płótnem, też będzie ją bolało?”</strong>"
       ],
       // Ostatni akapit, gdy ktos juz zaplacil, a material nie zostal uzyty
       // (oddanie przy bramie albo uszanowana odmowa Lucji); mowi, kto zaplacil.
@@ -298,8 +302,8 @@ const content = {
       text: [
         "Łucja schodzi ze stołu o własnych siłach. Jej wuj nie.",
         "Tomasz uczy się chodzić o kiju, który dotąd trzymał na kolanach. Jedno biodro ma teraz niżej niż drugie.",
-        "Prosi cię tylko o jedno: <strong>„Kiedy przyjdzie ogień, wyprowadź je za mnie.”</strong> Obiecujesz. Od tej chwili dzieci z aneksu patrzą na ciebie, nie na niego.",
-        "<strong>Obietnica nie gasi ognia.</strong> <strong>Tylko go odsuwa.</strong>"
+        "Nie dziękuje ci. Przypomina tylko o obietnicy. Od tej chwili dzieci z aneksu patrzą na ciebie, nie na niego.",
+        "<strong>Obietnica nie gasi ognia.</strong> <strong>Kiedy przyjdzie, to ty będziesz musiał w niego wejść.</strong>"
       ]
     },
     veyr_zywy: {
@@ -324,7 +328,16 @@ const content = {
         "Kryształy w kościach Łucji przestają rosnąć. Gorączka spada.",
         "Ale nocą dziewczynka siada na łóżku i nasłuchuje. Słyszy to samo co chore dzieci: niski dźwięk spod posadzki, jakby ktoś powtarzał jej imię. <strong>Choroba w niej nie zniknęła.</strong> <strong>Zmieniła się.</strong> Łucja może stać się jej nowym źródłem.",
         "Seweryn nie żyje. Ale wycinając rdzeń, rozbiłeś kryształ, z którym był zrośnięty. Jego odłamki zostały w szczelinach piwnicy i wciąż żyją. <strong>Dalej sączą pył, który niesie zarazę po dzielnicy.</strong>",
-        "Spalić dało się tylko cały rdzeń. Ten zabrałeś dla Łucji."
+        "Pylenie mogło przerwać tylko spalenie rdzenia w całości, na miejscu. <strong>Ty wybrałeś Łucję.</strong>"
+      ]
+    },
+    spalenie: {
+      title: "Popiół z piwnicy", image: img.endBurned,
+      text: [
+        "Związany rdzeń płonie długo i cicho. Seweryn się nie budzi.",
+        "Tej nocy chore dzieci w lazarecie po raz pierwszy od tygodni śpią do świtu. Dźwięk spod posadzki ucichł. <strong>Pył przestał się sączyć w dzielnicę.</strong>",
+        "Łucję ratuje kościelna metoda Agaty. Przeżyje kryzys, ale choroba zostanie w jej kościach, a drugiej próby leczenia nie będzie.",
+        "<strong>Ocaliłeś ulice, których nigdy nie zobaczysz.</strong> <strong>Nie ją.</strong>"
       ]
     }
   },
@@ -332,7 +345,7 @@ const content = {
   // Dopiski zalezne od dalszych wyborow, doklejane do konsekwencji.
   notes: {
     zatajenie: "Łucja nie wie, skąd pochodzi lekarstwo. Ty wiesz.",
-    zatajenie_tomasz: "Ukryłeś przed Łucją cenę, którą zapłacił jej wuj. Kiedy Agata pozna prawdę, przestanie ci pomagać.",
+    zatajenie_tomasz: "Łucja nie wie, ile jej zdrowie kosztowało wuja. Zdecydowałeś za nią, co wolno jej wiedzieć.",
     zatajenie_przymus: "Kiedyś Łucja pozna prawdę. Wtedy sprzeciwi się temu, co zrobiłeś w jej imieniu.",
     prawda_tomasz: "Łucja zna cenę. Ściska dłoń wuja i przyjmuje jego dar.",
     mimo_sprzeciwu: "Leczyłeś ją wbrew jej woli. Zasnęła z twoim „wybacz” w uszach.",
@@ -351,7 +364,8 @@ const content = {
       tomasz: "Przyjąłeś dar Tomasza.",
       veyr_zywy: "Obezwładniłeś Veyra i wziąłeś siłą.",
       veyr_zabity: "Zabiłeś Veyra.",
-      seweryn: "Wyciąłeś rdzeń Seweryna."
+      seweryn: "Wyciąłeś rdzeń Seweryna.",
+      spalenie: "Spaliłeś rdzeń Seweryna i ocaliłeś dzielnicę."
     },
     returnMode: {
       oddanie: "Oddałeś materiał strażnikom.",
@@ -400,7 +414,8 @@ const content = {
       tomasz: "Dar Tomasza",
       veyr_zywy: "Veyr, siłą",
       veyr_zabity: "Śmierć Veyra",
-      seweryn: "Rdzeń Seweryna"
+      seweryn: "Rdzeń Seweryna",
+      spalenie: "Spalenie rdzenia"
     },
     yours: "twój wybór",
     count: "Na podstawie {n} odpowiedzi.",
