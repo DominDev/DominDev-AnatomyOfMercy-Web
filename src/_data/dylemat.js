@@ -402,7 +402,12 @@ const content = {
     loading: "Wczytuję wyniki...",
     first: "Jesteś jedną z pierwszych osób, które przeszły tę próbę. Wyniki innych pokażemy, gdy będzie ich więcej.",
     thanks: "Dziękujemy. Prosimy, nie zdradzaj szczegółów osobom, którym przekażesz link.",
-    again: "Przejdź jeszcze raz od początku (bez zapisu)"
+    // Ekran konca pojawia sie dopiero po zapisie wyniku, wiec napis nie moze
+    // sugerowac, ze cokolwiek przepadlo. Ze kolejne przejscie juz sie nie
+    // zapisuje, mowi notka na bramie przy ponownym wejsciu.
+    again: "Wypełnij ponownie",
+    home: "Poznaj Anatomy of Mercy",
+    homeUrl: "/pl/"
   }
 };
 

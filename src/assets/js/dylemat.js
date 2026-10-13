@@ -306,7 +306,7 @@
     const extra = opts.extra || [];
     extra.forEach((node) => after.append(node));
     if (opts.actions && opts.actions.length) {
-      const actions = el("div", "dylemat__actions");
+      const actions = el("div", "dylemat__actions" + (opts.stackActions ? " dylemat__actions--stack" : ""));
       actions.append(...opts.actions);
       after.append(actions);
     }
@@ -1124,6 +1124,13 @@
     showOpening();
   }
 
+  // Pod koncem prowadzimy na strone glowna gry.
+  function homeLink(e) {
+    const link = el("a", "button button--primary", e.home);
+    link.href = e.homeUrl;
+    return link;
+  }
+
   function showEnd() {
     const e = data.end;
     setChapter(null);
@@ -1133,7 +1140,7 @@
       slogan.lang = "en";
       const view = scene({
         id: "end", title: e.title, extra: [chronicle(), slogan, box, el("p", "dylemat__note", e.thanks)],
-        actions: [button(e.again, restart)]
+        actions: [button(e.again, restart), homeLink(e)], stackActions: true
       });
       others(box);
       return view;

@@ -482,6 +482,13 @@ $wide: 860px;
     &--center {
       justify-content: center;
     }
+
+    // Przyciski jeden pod drugim, tej samej szerokosci (ekran konca).
+    &--stack {
+      flex-direction: column;
+      align-items: stretch;
+      max-width: 24rem;
+    }
   }
 
   // ---------------------------------------------------------- Kwestie
