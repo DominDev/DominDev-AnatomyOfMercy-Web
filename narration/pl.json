@@ -363,17 +363,19 @@
     },
     "consequence-tomasz": {
       "src": "/assets/audio/lektor/pl/consequence-tomasz.mp3",
-      "duration": 28.48,
+      "duration": 37.6,
       "marks": [
-        2.08,
-        5.01,
-        7.64,
-        11.62,
-        16.12,
-        24.19,
-        26.88
+        2.24,
+        5.95,
+        8.54,
+        13.48,
+        18.3,
+        24.59,
+        26.19,
+        33.09,
+        35.56
       ],
-      "hash": "cea6bc2fc440"
+      "hash": "3b35b673acb7"
     },
     "consequence-veyr_zywy": {
       "src": "/assets/audio/lektor/pl/consequence-veyr_zywy.mp3",
@@ -403,20 +405,23 @@
     },
     "consequence-seweryn": {
       "src": "/assets/audio/lektor/pl/consequence-seweryn.mp3",
-      "duration": 40,
+      "duration": 53.44,
       "marks": [
         2.36,
-        5.21,
-        7.14,
-        10.92,
-        18.61,
-        21.24,
-        23.2,
-        28.7,
-        30.53,
-        34.54
+        5.18,
+        7.24,
+        11.52,
+        20.4,
+        22.88,
+        24.72,
+        28.96,
+        30.81,
+        37,
+        42.45,
+        48.8,
+        51.6
       ],
-      "hash": "ba12be61ff2c"
+      "hash": "782390489817"
     },
     "note-zatajenie": {
       "src": "/assets/audio/lektor/pl/note-zatajenie.mp3",

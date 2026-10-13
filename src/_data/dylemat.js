@@ -143,7 +143,7 @@ const content = {
       text: [
         "Agata zna kościelną metodę. Nie wyleczy nią Łucji, ale może ją uratować przed tym, co najgorsze. Dziewczynka przeżyje kryzys, a ból zelżeje.",
         "Choroba jednak zostanie w jej kościach. Łucja trafi do kościelnej izolacji, za płótno, do sali, w której nikt nie obiecuje jutra.",
-        "<strong>Nikt inny nie zapłaci. Tylko ona.</strong>"
+        "<strong>Nikt inny nie zapłaci.</strong> <strong>Tylko ona.</strong>"
       ]
     },
     {
@@ -262,8 +262,8 @@ const content = {
   objection: {
     chapter: "V", title: "Sprzeciw", image: img.refuse,
     text: {
-      veyr_zywy: "Łucja odsuwa twoją rękę. <strong>„Mówiłam ci. Nie chcę niczego, co komuś zabrano siłą.”</strong> Głos jej drży, ale się nie łamie. „Nie rób tego. Proszę.”",
-      veyr_zabity: "Łucja zaciska palce na twoim rękawie, aż bieleją jej knykcie. <strong>„Mówiłam ci. Nie chcę, żeby ktoś umarł przeze mnie.”</strong> Odwraca głowę do ściany. „A on umarł.”",
+      veyr_zywy: "Łucja odsuwa twoją rękę. <strong>„Mówiłam ci.</strong> <strong>Nie chcę niczego, co komuś zabrano siłą.”</strong> Głos jej drży, ale się nie łamie. „Nie rób tego. Proszę.”",
+      veyr_zabity: "Łucja zaciska palce na twoim rękawie, aż bieleją jej knykcie. <strong>„Mówiłam ci.</strong> <strong>Nie chcę, żeby ktoś umarł przeze mnie.”</strong> Odwraca głowę do ściany. „A on umarł.”",
       seweryn: "Łucja długo milczy. „Mogę zaryzykować siebie. Ten ślad, o którym mówisz.” Patrzy na ciebie. <strong>„Ale nie chciałam, żeby on umierał dla mnie.”</strong>"
     },
     close: "Materiał leży na stole. Wystarczy, że po niego sięgniesz.",
@@ -281,7 +281,7 @@ const content = {
       text: [
         "Oddycha płyciej niż inne dzieci, ale oddycha. Ból zelżał. Choroba została w jej kościach.",
         "O świcie siostry przenoszą ją za płótno izolacji. Łucja słabo macha ci ręką. Drzwi zamykają się za nią ciężko.",
-        "Chory chłopiec z sąsiedniego łóżka obraca w palcach guzik, który kiedyś jej przyniósł. Pyta cicho: <strong>„Nie wziąłeś od nikogo. Zrobiłeś to dla niej czy dla siebie?”</strong>"
+        "Chory chłopiec z sąsiedniego łóżka obraca w palcach guzik, który kiedyś jej przyniósł. Pyta cicho: <strong>„Nie wziąłeś od nikogo.</strong> <strong>Zrobiłeś to dla niej czy dla siebie?”</strong>"
       ],
       // Ostatni akapit, gdy ktos juz zaplacil, a material nie zostal uzyty
       // (oddanie przy bramie albo uszanowana odmowa Lucji).
@@ -293,7 +293,8 @@ const content = {
       text: [
         "Łucja schodzi ze stołu o własnych siłach. Jej wuj nie.",
         "Tomasz uczy się chodzić o kiju, który dotąd trzymał na kolanach. Jedno biodro ma teraz niżej niż drugie.",
-        "Dzieci z aneksu patrzą na ciebie, bo to ty obiecałeś, że pomożesz je wyprowadzić, kiedy przyjdzie ogień. <strong>Obietnica nie gasi ognia. Tylko go odsuwa.</strong>"
+        "Prosi cię tylko o jedno: <strong>„Kiedy przyjdzie ogień, wyprowadź je za mnie.”</strong> Obiecujesz. Od tej chwili dzieci z aneksu patrzą na ciebie, nie na niego.",
+        "<strong>Obietnica nie gasi ognia.</strong> <strong>Tylko go odsuwa.</strong>"
       ]
     },
     veyr_zywy: {
@@ -316,8 +317,9 @@ const content = {
       title: "Rezonans", image: img.endSeweryn,
       text: [
         "Kryształy w kościach Łucji przestają rosnąć. Gorączka spada.",
-        "Ale nocą dziewczynka siada na łóżku i nasłuchuje. Słyszy to samo co chore dzieci: niski dźwięk spod posadzki, jakby ktoś powtarzał jej imię. <strong>Choroba w niej nie zniknęła. Zmieniła się.</strong> Łucja może stać się jej nowym źródłem.",
-        "Seweryn nie żyje. Rdzeń wyciąłeś, więc nie da się go już spalić. <strong>Rozsiana po piwnicy żywa tkanka dalej sączy pył w dzielnicę.</strong>"
+        "Ale nocą dziewczynka siada na łóżku i nasłuchuje. Słyszy to samo co chore dzieci: niski dźwięk spod posadzki, jakby ktoś powtarzał jej imię. <strong>Choroba w niej nie zniknęła.</strong> <strong>Zmieniła się.</strong> Łucja może stać się jej nowym źródłem.",
+        "Seweryn nie żyje. Ale wycinając rdzeń, rozbiłeś kryształ, z którym był zrośnięty. Jego odłamki zostały w szczelinach piwnicy i wciąż żyją. <strong>Dalej sączą pył, który niesie zarazę po dzielnicy.</strong>",
+        "Spalić dało się tylko cały rdzeń. Ten zabrałeś dla Łucji."
       ]
     }
   },
