@@ -348,7 +348,7 @@ const content = {
     zatajenie_tomasz: "Łucja nie wie, ile jej zdrowie kosztowało wuja. Zdecydowałeś za nią, co wolno jej wiedzieć.",
     zatajenie_przymus: "Kiedyś Łucja pozna prawdę. Wtedy sprzeciwi się temu, co zrobiłeś w jej imieniu.",
     prawda_tomasz: "Łucja zna cenę, którą zapłacił wuj. Ściska jego dłoń i przyjmuje dar.",
-    przemilczana_brama: "O tym, co stało się przy bramie, jej nie powiedziałeś.",
+    przemilczana_brama: "O bramie… o strażnikach… nie powiedziałeś jej ani słowa.",
     mimo_sprzeciwu: "Leczyłeś ją wbrew jej woli. Zasnęła z twoim „wybacz” w uszach.",
     rezygnacja_veyr_zywy: "Uszanowałeś jej odmowę. Veyr już zapłacił swoją cenę, a jego tkanka nie została użyta.",
     rezygnacja_veyr_zabity: "Uszanowałeś jej odmowę. Veyr nie żyje, a jego tkanka nie została użyta.",

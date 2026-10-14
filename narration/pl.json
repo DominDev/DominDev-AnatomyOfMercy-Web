@@ -437,7 +437,7 @@
     },
     "note-prawda_tomasz": {
       "src": "/assets/audio/lektor/pl/note-prawda_tomasz.mp3",
-      "duration": 6.24,
+      "duration": 6.4,
       "marks": [],
       "hash": "30480ef2433e"
     },
@@ -570,9 +570,9 @@
     },
     "note-przemilczana_brama": {
       "src": "/assets/audio/lektor/pl/note-przemilczana_brama.mp3",
-      "duration": 4,
+      "duration": 5.6,
       "marks": [],
-      "hash": "711e0bc50c81"
+      "hash": "9b7f9dd8c86c"
     }
   }
 }
