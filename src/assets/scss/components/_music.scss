@@ -1,0 +1,48 @@
+// Przycisk muzyki w tle (music.js). Na komputerze stoi za wyborem jezyka, na
+// telefonie obok przycisku menu. Glosnik z falami znaczy, ze muzyka gra,
+// przekreslony, ze milczy. Stan niesie aria-pressed, ikona tylko go pokazuje.
+.music-toggle {
+  position: relative;
+  // Nad nakladka menu mobilnego, tak jak przycisk menu, zeby dalo sie
+  // wyciszyc muzyke takze przy otwartym menu.
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: 0.25rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #b9ab8c;
+  cursor: pointer;
+  transition: color 180ms ease;
+  &:hover, &:focus-visible { color: #f7ecd2; }
+  &[hidden] { display: none; }
+
+  svg {
+    width: 1.4rem;
+    height: auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  &__speaker { fill: currentColor; fill-opacity: 0.18; }
+  &[aria-pressed="true"] { color: #e0c896; }
+  &[aria-pressed="true"] &__cross { display: none; }
+  &[aria-pressed="false"] &__waves { display: none; }
+}
+
+@media (max-width: 63.99rem) {
+  // Przycisk menu ma wlasne pole dotyku, wiec oba przyciski moga stac blizej
+  // siebie niz reszta elementow paska.
+  .music-toggle { margin-left: 0; margin-right: -0.5rem; }
+}
+
+@media (max-width: 30rem) {
+  .music-toggle { margin-right: -0.35rem; }
+}

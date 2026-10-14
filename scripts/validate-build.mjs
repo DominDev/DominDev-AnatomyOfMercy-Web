@@ -17,6 +17,8 @@ const requiredFiles = [
   "dist/assets/css/main.css",
   "dist/assets/js/main.js",
   "dist/assets/js/ash.js",
+  "dist/assets/js/music.js",
+  "dist/assets/audio/muzyka-strony.mp3",
   "dist/robots.txt"
 ];
 

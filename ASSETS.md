@@ -98,6 +98,7 @@ into the game repository.
 |---|---|---|
 | `assets/audio/dylemat-intro.mp3` | 0:55 | Opening of the dilemma, played once after the visitor chooses sound |
 | `assets/audio/dylemat-ambient.mp3` | 2:30 | Background loop for the rest of the dilemma |
+| `assets/audio/muzyka-strony.mp3` | 2:30 | The same loop 9 dB quieter (96 kbps), background music on the rest of the site with the speaker button in the header (`assets/js/music.js`, added 2026-10-14). The level is baked into the file because iOS ignores volume set from a script. |
 | `assets/audio/lektor/pl/*.mp3` | about 15:00 in total | Optional narrator, one recording per screen, generated with ElevenLabs text to speech (voice "David - Deep Documentary Narrator", model `eleven_v3`) on 2026-10-13 under the same Starter plan; recipe in `scripts/generate-narration.mjs` |
 
 ## Social
