@@ -143,7 +143,7 @@ const content = {
       id: "D", chapter: "II", tag: "Droga pierwsza", title: "Siostra Agata", image: img.agata,
       text: [
         "Agata zna kościelną metodę. Nie wyleczy nią Łucji, ale może ją uratować przed tym, co najgorsze. Dziewczynka przeżyje kryzys, a ból zelżeje.",
-        "Choroba jednak zostanie w jej kościach, a po kościelnej metodzie drugiej próby leczenia już nie będzie. Łucja trafi do kościelnej izolacji, za płótno, do sali, w której nikt nie obiecuje jutra.",
+        "Choroba jednak zostanie w jej kościach, a gdy Agata zacznie, drugiej próby leczenia już nie będzie. Łucja trafi do kościelnej izolacji, za płótno, do sali, w której nikt nie obiecuje jutra.",
         "<strong>Nikt inny nie zapłaci.</strong> <strong>Tylko ona.</strong>"
       ]
     },
@@ -173,8 +173,8 @@ const content = {
         "Pod starą kaplicą za kordonem jest piwnica. Ktoś w niej oddycha.",
         "To brat Seweryn, dawny nauczyciel Agaty. Kryształ, który porasta mury piwnicy, porósł także jego. Seweryn zrósł się z nim w jedno. Nie walczy. Odpowiada na głosy.",
         "<strong>To z niego sączy się zakaźny pył,</strong> który niesie zarazę po dzielnicy.",
-        "Przy życiu trzyma go kryształowy rdzeń. Rdzeń rezonuje: chore dzieci w lazarecie słyszą go nocą przez posadzkę jak niski dźwięk. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Może wyleczyć Łucję, ale zostawi w niej trwały ślad, którego nikt nie potrafi przewidzieć, i może związać ją z tym dźwiękiem. Wycięcie rozbije też kryształ, a jego odłamki zostaną w piwnicy i dalej będą pylić. <strong>Seweryn umrze.</strong>",
-        "Rdzeń możesz też związać i spalić w całości, na miejscu. Seweryn umrze tak samo, ale pył przestanie się sączyć i dzielnica będzie bezpieczna. <strong>Tyle że Łucji zostanie wtedy tylko metoda Agaty.</strong>"
+        "Przy życiu trzyma go kryształowy rdzeń. Rdzeń rezonuje: chore dzieci w lazarecie słyszą go nocą przez posadzkę jak niski dźwięk. Jeśli go wytniesz, przygotujesz z niego eksperymentalną terapię. Kryształy w kościach Łucji ustąpią, ale zostanie z nią ten dźwięk. <strong>Dzwony i metal będą wywoływać u niej napady bólu.</strong> Nikt nie zagwarantuje, że rezonans nie przyniesie czegoś gorszego. Wycięcie rozbije też kryształ, a jego odłamki zostaną w piwnicy i dalej będą pylić. <strong>Seweryn umrze.</strong>",
+        "Rdzeń możesz też związać i spalić w całości, na miejscu. Seweryn umrze tak samo, ale źródło pyłu zostanie zniszczone, a lazaret ochroniony. <strong>Tyle że Łucji zostanie wtedy tylko metoda Agaty.</strong>"
       ]
     },
     {
@@ -206,9 +206,9 @@ const content = {
       { value: "veyr_zabity", label: "„Zabiję Veyra i pobiorę tkankę z jego ciała.”",
         info: "Łucja wyzdrowieje. Dowodzenie przejmie zastępca, który pali od razu. Łucja nie chciała niczyjej śmierci." },
       { value: "seweryn", label: "„Zejdę do piwnicy i wytnę rdzeń Seweryna.”",
-        info: "Eksperyment może wyleczyć Łucję, ale zostawi w niej trwały ślad i może związać ją z rezonansem rdzenia. Seweryn umrze, a odłamki kryształu dalej będą pylić w piwnicy." },
-      { value: "spalenie", label: "„Zejdę do piwnicy i spalę rdzeń. Ocalę dzielnicę, nie Łucję.”",
-        info: "Seweryn umrze, a pył przestanie się sączyć. Łucji zostanie metoda Agaty: przeżyje, ale bez wyleczenia." }
+        info: "Kryształy ustąpią, ale Łucja będzie słyszeć rezonans, a dzwony i metal będą wywoływać u niej ból. Seweryn umrze, a odłamki kryształu dalej będą pylić w piwnicy." },
+      { value: "spalenie", label: "„Spalę rdzeń. Zatrzymam pył, a Łucję ustabilizuje Agata.”",
+        info: "Seweryn umrze, a źródło pyłu zostanie zniszczone. Łucji zostanie metoda Agaty: przeżyje kryzys, ale bez wyleczenia." }
     ]
   },
 
@@ -230,7 +230,7 @@ const content = {
       { value: "oddanie", label: "Wychodzę z cienia i oddaję zawiniątko strażnikom.",
         info: "Nikogo nie skrzywdzisz i nie złamiesz rozkazu, który chroni miasto. Ale materiał spłonie, cena zapłacona przez dawcę pójdzie na marne, a Łucji zostanie tylko stabilizacja." },
       { value: "przemkniecie", label: "Czekam, aż się odwrócą, i przemykam za beczkami.",
-        info: "Nikt nie ucierpi. Ale wniesiesz za kordon to, co miasto pali dla własnego bezpieczeństwa, i nikt się o tym nie dowie." },
+        info: "Miniesz strażników bez walki. Ale wniesiesz za kordon to, co miasto pali dla własnego bezpieczeństwa, i nikt się o tym nie dowie." },
       { value: "przebicie", label: "Wyciągam nóż i przechodzę siłą.",
         info: "Przejdziesz na pewno. Ale strażnicy, którzy wykonują rozkaz chroniący miasto, zostaną ranni albo zginą." }
     ]
@@ -325,7 +325,7 @@ const content = {
     seweryn: {
       title: "Rezonans", image: img.endSeweryn,
       text: [
-        "Kryształy w kościach Łucji przestają rosnąć. Gorączka spada.",
+        "Kryształy w kościach Łucji ustępują. Gorączka spada. Rano, gdy w kaplicy uderza dzwon, Łucja zaciska dłonie na uszach i krzyczy z bólu. <strong>Od dziś cisza jest jej lekarstwem.</strong>",
         "Ale nocą dziewczynka siada na łóżku i nasłuchuje. Słyszy to samo co chore dzieci: niski dźwięk spod posadzki, jakby ktoś powtarzał jej imię. <strong>Choroba w niej nie zniknęła.</strong> <strong>Zmieniła się.</strong> Łucja może stać się jej nowym źródłem.",
         "Seweryn nie żyje. Ale wycinając rdzeń, rozbiłeś kryształ, z którym był zrośnięty. Jego odłamki zostały w szczelinach piwnicy i wciąż żyją. <strong>Dalej sączą pył, który niesie zarazę po dzielnicy.</strong>",
         "Pylenie mogło przerwać tylko spalenie rdzenia w całości, na miejscu. <strong>Ty wybrałeś Łucję.</strong>"
@@ -335,9 +335,9 @@ const content = {
       title: "Popiół z piwnicy", image: img.endBurned,
       text: [
         "Związany rdzeń płonie długo i cicho. Seweryn się nie budzi.",
-        "Tej nocy chore dzieci w lazarecie po raz pierwszy od tygodni śpią do świtu. Dźwięk spod posadzki ucichł. <strong>Pył przestał się sączyć w dzielnicę.</strong>",
+        "Dźwięk spod posadzki milknie. Chore dzieci śpią spokojniej. <strong>Źródło pyłu zostało zniszczone.</strong> Lazaret zostaje pod kwarantanną, nie pod ogniem.",
         "Łucję ratuje kościelna metoda Agaty. Przeżyje kryzys, ale choroba zostanie w jej kościach, a drugiej próby leczenia nie będzie.",
-        "<strong>Ocaliłeś ulice, których nigdy nie zobaczysz.</strong> <strong>Nie ją.</strong>"
+        "<strong>Zatrzymałeś pył, który niósł zarazę do ludzi, których nigdy nie zobaczysz.</strong> <strong>Łucji nie wyleczyłeś.</strong>"
       ]
     }
   },
@@ -347,7 +347,8 @@ const content = {
     zatajenie: "Łucja nie wie, skąd pochodzi lekarstwo. Ty wiesz.",
     zatajenie_tomasz: "Łucja nie wie, ile jej zdrowie kosztowało wuja. Zdecydowałeś za nią, co wolno jej wiedzieć.",
     zatajenie_przymus: "Kiedyś Łucja pozna prawdę. Wtedy sprzeciwi się temu, co zrobiłeś w jej imieniu.",
-    prawda_tomasz: "Łucja zna cenę. Ściska dłoń wuja i przyjmuje jego dar.",
+    prawda_tomasz: "Łucja zna cenę, którą zapłacił wuj. Ściska jego dłoń i przyjmuje dar.",
+    przemilczana_brama: "O tym, co stało się przy bramie, jej nie powiedziałeś.",
     mimo_sprzeciwu: "Leczyłeś ją wbrew jej woli. Zasnęła z twoim „wybacz” w uszach.",
     rezygnacja_veyr_zywy: "Uszanowałeś jej odmowę. Veyr już zapłacił swoją cenę, a jego tkanka nie została użyta.",
     rezygnacja_veyr_zabity: "Uszanowałeś jej odmowę. Veyr nie żyje, a jego tkanka nie została użyta.",
@@ -365,14 +366,14 @@ const content = {
       veyr_zywy: "Obezwładniłeś Veyra i wziąłeś siłą.",
       veyr_zabity: "Zabiłeś Veyra.",
       seweryn: "Wyciąłeś rdzeń Seweryna.",
-      spalenie: "Spaliłeś rdzeń Seweryna i ocaliłeś dzielnicę."
+      spalenie: "Spaliłeś rdzeń Seweryna i zatrzymałeś pył."
     },
     returnMode: {
       oddanie: "Oddałeś materiał strażnikom.",
       przemkniecie: "Przemknąłeś obok strażników.",
       przebicie: "Przebiłeś się przez kordon."
     },
-    lucja: { prawda: "Powiedziałeś Łucji prawdę.", zatajenie: "Ukryłeś przed Łucją prawdę." },
+    lucja: { prawda: "Powiedziałeś Łucji, skąd jest lekarstwo.", zatajenie: "Ukryłeś przed Łucją, skąd jest lekarstwo." },
     objection: { mimo_sprzeciwu: "Leczyłeś mimo jej sprzeciwu.", rezygnacja: "Uszanowałeś jej odmowę." },
     difficulty: "trudność {n} z 5"
   },

@@ -951,6 +951,8 @@
       if (state.lucja === "prawda" && state.path === "tomasz") keys.push("prawda_tomasz");
     }
     if (state.returnMode === "przemkniecie" || state.returnMode === "przebicie") keys.push(state.returnMode);
+    // Prawda dotyczyla dawcy; o straznikach przy bramie Lucja nie uslyszala.
+    if (state.lucja === "prawda" && state.returnMode === "przebicie") keys.push("przemilczana_brama");
     return keys;
   }
 
