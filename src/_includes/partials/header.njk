@@ -30,6 +30,18 @@
       <span aria-hidden="true">/</span>
       <a href="{{ plPath }}" lang="pl" hreflang="pl"{% if lang == "pl" %} aria-current="page"{% endif %}>PL</a>
     </nav>
+    {#- Muzyka w tle (music.js). Bez skryptu przycisk zostaje ukryty, bo nie
+        mialby czym sterowac. Na telefonie stoi obok przycisku menu i nad
+        nakladka, wiec mozna wyciszyc muzyke takze przy otwartym menu. -#}
+    <button class="music-toggle" type="button" aria-pressed="false" hidden data-music-toggle
+      data-src="/assets/audio/muzyka-strony.mp3" data-title-play="{{ t.musicPlay }}" data-title-pause="{{ t.musicPause }}" title="{{ t.musicPlay }}">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path class="music-toggle__speaker" d="M3.5 9.5h3.6L12 5.4v13.2l-4.9-4.1H3.5z"/>
+        <path class="music-toggle__waves" d="M15.4 9.3a3.9 3.9 0 0 1 0 5.4M17.9 6.8a7.4 7.4 0 0 1 0 10.4"/>
+        <path class="music-toggle__cross" d="M15.6 9.6l5 4.8M20.6 9.6l-5 4.8"/>
+      </svg>
+      <span class="visually-hidden">{{ t.music }}</span>
+    </button>
     <button class="site-header__menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation" data-menu-button>
       <span class="site-header__menu-icon" aria-hidden="true"></span>
       <span class="visually-hidden" data-menu-label data-open-label="{{ t.menuOpen }}" data-close-label="{{ t.menuClose }}">{{ t.menuOpen }}</span>

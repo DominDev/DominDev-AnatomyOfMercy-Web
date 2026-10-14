@@ -12,6 +12,10 @@ eleventyExcludeFromCollections: true
 #
 # Odkad fonty leza na naszym serwerze, polityka nie wpuszcza zadnego obcego
 # serwera. Wczesniej byly tu wyjatki na fonts.googleapis.com i fonts.gstatic.com.
+#
+# media-src i autoplay=(self) wpuszczaja muzyke w tle z wlasnego serwera
+# (music.js). Bez autoplay=(self) przegladarka nie zagra jej nawet po
+# przejsciu na kolejna podstrone, choc odwiedzajacy juz klikal na stronie.
 {%- if not site.isProduction %}
 #
 # Wydanie podgladowe. robots.txt juz prosi roboty, zeby nie zagladaly, ale ten
@@ -23,20 +27,20 @@ eleventyExcludeFromCollections: true
 # tylko pobieraja strone po Open Graph, a naglowek dotyczy indeksowania.
 {%- endif %}
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'self' '{{ csp.scriptHash }}'; style-src 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Cross-Origin-Opener-Policy: same-origin
-  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Permissions-Policy: accelerometer=(), autoplay=(self), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
 {%- if not site.isProduction %}
   X-Robots-Tag: noindex, nofollow
 {%- endif %}
 
 # Interaktywny dylemat. Strona ukryta: nigdy do wyszukiwarek, takze w
 # produkcji. Polityka bezpieczenstwa jest odlaczona i zastapiona wlasna, bo
-# jedyna roznica jest media-src dla opcjonalnej muzyki w tle; dwie polityki
-# naraz dzialalyby jak czesc wspolna, czyli dzwiek dalej bylby zablokowany.
+# strona ma wlasne skrypty bez osadzonego wejscia; dwie polityki naraz
+# dzialalyby jak czesc wspolna i blokowalyby wiecej, niz trzeba.
 # Permissions-Policy dopuszcza odtwarzanie z wlasnego zrodla, uruchamiane
 # wylacznie kliknieciem gracza.
 /pl/dylemat/*

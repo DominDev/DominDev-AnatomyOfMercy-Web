@@ -17,6 +17,9 @@
     "navLabel": "Main navigation",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
+    "music": "Background music",
+    "musicPlay": "Turn music on",
+    "musicPause": "Turn music off",
     "nav": {
       "experience": "The game",
       "world": "The world",
@@ -273,6 +276,9 @@
     "navLabel": "Główna nawigacja",
     "menuOpen": "Otwórz menu",
     "menuClose": "Zamknij menu",
+    "music": "Muzyka w tle",
+    "musicPlay": "Włącz muzykę",
+    "musicPause": "Wyłącz muzykę",
     "nav": {
       "experience": "Gra",
       "world": "Świat",
