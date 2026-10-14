@@ -88,6 +88,7 @@ added under `assets/images/dylemat/`.
 | `assets/images/dylemat/skutek-veyr-zywy.webp` | `AoM-web-dylemat-skutek-veyr-zywy.png` | 800 x 1000 | Consequence: Veyr taken by force |
 | `assets/images/dylemat/skutek-veyr-zabity.webp` | `AoM-web-dylemat-skutek-veyr-zabity.png` | 800 x 1000 | Consequence: Veyr's death and his deputy |
 | `assets/images/dylemat/skutek-seweryn.webp` | `AoM-web-dylemat-skutek-seweryn.png` | 800 x 1000 | Consequence: Seweryn's core |
+| `assets/images/dylemat/skutek-spalenie.webp` | `AoM-web-dylemat-rdzen.png` | 800 x 1000 | Consequence: the core burned in the cellar (added 2026-10-14) |
 
 The music on the same page was generated with ElevenLabs Music on 2026-10-12
 under a paid Starter plan. That plan allows online use such as this website.
